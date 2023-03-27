@@ -4,13 +4,18 @@
 
 # This hook displays the sms log for a numbers passed as $1
 
+LOGDIRNUM="$1"
+
+# Wrap this in a terminal if not already done
+if [ -z "$TERMNAME" ]; then
+	TERMNAME="$LOGDIRNUM SMS"
+	export TERMNAME
+	exec sxmo_terminal.sh "$0" "$@"
+fi
+
 # include common definitions
 # shellcheck source=scripts/core/sxmo_common.sh
 . sxmo_common.sh
-
-LOGDIRNUM="$1"
-TERMNAME="$LOGDIRNUM SMS"
-export TERMNAME
 
 # If it's already open, switch to it.
 if [ "$SXMO_WM" = "sway" ] && [ -z "$SSH_CLIENT" ]; then
@@ -46,5 +51,5 @@ COLORSEDCMD="s#^\(Sent.*\)#$(tput setaf "$SENT_COLOR")\1$(tput op)#;s#^\(Receive
 # Replace phone numbers in the filename with contacts from contact book
 CONTACTSSEDCMD="$(mkcontactssedcmd)"
 
-sxmo_terminal.sh sh -c "tail -n9999 -f \"$SXMO_LOGDIR/$LOGDIRNUM/sms.txt\" |\
-	sed -e \"$CONTACTSSEDCMD\" -e \"$DATESEDCMD\" -e \"$COLORSEDCMD\""
+tail -n9999 -f "$SXMO_LOGDIR/$LOGDIRNUM/sms.txt" |\
+	sed -e "$CONTACTSSEDCMD" -e "$DATESEDCMD" -e "$COLORSEDCMD"
