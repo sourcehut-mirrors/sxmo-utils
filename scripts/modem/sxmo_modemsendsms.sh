@@ -82,7 +82,7 @@ trap 'finish' INT TERM EXIT
 if [ "-" = "$2" ]; then
 	TMPFILE="$(mktemp)"
 	TEXTFILE="$TMPFILE"
-	cat > "$TEXTFILE"
+	awk 'NR > 1 { print prev } { prev=$0 } END { ORS=""; print }' > "$TEXTFILE"
 elif [ "-f" = "$2" ]; then
 	TMPFILE="$(mktemp)"
 	awk 'NR > 1 { print prev } { prev=$0 } END { ORS=""; print }' "$3" > "$TMPFILE"
