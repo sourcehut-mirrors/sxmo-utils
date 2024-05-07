@@ -12,43 +12,53 @@ set -e
 
 SIMPLE_MODE=yes
 
-_prompt() {
-	sxmo_dmenu.sh -i "$@"
+controller="$(bluetoothctl list | grep "\[default\]" | cut -d" " -f2)"
+
+_can_fail() {
+	"$@" || notify-send "Something failed"
+}
+
+_ignore_fail() {
+	if ! "$@"; then
+		return
+	fi
 }
 
 _device_list() {
-	bluetoothctl devices | \
-		cut -d" " -f2 | \
-		xargs -rn1 bluetoothctl info | \
-		awk '
-			function print_cached_device() {
-				print icon linkedsep paired connected " " name " " mac
-				name=icon=mac=""
-			}
-			{ $1=$1 }
-			/^Device/ && name { print_cached_device() }
-			/^Device/ { mac=$2; paired=""; connected=""; linkedsep="" }
-			/Name:/ { $1="";$0=$0;$1=$1; name=$0 }
-			/Paired: yes/ { paired="'$icon_lnk'"; linkedsep=" " }
-			/Connected: yes/ { connected="'$icon_a2x'"; linkedsep=" " }
-			/Icon: computer/ { icon="'$icon_com'" }
-			/Icon: phone/ { icon="'$icon_phn'" }
-			/Icon: modem/ { icon="'$icon_mod'" }
-			/Appearance: 0x00c2/ { icon="'$icon_wat'" }
-			/Icon: watch/ { icon="'$icon_wat'" }
-			/Icon: network-wireless/ { icon="'$icon_wif'" }
-			/Icon: audio-headset/ { icon="'$icon_hdp'" }
-			/Icon: audio-headphones/ { icon="'$icon_spk'" }
-			/Icon: camera-video/ { icon="'$icon_vid'" }
-			/Icon: audio-card/ { icon="'$icon_mus'" }
-			/Icon: input-gaming/ { icon="'$icon_gam'" }
-			/Icon: input-keyboard/ { icon="'$icon_kbd'" }
-			/Icon: input-tablet/ { icon="'$icon_drw'" }
-			/Icon: input-mouse/ { icon="'$icon_mse'" }
-			/Icon: printer/ { icon="'$icon_prn'" }
-			/Icon: camera-photo/ { icon="'$icon_cam'" }
-			END { print_cached_device() }
-		'
+	bluetoothctl devices | cut -d" " -f2 | while read -r mac; do
+		bluetoothctl <<-EOF
+			select $controller
+			info $mac
+		EOF
+	done | awk '
+		function print_cached_device() {
+			print icon linkedsep paired connected " " name " " mac
+			name=icon=mac=""
+		}
+		{ $1=$1 }
+		/^Device/ && name { print_cached_device() }
+		/^Device/ { mac=$2; paired=""; connected=""; linkedsep="" }
+		/Name:/ { $1="";$0=$0;$1=$1; name=$0 }
+		/Paired: yes/ { paired="'$icon_lnk'"; linkedsep=" " }
+		/Connected: yes/ { connected="'$icon_a2x'"; linkedsep=" " }
+		/Icon: computer/ { icon="'$icon_com'" }
+		/Icon: phone/ { icon="'$icon_phn'" }
+		/Icon: modem/ { icon="'$icon_mod'" }
+		/Appearance: 0x00c2/ { icon="'$icon_wat'" }
+		/Icon: watch/ { icon="'$icon_wat'" }
+		/Icon: network-wireless/ { icon="'$icon_wif'" }
+		/Icon: audio-headset/ { icon="'$icon_hdp'" }
+		/Icon: audio-headphones/ { icon="'$icon_spk'" }
+		/Icon: camera-video/ { icon="'$icon_vid'" }
+		/Icon: audio-card/ { icon="'$icon_mus'" }
+		/Icon: input-gaming/ { icon="'$icon_gam'" }
+		/Icon: input-keyboard/ { icon="'$icon_kbd'" }
+		/Icon: input-tablet/ { icon="'$icon_drw'" }
+		/Icon: input-mouse/ { icon="'$icon_mse'" }
+		/Icon: printer/ { icon="'$icon_prn'" }
+		/Icon: camera-photo/ { icon="'$icon_cam'" }
+		END { print_cached_device() }
+	'
 }
 
 _restart_bluetooth() {
@@ -63,31 +73,44 @@ _restart_bluetooth() {
 }
 
 _full_reconnection() {
-	sxmo_terminal.sh sh -c "
-notify-send 'Make the device discoverable'
+	notify-send 'Make the device discoverable'
+	_ignore_fail sxmo_terminal.sh sh -c "expect - \"$controller\" \"$1\" <&4" <<-'EOF'
+		lassign $argv controller mac
 
-bluetoothctl remove '$1'
-sxmo_jobs.sh start bluetooth_scan bluetoothctl --timeout 300 scan on
+		spawn bluetoothctl -a NoInputNoOutput
 
-sleep 5
+		send -- "select $controller\r"
 
-while : ; do
-	timeout 7 bluetoothctl connect '$1'
-	if bluetoothctl info '$1'  | grep -q 'Connected: yes'; then
-		break
-	fi
-	sleep 1
-done
-"
-	sxmo_jobs.sh stop bluetooth_scan
-}
+		send -- "remove $mac\r"
+		expect {
+			"Device has been removed" {
+				expect "Device $mac"
+			}
+			"Device $mac not available"
+		}
 
-_notify_failure() {
-	notify-send "Something failed"
-}
+		send -- "scan on\r"
+		expect "Discovery started"
+		send -- "devices\r"
 
-_can_fail() {
-	"$@" || _notify_failure
+		set timeout 5
+		expect {
+			timeout {send -- "devices\r"; exp_continue}
+			"Device $mac" {
+				sleep 1
+				send -- "connect $mac\r"
+				expect {
+					"Connection successful" {send -- "exit\r"; wait}
+					"Operation already in progress" {sleep 1; exp_continue}
+					timeout {
+						sleep 1
+						send -- "connect $mac\r"
+						exp_continue
+					}
+				}
+			}
+		}
+	EOF
 }
 
 _show_toggle() {
@@ -103,9 +126,30 @@ toggle_connection() {
 	MAC="$(printf "%s\n" "$DEVICE" | awk '{print $NF}')"
 
 	if printf "%s\n" "$PICK" | grep -q "$icon_a2x"; then
-		_can_fail timeout 7 sxmo_terminal.sh bluetoothctl disconnect "$MAC"
+		_ignore_fail sxmo_terminal.sh sh -c "expect - \"$controller\" \"$MAC\" <&4" <<-'EOF'
+			lassign $argv controller mac
+			set timeout 7
+			spawn bluetoothctl -a NoInputNoOutput
+			send -- "select $controller\r"
+			send -- "disconnect $mac\r"
+			expect "Successful disconnected"
+			send -- "exit\r"
+			wait
+		EOF
 	else
-		_can_fail timeout 7 sxmo_terminal.sh bluetoothctl connect "$MAC"
+		_ignore_fail sxmo_terminal.sh sh -c "expect - \"$controller\" \"$MAC\" <&4" <<-'EOF'
+			lassign $argv controller mac
+			set timeout 7
+			spawn bluetoothctl -a NoInputNoOutput
+			send -- "select $controller\r"
+			send -- "connect $mac\r"
+			expect {
+				"Operation already in progress" {sleep 1}
+				"Connection successful"
+			}
+			send -- "exit\r"
+			wait
+		EOF
 	fi
 }
 
@@ -117,21 +161,18 @@ device_loop() {
 		INFO="$(bluetoothctl info "$MAC")"
 		PAIRED="$(printf "%s\n" "$INFO" | grep "Paired:" | awk '{print $NF}')"
 		TRUSTED="$(printf "%s\n" "$INFO" | grep "Trusted:" | awk '{print $NF}')"
-		BLOCKED="$(printf "%s\n" "$INFO" | grep "Blocked:" | awk '{print $NF}')"
 		CONNECTED="$(printf "%s\n" "$INFO" | grep "Connected:" | awk '{print $NF}')"
 
 		PICK="$(
-			cat <<EOF |
-$icon_ret Return
-$icon_rld Refresh
-Paired $(_show_toggle "$PAIRED")
-Trusted $(_show_toggle "$TRUSTED")
-Connected $(_show_toggle "$CONNECTED")
-Blocked $(_show_toggle "$BLOCKED")
-$icon_ror Clean re-connection
-$icon_trh Remove
-EOF
-			_prompt -p "$DEVICE" -I "$INDEX"
+			cat <<-EOF | sxmo_dmenu.sh -i -p "$DEVICE" -I "$INDEX"
+				$icon_ret Return
+				$icon_rld Refresh
+				Paired $(_show_toggle "$PAIRED")
+				Trusted $(_show_toggle "$TRUSTED")
+				Connected $(_show_toggle "$CONNECTED")
+				$icon_ror Clean re-connection
+				$icon_trh Remove
+			EOF
 		)"
 
 		case "$PICK" in
@@ -145,29 +186,68 @@ EOF
 				;;
 			"Paired $icon_tof")
 				INDEX=2
-				_can_fail timeout 7 sxmo_terminal.sh bluetoothctl "$MAC"
+				_ignore_fail sxmo_terminal.sh sh -c "expect - \"$controller\" \"$MAC\" <&4" <<-'EOF'
+					lassign $argv controller mac
+					set timeout 5
+					spawn bluetoothctl -a NoInputNoOutput
+					send -- "select $controller\r"
+					send -- "pair $mac\r"
+					expect "Pairing successful"
+					send -- "exit\r"
+					wait
+				EOF
 				;;
 			"Trusted $icon_ton")
 				INDEX=3
-				_can_fail sxmo_terminal.sh bluetoothctl untrust "$MAC"
+				_ignore_fail sxmo_terminal.sh sh -c "expect - \"$controller\" \"$MAC\" <&4" <<-'EOF'
+					lassign $argv controller mac
+					set timeout 5
+					spawn bluetoothctl -a NoInputNoOutput
+					send -- "select $controller\r"
+					send -- "untrust $mac\r"
+					expect "untrust succeeded"
+					send -- "exit\r"
+					wait
+				EOF
 				;;
 			"Trusted $icon_tof")
 				INDEX=3
-				_can_fail sxmo_terminal.sh bluetoothctl trust "$MAC"
+				_ignore_fail sxmo_terminal.sh sh -c "expect - \"$controller\" \"$MAC\" <&4" <<-'EOF'
+					lassign $argv controller mac
+					set timeout 5
+					spawn bluetoothctl -a NoInputNoOutput
+					send -- "select $controller\r"
+					send -- "trust $mac\r"
+					expect "trust succeeded"
+					send -- "exit\r"
+					wait
+				EOF
 				;;
 			"Connected $icon_ton")
 				INDEX=4
-				_can_fail timeout 7 sxmo_terminal.sh bluetoothctl disconnect "$MAC"
+				_ignore_fail sxmo_terminal.sh sh -c "expect - \"$controller\" \"$MAC\" <&4" <<-'EOF'
+					lassign $argv controller mac
+					set timeout 5
+					spawn bluetoothctl -a NoInputNoOutput
+					send -- "select $controller\r"
+					send -- "disconnect $mac\r"
+					expect "Successful disconnected"
+					send -- "exit\r"
+					wait
+				EOF
 				;;
 			"Connected $icon_tof")
 				INDEX=4
-				_can_fail timeout 7 sxmo_terminal.sh bluetoothctl "$MAC"
-				;;
-			"Blocked $icon_ton")
-				INDEX=5
-				;;
-			"Blocked $icon_tof")
-				INDEX=5
+				_ignore_fail sxmo_terminal.sh sh -c "expect - \"$controller\" \"$MAC\" <&4" <<-'EOF'
+					lassign $argv controller mac
+					set timeout 5
+					spawn bluetoothctl -a NoInputNoOutput
+					send -- "select $controller\r"
+					send -- "connect $mac\r"
+					expect "Connection successful"
+					send -- "exit\r"
+					wait
+				EOF
 				;;
 			"$icon_ror Clean re-connection")
 				_full_reconnection "$MAC"
@@ -175,10 +255,11 @@ EOF
 				;;
 			"$icon_trh Remove")
 				INDEX=7
-				(confirm_menu -p "Remove this device ?" \
-					&& _can_fail sxmo_terminal.sh bluetoothctl remove "$MAC") \
-					|| continue
-				return
+				if confirm_menu -p "Remove this device ?"; then
+					if _can_fail bluetoothctl remove "$MAC"; then
+						return
+					fi
+				fi
 				;;
 		esac
 		sleep 0.5
@@ -188,23 +269,26 @@ EOF
 main_loop() {
 	INDEX=0
 	while : ; do
-		INFO="$(bluetoothctl show)"
-		DISCOVERING="$(printf "%s\n" "$INFO" | grep "Discovering:" | awk '{print $NF}')"
-		PAIRABLE="$(printf "%s\n" "$INFO" | grep "Pairable:" | awk '{print $NF}')"
+		DISCOVERING="$(bluetoothctl show "$controller" | grep "Discovering:" | awk '{print $NF}')"
 
+		CONTROLLERS="$(bluetoothctl <<-EOF | grep ^Controller | sort -u | sed "s|^Controller|$icon_rss|"
+			select $controller
+			list
+		EOF
+		)"
 		DEVICES="$(_device_list)"
 
 		PICK="$(
-			cat <<EOF |
-$icon_cls Close Menu
-$icon_rld Refresh
-$icon_pwr Restart daemon
-Simple mode $(_show_toggle "$SIMPLE_MODE")
-Pairable $(_show_toggle "$PAIRABLE")
-Discovering $(_show_toggle "$DISCOVERING")
-$DEVICES
-EOF
-			_prompt -p "$icon_bth Bluetooth" -I "$INDEX"
+			cat <<-EOF | sxmo_dmenu.sh -i -p "$icon_bth Bluetooth" -I "$INDEX"
+				$icon_cls Close Menu
+				$icon_rld Refresh
+				$icon_pwr Restart daemon
+				Simple mode $(_show_toggle "$SIMPLE_MODE")
+				Discovering $(_show_toggle "$DISCOVERING")
+				Start Agent
+				$CONTROLLERS
+				$DEVICES
+			EOF
 		)"
 
 		case "$PICK" in
@@ -228,24 +312,40 @@ EOF
 				SIMPLE_MODE=yes
 				INDEX=3
 				;;
-			"Pairable $icon_ton")
-				bluetoothctl pairable off
-				INDEX=4
-				;;
-			"Pairable $icon_tof")
-				bluetoothctl pairable on
-				INDEX=4
-				;;
 			"Discovering $icon_ton")
-				INDEX=5
+				INDEX=4
 				sxmo_jobs.sh stop bluetooth_scan
 				sleep 0.5
 				;;
 			"Discovering $icon_tof")
-				sxmo_jobs.sh start bluetooth_scan bluetoothctl --timeout 60 scan on > /dev/null
+				sxmo_jobs.sh start bluetooth_scan expect -c "
+					spawn bluetoothctl
+					send -- \"select $controller\r\"
+					send -- \"scan on\r\"
+					expect \"Discovery started\"
+					sleep 60
+					send -- \"exit\r\"
+					wait
+				" &
+				sleep 0.5
 				notify-send "Scanning for 60 seconds"
 				INDEX=5
 				sleep 0.5
+				;;
+			"Start Agent")
+				INDEX=5
+				_ignore_fail sxmo_terminal.sh expect -c "
+					spawn bluetoothctl
+					send -- \"select $controller\r\"
+					send -- \"pairable on\r\"
+					expect \"Changing pairable on succeeded\"
+					interact
+					wait
+				"
+				;;
+			"$icon_rss"*)
+				INDEX=0
+				controller="$(printf %s "$PICK" | cut -d" " -f2)"
 				;;
 			*)
 				INDEX=0
