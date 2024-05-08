@@ -38,4 +38,9 @@ case "$SXMO_TERMINAL" in
 		set -- $SXMO_TERMINAL "$@"
 esac
 
+# Optional file descriptor the command can use for stdin/stdout/stderr
+exec 4<&0
+exec 5>&1
+exec 6>&2
+
 exec "$@"
