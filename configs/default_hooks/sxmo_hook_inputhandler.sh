@@ -140,6 +140,13 @@ case "$WMCLASS" in
 				;;
 		esac
 		;;
+	*"firefox"*)
+		case "$ACTION" in
+			# you're probably dragging the scrollbar
+			*"uprightedge") exit 0 ;;
+			*"downrightedge") exit 0 ;;
+		esac
+		;;
 	*"foot"*|*"st"*|*"vte"*|"terminal") # Terminals
 		case "$WMCLASS" in # Handle programs without touch support
 			*"st"*)
