@@ -103,6 +103,7 @@ icon_phx="󰏵" #hangup
 icon_plk="󰏸" # phone locked
 icon_pls=""
 icon_pom="" # pomodoro timer
+icon_pod="" # podcast
 icon_prn="" # printer (🖨️)
 icon_prv="" #previous
 icon_pst=""
