@@ -104,6 +104,7 @@ icon_prn="" # printer (🖨️)
 icon_prv="" #previous
 icon_pst=""
 icon_pwr="⏻" #power
+icon_rad="󰐹" # radio
 icon_red="" #reddit
 icon_ret="󰌑" #return
 icon_rld=""
