@@ -93,8 +93,11 @@ pickup() {
 hangup() {
 	CALLID="$1"
 
-	if [ -f "$XDG_RUNTIME_DIR/sxmo_calls/${CALLID}.pickedupcall" ]; then
-		rm -f "$XDG_RUNTIME_DIR/sxmo_calls/${CALLID}.pickedupcall"
+	if [ -f "$XDG_RUNTIME_DIR/sxmo_calls/${CALLID}.pickedupcall" ] || \
+		[ -f "$XDG_RUNTIME_DIR/sxmo_calls/${CALLID}.initiatedcall" ]; then
+
+		rm -f "$XDG_RUNTIME_DIR/sxmo_calls/${CALLID}.pickedupcall" \
+			"$XDG_RUNTIME_DIR/sxmo_calls/${CALLID}.initiatedcall"
 		touch "$XDG_RUNTIME_DIR/sxmo_calls/${CALLID}.hangedupcall"
 		log_event "call_hangup" "$CALLID"
 
