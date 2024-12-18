@@ -886,6 +886,7 @@ _sxmo_hook_missed_call.sh_ (if you miss the call),
 _sxmo_hook_mute_ring.sh_ (if you tap ignore to ignore the call, i.e., mute the
 ringing),
 _sxmo_hook_pickup.sh_ (if you pickup),
+_sxmo_hook_dial.sh_ (if you dial),
 _sxmo_hook_ring.sh_ (what to do when ringing)
 
 When a new text message comes in:

@@ -42,6 +42,9 @@ EOF
 	rm "$XDG_RUNTIME_DIR/sxmo_calls/$CALLID."* 2>/dev/null || true
 	sxmo_log "Starting call with CALLID: $CALLID"
 
+	sxmo_log "Invoking dial hook"
+	sxmo_hook_dial.sh
+
 	if ! sxmo_modemaudio.sh setup_audio; then
 		sxmo_notify_user.sh --urgency=critical "We failed to setup call audio"
 		mmcli -m any --voice-delete-call="$CALLID"
