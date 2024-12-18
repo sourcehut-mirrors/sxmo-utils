@@ -28,6 +28,7 @@ fi
 finish() {
 	trap - INT TERM EXIT
 	jobs -p | xargs -r kill
+	wait
 	exit
 }
 
