@@ -41,6 +41,7 @@ icon_com="" # (Laptop) Computer (💻)
 icon_cpy=""
 icon_del="" #delete
 icon_dir="" #directory folder
+icon_dis="󰙯" # discord
 icon_dof="" # dot off
 icon_don="" # dot on
 icon_dop="" # dot point
