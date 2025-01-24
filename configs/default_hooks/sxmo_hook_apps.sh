@@ -38,7 +38,7 @@ write_line_app badwolf "$icon_glb Badwolf" "badwolf"
 write_line_app gnome-calculator "$icon_clc Calculator" "gnome-calculator"
 write_line_app calcurse "$icon_clk Calcurse" "sxmo_terminal.sh calcurse"
 write_line_app chatty "$icon_msg Chatty" "chatty"
-([ "$SXMO_WM" = dwm ] && command -v clipmenu >/dev/null) && \
+([ -z "$WAYLAND_DISPLAY" ] && command -v clipmenu >/dev/null) && \
 	write_line_app clipmenu "$icon_bok Clipmenu" "clipmenu"
 write_line_app cmus "$icon_mus Cmus" "sxmo_terminal.sh cmus"
 write_line_app com.github.geigi.cozy "$icon_mus Cozy" "com.github.geigi.cozy"
@@ -60,7 +60,7 @@ write_line_app firefox "$icon_ffx Firefox" "firefox"
 write_line_app firefox-esr "$icon_ffx Firefox ESR" "firefox-esr"
 write_line_app flare "$icon_msg Flare" "flare"
 write_line_app foliate "$icon_bok Foliate" "foliate"
-( [ "$SXMO_WM" = sway ] && command -v foot >/dev/null) && \
+( [ -n "$WAYLAND_DISPLAY" ] && command -v foot >/dev/null) && \
 	write_line "$icon_trm Foot" "foot $SHELL"
 write_line_app foxtrotgps "$icon_gps Foxtrotgps" "foxtrotgps"
 write_line_app fractal "$icon_msg Fractal" "fractal"
@@ -158,12 +158,12 @@ write_line_app sic "$icon_msg Sic" "sxmo_terminal.sh sic"
 write_line_app siglo "$icon_clk Siglo" "siglo"
 write_line_app simple-scan "$icon_scn Simple Scan" "simple-scan"
 write_line_app snapshot "$icon_cam Snapshot" "snapshot"
-([ "$SXMO_WM" = dwm ] && command -v st >/dev/null) && \
+([ -z "$WAYLAND_DISPLAY" ] && command -v st >/dev/null) && \
 	write_line "$icon_trm St" "st -e $SHELL"
 write_line_app surf "$icon_glb Surf" "surf"
 write_line_app syncthing "$icon_rld Syncthing" "syncthing"
 write_line_app syncthing-gtk "$icon_rld Syncthing GTK" "syncthing-gtk"
-([ "$SXMO_WM" = dwm ] && command -v tabbed >/dev/null) && \
+([ -z "$WAYLAND_DISPLAY" ] && command -v tabbed >/dev/null) && \
 	write_line_app tabbed "$icon_grd Tabbed" "sxmo_tabbed.sh"
 write_line_app telegram-desktop "$icon_tgm Telegram" "telegram-desktop"
 write_line_app termite "$icon_trm Termite" "termite -e $SHELL"
@@ -186,7 +186,7 @@ write_line_app vis "$icon_vim Vis" "sxmo_terminal.sh vis"
 write_line_app vlc "$icon_mvi Vlc" "vlc"
 write_line_app vte-2.91 "$icon_trm VTE 3" "vte-2.91"
 write_line_app vte-2.91-gtk4 "$icon_trm VTE 3 (GTK-4)" "vte-2.91-gtk4"
-([ "$SXMO_WM" = dwm ] && command -v xcalc >/dev/null) && \
+([ -z "$WAYLAND_DISPLAY" ] && command -v xcalc >/dev/null) && \
 	write_line "$icon_clc Xcalc" "xcalc"
 write_line_app xfce4-terminal "$icon_trm XFCE4 Terminal" "xfce4-terminal"
 write_line_app xournal "$icon_bok Xournal" "xournal"
