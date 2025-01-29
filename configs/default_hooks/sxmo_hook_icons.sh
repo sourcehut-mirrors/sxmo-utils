@@ -137,6 +137,7 @@ icon_usb="" # usb
 icon_usr="󰀄"
 icon_vid="" #video
 icon_vim=''
+icon_vlc="󰕼"
 icon_wif=""
 icon_wfo="󰖪" # wifi off
 icon_wfh="󰀂" # wifi hotspot
