@@ -71,6 +71,10 @@ case "$SXMO_WM" in
 		superctl start sxmo-x11-status
 		superctl start bonsaid
 		[ -n "$SXMO_MONITOR" ] && xrandr --output "$SXMO_MONITOR" --primary
+		# Set onboard to auto-hide in config first
+		if [ "$KEYBOARD" = "onboard" ]; then
+			onboard "$KEYBOARD_ARGS"
+		fi
 		;;
 esac
 
