@@ -137,6 +137,7 @@ write_line_app nnn "$icon_dir Nnn" "sxmo_terminal.sh nnn"
 write_line_app numberstation "$icon_clc Numberstation" "numberstation"
 write_line_app nyxt "$icon_glb Nyxt" "nyxt"
 write_line_app offpunk "$icon_glb Offpunk" "sxmo_terminal.sh offpunk"
+write_line_app onboard-settings "$icon_cfg Onboard Settings" onboard-settings
 write_line_app osmin "$icon_map Osmin" "osmin"
 write_line_app papers "$icon_bok Papers" "papers"
 write_line_app pavucontrol "$icon_mus Pavucontrol" "pavucontrol"
