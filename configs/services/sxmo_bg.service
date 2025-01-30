@@ -3,5 +3,5 @@ Description=The Sxmo wallpaper as a service
 
 [Service]
 Type=simple
-Restart=always
+Restart=on-failure
 ExecStart=sxmo_bg.sh fill
