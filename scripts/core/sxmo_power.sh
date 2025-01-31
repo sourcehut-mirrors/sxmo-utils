@@ -23,38 +23,12 @@ case "$1" in
 	logout)
 		sxmo_hook_logout.sh
 		case "$SXMO_WM" in
+			"i3") i3-msg exit ;;
 			"sway") swaymsg exit ;;
 			"dwm") pkill dwm ;;
 		esac
 		;;
-	togglewm)
-		case "$(realpath /var/lib/tinydm/default-session.desktop)" in
-			*"swmo.desktop")
-				if command -v dwm > /dev/null; then
-					if doas tinydm-set-session -f -s "$(xdg_data_path xsessions/sxmo.desktop)"; then
-						sxmo_hook_logout.sh
-						swaymsg exit
-					else
-						sxmo_notify_user.sh "You do not have tinydm installed."
-					fi
-				else
-					sxmo_notify_user.sh "You do not have dwm installed."
-				fi
-				;;
-			*"sxmo.desktop")
-				if command -v sway >/dev/null; then
-					if doas tinydm-set-session -f -s "$(xdg_data_path wayland-sessions/swmo.desktop)"; then
-						sxmo_hook_logout.sh
-						pkill dwm
-					else
-						sxmo_notify_user.sh "You do not have tinydm installed."
-					fi
-				else
-					sxmo_notify_user.sh "You do not have sway installed."
-				fi
-				;;
-		esac
-		;;
+	togglewm) sxmo_togglewm.sh ;;
 	*)
 		usage
 		exit 1

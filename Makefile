@@ -98,7 +98,7 @@ programs/%.test: programs/%.c
 clean:
 	rm -f ${PROGRAMS} ${DOCS} ${HTMLDOCS} programs/test_legacy_nerdfont programs/sxmo_status_led.test
 
-install: install-sway install-dwm install-scripts install-docs
+install: install-sway install-dwm install-i3 install-scripts install-docs
 
 install-docs: $(DOCS)
 	cd docs && find . -type f -name '*.7' -exec install -D -m 0644 "{}" "$(DESTDIR)$(MANDIR)/man7/{}" \; && find . -type f -name '*.1' -exec install -D -m 0644 "{}" "$(DESTDIR)$(MANDIR)/man1/{}" \; && cd ..
@@ -111,6 +111,9 @@ install-sway:
 
 install-dwm:
 	install -D -m 0644 -t $(DESTDIR)$(PREFIX)/share/xsessions/ configs/applications/sxmo.desktop
+
+install-i3:
+	install -D -m 0644 -t $(DESTDIR)$(PREFIX)/share/xsessions/ configs/applications/sxmo_i3.desktop
 
 install-scripts: $(PROGRAMS)
 	cd configs && find . -type f -not -exec install -D -m 0644 "{}" "$(DESTDIR)$(PREFIX)/share/sxmo/{}" \; && cd ..
