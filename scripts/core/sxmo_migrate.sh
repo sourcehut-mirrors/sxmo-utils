@@ -300,6 +300,10 @@ common() {
 	defaultconfig "$(xdg_data_path sxmo/appcfg/fontconfig.conf)" "$XDG_CONFIG_HOME/fontconfig/conf.d/50-sxmo.conf" 644
 }
 
+i3() {
+	defaultconfig "$(xdg_data_path sxmo/appcfg/i3_template)" "$XDG_CONFIG_HOME/sxmo/i3" 644
+}
+
 sway() {
 	defaultconfig "$(xdg_data_path sxmo/appcfg/sway_template)" "$XDG_CONFIG_HOME/sxmo/sway" 644
 	defaultconfig "$(xdg_data_path sxmo/appcfg/foot.ini)" "$XDG_CONFIG_HOME/foot/foot.ini" 644
@@ -346,12 +350,18 @@ for MODE in "$@"; do
 	case "$MODE" in
 		"interactive"|"all")
 			common
+			i3
 			sway
 			xorg
 			checkhooks
 			;;
 		"sync"|"reset")
 			case "$SXMO_WM" in
+				i3)
+					common
+					i3
+					xorg
+					;;
 				sway)
 					common
 					sway
@@ -362,6 +372,7 @@ for MODE in "$@"; do
 					;;
 				*)
 					common
+					i3
 					sway
 					xorg
 					;;
