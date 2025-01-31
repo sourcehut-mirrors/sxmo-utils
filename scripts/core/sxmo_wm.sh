@@ -6,6 +6,10 @@
 # shellcheck source=scripts/core/sxmo_common.sh
 . sxmo_common.sh
 
+i3dpms() {
+	xorgdpms "$@"
+}
+
 xorgdpms() {
 	STATE=off
 	if xset q | grep -q "Off: 3"; then
@@ -39,6 +43,10 @@ swaydpms() {
 		swaymsg -- output '*' power true
 	fi
 
+}
+
+i3inputevent() {
+	xorginputevent "$@"
 }
 
 xorginputevent() {
@@ -100,6 +108,23 @@ swayinputevent() {
 	fi
 }
 
+i3focusedwindow() {
+	i3-msg -t get_tree | jq -r '
+		recurse(.nodes[]) |
+		select(.focused == true) |
+		{
+			app_id: (if .app_id != null then
+					.app_id
+				else
+					.window_properties.class
+				end),
+			name: .name,
+		} |
+		select(.app_id != null and .name != null) |
+		"app: " + .app_id, "title: " + .name
+	'
+}
+
 xorgfocusedwindow() {
 	activeoutput="$(xprop -id "$(xdotool getactivewindow 2>/dev/null)" 2>/dev/null)"
 	printf %s "$activeoutput" | \
@@ -128,13 +153,31 @@ swayfocusedwindow() {
 	'
 }
 
+i3paste () {
+	xclip -o
+}
+
 swaypaste() {
 	wl-paste
 }
 
 xorgpaste() {
-
 	xclip -o
+}
+
+i3exec() {
+	i3-msg exec -- "$@"
+}
+
+i3execwait() {
+	PIDFILE="$(mktemp)"
+	printf '"%s" & printf %%s "$!" > "%s"' "$*" "$PIDFILE" \
+		| xargs -I{} i3-msg exec -- '{}'
+	while : ; do
+		sleep 0.5
+		kill -0 "$(cat "$PIDFILE")" 2> /dev/null || break
+	done
+	rm "$PIDFILE"
 }
 
 swayexec() {
@@ -166,6 +209,10 @@ xorgexecwait() {
 	exec "$@"
 }
 
+i3togglelayout() {
+	i3-msg layout toggle splith splitv tabbed
+}
+
 swaytogglelayout() {
 	swaymsg layout toggle splith splitv tabbed
 }
@@ -177,6 +224,10 @@ xorgtogglelayout() {
 	xdotool key --clearmodifiers key Super+space
 }
 
+i3switchfocus() {
+	sxmo_wmmenu.sh i3windowswitcher
+}
+
 swayswitchfocus() {
 	sxmo_wmmenu.sh swaywindowswitcher
 }
@@ -186,6 +237,32 @@ xorgswitchfocus() {
 		export DISPLAY=:0
 	fi
 	xdotool key --clearmodifiers Super+x
+}
+
+_i3getcurrentworkspace() {
+	i3-msg -t get_workspaces | jq -r '.[] | select(.focused==true).name'
+}
+
+_i3getnextworkspace() {
+	value="$(($(_i3getcurrentworkspace)+1))"
+	if [ "$value" -eq "$((${SXMO_WORKSPACE_WRAPPING:-4}+1))" ]; then
+		printf 1
+	else
+		printf %s "$value"
+	fi
+}
+
+_i3getpreviousworkspace() {
+	value="$(($(_i3getcurrentworkspace)-1))"
+	if [ "$value" -lt 1 ]; then
+		if [ "${SXMO_WORKSPACE_WRAPPING:-4}" -ne 0 ]; then
+			printf %s "${SXMO_WORKSPACE_WRAPPING:-4}"
+		else
+			return 1 # cant have previous workspace
+		fi
+	else
+		printf %s "$value"
+	fi
 }
 
 _swaygetcurrentworkspace() {
@@ -215,6 +292,10 @@ _swaygetpreviousworkspace() {
 	fi
 }
 
+i3nextworkspace() {
+	i3-msg "workspace $(_i3getnextworkspace)"
+}
+
 swaynextworkspace() {
 	swaymsg "workspace $(_swaygetnextworkspace)"
 }
@@ -224,6 +305,10 @@ xorgnextworkspace() {
 		export DISPLAY=:0
 	fi
 	xdotool key --clearmodifiers Super+Shift+r
+}
+
+i3previousworkspace() {
+	_i3getpreviousworkspace | xargs -r i3-msg -- workspace
 }
 
 swaypreviousworkspace() {
@@ -237,6 +322,10 @@ xorgpreviousworkspace() {
 	xdotool key --clearmodifiers Super+Shift+e
 }
 
+i3movenextworkspace() {
+	i3-msg "move container to workspace $(_i3getnextworkspace)"
+}
+
 swaymovenextworkspace() {
 	swaymsg "move container to workspace $(_swaygetnextworkspace)"
 }
@@ -246,6 +335,10 @@ xorgmovenextworkspace() {
 		export DISPLAY=:0
 	fi
 	xdotool key --clearmodifiers Super+r
+}
+
+i3movepreviousworkspace() {
+	_i3getpreviousworkspace | xargs -r i3-msg -- move container to workspace
 }
 
 swaymovepreviousworkspace() {
@@ -259,6 +352,10 @@ xorgmovepreviousworkspace() {
 	xdotool key --clearmodifiers Super+e
 }
 
+i3workspace() {
+	i3-msg "workspace $1"
+}
+
 swayworkspace() {
 	swaymsg "workspace $1"
 }
@@ -270,6 +367,10 @@ xorgworkspace() {
 	xdotool key --clearmodifiers "Super+$1"
 }
 
+i3moveworkspace() {
+	i3-msg "move container to workspace $1"
+}
+
 swaymoveworkspace() {
 	swaymsg "move container to workspace $1"
 }
@@ -279,6 +380,10 @@ xorgmoveworkspace() {
 		export DISPLAY=:0
 	fi
 	xdotool key --clearmodifiers "Super+shift+$1"
+}
+
+i3togglebar() {
+	i3-msg bar mode toggle
 }
 
 swaytogglebar() {

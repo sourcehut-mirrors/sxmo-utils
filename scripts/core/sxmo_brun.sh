@@ -12,7 +12,7 @@ if [ -z "$SXMO_MENU" ]; then
 		sway)
 			SXMO_MENU=bemenu
 			;;
-		dwm)
+		dwm|i3)
 			SXMO_MENU=dmenu
 			;;
 	esac

@@ -7,6 +7,7 @@
 . sxmo_common.sh
 
 case "$SXMO_WM" in
+	i3) i3-msg kill ;;
 	sway) swaymsg kill;;
 	dwm) xdotool windowkill "$(xdotool getactivewindow)";;
 esac

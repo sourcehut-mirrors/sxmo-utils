@@ -3,7 +3,7 @@
 bg="$(sxmo_hook_wallpaper.sh)"
 
 case "$SXMO_WM" in
-	dwm)
+	dwm|i3)
 		exec feh "${1+--bg-$1}" "$bg"
 		;;
 	sway)

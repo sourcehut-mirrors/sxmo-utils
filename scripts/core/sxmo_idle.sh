@@ -61,7 +61,7 @@ xorgidle() {
 }
 
 case "$SXMO_WM" in
-	dwm)
+	dwm|i3)
 		xorgidle "$@"
 		;;
 	*)

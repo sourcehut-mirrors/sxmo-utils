@@ -160,6 +160,60 @@ EOF
 	done
 }
 
+i3windowswitcher() {
+	SWITCHINDEX=0
+
+	while : ; do
+		FORMAT='"W:" + .workspace + " | " + .app_id + " - " + .name + " (" + .id + ")"'
+
+		WINDOWSLIST="$(
+			i3-msg -t get_tree |
+				jq -r ".nodes[]
+					| {output: .name, content: .nodes[]}
+					| {output: .output, workspace: .content.name, apps: .content
+					| ..
+					| {id: .id?|tostring, name: .name?, app_id: .app_id?, shell: .shell?}
+					| select(.app_id != null or .shell != null)}
+					| {output: .output, workspace: .workspace,
+						id: .apps.id, app_id: .apps.app_id, name: .apps.name }
+					| $FORMAT
+					| tostring
+				"
+		)"
+
+		# Get the container ID from the node tree
+		CHOICES="$(
+			cat <<EOF
+$icon_cls Close Menu
+$icon_arl Previous Workspace
+$icon_arr Next Workspace
+$WINDOWSLIST
+EOF
+		)"
+
+		PICKED="$(printf "%s" "$CHOICES" | dmenu -p "Switch menu" -I "$SWITCHINDEX")"
+		SWITCHINDEX="$(($(printf "%s" "$CHOICES" | grep -nm1 "^$PICKED$" | cut -d: -f1) -1))"
+
+		case "$PICKED" in
+			""|"$icon_cls Close Menu")
+				return
+				;;
+			"$icon_arr Next Workspace")
+				sxmo_wm.sh nextworkspace
+				;;
+			"$icon_arl Previous Workspace")
+				sxmo_wm.sh previousworkspace
+				;;
+			*)
+				# Requires the actual `id` to be at the end and between parentheses
+				CON_ID=${PICKED##*(}
+				CON_ID=${CON_ID%)}
+				i3-msg "[con_id=$CON_ID]" focus
+				;;
+		esac
+	done
+}
+
 swaywindowswitcher() {
 	SWITCHINDEX=0
 
@@ -218,5 +272,7 @@ if [ -n "$1" ]; then
 	"$SXMO_WM$1"
 	exit
 fi
-
-"$SXMO_WM"wmmenu
+case "$SXMO_WM" in
+	dwm|i3) dwmwmmenu ;;
+	sway) swaywmmenu ;;
+esac

@@ -39,7 +39,7 @@ case "$SXMO_WM" in
 	sway)
 		wtype "$@"
 		;;
-	dwm)
+	dwm|i3)
 		wtype_to_xdotool "$@"
 		;;
 esac

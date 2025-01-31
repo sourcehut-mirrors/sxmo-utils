@@ -55,7 +55,7 @@ case "$SXMO_WM" in
 		superctl start sxmo_menumode_toggler
 		superctl start bonsaid
 		;;
-	dwm)
+	dwm|i3)
 		superctl start sxmo_xob
 
 		# Auto hide cursor with touchscreen, Show it with a mouse

@@ -116,7 +116,7 @@ isrotated() {
 		sway)
 			"swayisrotated"
 			;;
-		dwm)
+		dwm|i3)
 			"xorgisrotated"
 			;;
 	esac
@@ -137,7 +137,7 @@ case "$SXMO_WM" in
 	sway)
 		"sway$1" "$@"
 		;;
-	dwm)
+	dwm|i3)
 		"xorg$1" "$@"
 		;;
 esac
