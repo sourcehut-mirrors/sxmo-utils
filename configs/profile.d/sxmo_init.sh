@@ -20,6 +20,16 @@ _sxmo_is_running() {
 			return 0
 		fi
 	fi
+
+	if [ -f "${_XDG_RUNTIME_DIR}"/sxmo.i3sock ]; then
+		if I3SOCK="$(cat "${_XDG_RUNTIME_DIR}"/sxmo.i3sock)" i3-msg 2>/dev/null
+		then
+			printf "Detected the i3 environment\n" >&2
+			export SXMO_WM=i3
+			unset _XDG_RUNTIME_DIR
+			return 0
+		fi
+	fi
 	unset _XDG_RUNTIME_DIR
 
 	if DISPLAY=:0 xrandr >/dev/null 2>&1; then
@@ -156,6 +166,12 @@ _sxmo_grab_session() {
 			if [ -f "$XDG_RUNTIME_DIR"/sxmo.swaysock ]; then
 				SWAYSOCK="$(cat "$XDG_RUNTIME_DIR"/sxmo.swaysock)"
 				export SWAYSOCK
+			fi
+			;;
+		i3)
+			if [ -f "$XDG_RUNTIME_DIR"/sxmo.i3sock ]; then
+				I3SOCK="$(cat "$XDG_RUNTIME_DIR"/sxmo.i3sock)"
+				export I3SOCK
 			fi
 			;;
 	esac
