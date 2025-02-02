@@ -37,6 +37,7 @@ write_line_app audacity "$icon_mic Audacity" "audacity"
 write_line_app badwolf "$icon_glb Badwolf" "badwolf"
 write_line_app gnome-calculator "$icon_clc Calculator" "gnome-calculator"
 write_line_app calcurse "$icon_clk Calcurse" "sxmo_terminal.sh calcurse"
+write_line_app gnome-calls "$icon_phn Calls" "gnome-calls"
 write_line_app chatty "$icon_msg Chatty" "chatty"
 ([ -z "$WAYLAND_DISPLAY" ] && command -v clipmenu >/dev/null) && \
 	write_line_app clipmenu "$icon_bok Clipmenu" "clipmenu"
