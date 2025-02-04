@@ -150,20 +150,8 @@ set_modem() {
 			*lte*) # lte, lte_nb_iot, lte_cat_m
 				MODEMTECHCMP="$icon_modem_fourg"
 				;;
-			*umts*)
+			*umts*|*hsupa*|*hsdpa*|*1xrtt*|*evdo*)
 				MODEMTECHCMP="$icon_modem_threeg"
-				;;
-			*hsupa*)
-				MODEMTECHCMP="$USEDTECHS" # 3g
-				;;
-			*hsdpa*)
-				MODEMTECHCMP="$USEDTECHS" # 3g
-				;;
-			*1xrtt*)
-				MODEMTECHCMP="$USEDTECHS" # 3g
-				;;
-			*evdo*) # evdo0, evdoa, evdob
-				MODEMTECHCMP="$USEDTECHS" # 3g
 				;;
 			*hspa_plus*)
 				MODEMTECHCMP="$icon_modem_hspa_plus" # 3g
