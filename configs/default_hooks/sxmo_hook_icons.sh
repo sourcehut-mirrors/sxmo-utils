@@ -60,6 +60,7 @@ icon_flk="" #falkon
 icon_fll="󰉄" #flashlight
 icon_flt="" #filter/pipe
 icon_fnd="󰍉" #search/find
+icon_fsn="󰈪" # file send
 icon_gam="󰊴" # gaming controller (🎮)
 icon_glb="" #globe
 icon_gps='' #gps
