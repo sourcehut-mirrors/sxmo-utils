@@ -162,6 +162,7 @@ write_line_app simple-scan "$icon_scn Simple Scan" "simple-scan"
 write_line_app snapshot "$icon_cam Snapshot" "snapshot"
 ([ -z "$WAYLAND_DISPLAY" ] && command -v st >/dev/null) && \
 	write_line "$icon_trm St" "st -e $SHELL"
+write_line_app supertuxkart "$icon_krt SuperTuxKart" "supertuxkart"
 write_line_app surf "$icon_glb Surf" "surf"
 write_line_app syncthing "$icon_rld Syncthing" "syncthing"
 write_line_app syncthing-gtk "$icon_rld Syncthing GTK" "syncthing-gtk"

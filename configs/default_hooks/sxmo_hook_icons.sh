@@ -73,6 +73,7 @@ icon_inf="" #info
 icon_itm="" #item (default)
 icon_kbd="" #keyboard
 icon_key=""
+icon_krt="󰵹" # kart
 icon_lck=""
 icon_lnk=""
 icon_lst="" #list
