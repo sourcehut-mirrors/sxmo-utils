@@ -9,29 +9,24 @@
 
 on() {
 	rfkill unblock bluetooth
-	case "$SXMO_OS" in
-		alpine|postmarketos)
-			rc-service bluetooth start
-			rc-update add bluetooth
-			;;
-		arch|archarm|nixos|debian)
-			systemctl start bluetooth
-			systemctl enable bluetooth
-			;;
-	esac
+
+	if [ -d /run/systemd/system ]; then
+		systemctl start bluetooth
+		systemctl enable bluetooth
+	else
+		rc-service bluetooth start
+		rc-update add bluetooth
+	fi
 }
 
 off() {
-	case "$SXMO_OS" in
-		alpine|postmarketos)
-			rc-service bluetooth stop
-			rc-update del bluetooth
-			;;
-		arch|archarm|nixos|debian)
-			systemctl stop bluetooth
-			systemctl disable bluetooth
-			;;
-	esac
+	if [ -d /run/systemd/system ]; then
+		systemctl stop bluetooth
+		systemctl disable bluetooth
+	else
+		rc-service bluetooth stop
+		rc-update del bluetooth
+	fi
 	rfkill block bluetooth
 }
 

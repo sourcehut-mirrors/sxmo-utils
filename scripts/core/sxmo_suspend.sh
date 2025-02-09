@@ -31,14 +31,11 @@ if [ "$SXMO_DEVICE_NAME" = "google,b4s4-sdm670" ]; then #(google pixel 3a)
 	# support. Add a pre-suspend hook to stop HexagonRPCD so it doesn't crash
 	# the ADSP when the device wakes up.
 	#
-	case "$SXMO_OS" in
-		alpine|postmarketos)
-			doas -n rc-service hexagonrpcd-adsp-sensorspd stop
-			;;
-		arch|archarm|nixos|debian)
-			doas -n systemctl stop hexagonrpcd-adsp-sensorspd
-			;;
-	esac
+	if [ -d /run/systemd/system ]; then
+		doas -n systemctl stop hexagonrpcd-adsp-sensorspd
+	else
+		doas -n rc-service hexagonrpcd-adsp-sensorspd stop
+	fi
 fi
 
 sxmo_log "calling suspend with suspend_time <$suspend_time>"

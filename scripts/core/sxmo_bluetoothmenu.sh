@@ -62,14 +62,11 @@ _device_list() {
 }
 
 _restart_bluetooth() {
-	case "$SXMO_OS" in
-		alpine|postmarketos)
-			doas rc-service bluetooth restart
-			;;
-		arch|archarm|nixos)
-			doas systemctl restart bluetooth
-			;;
-	esac
+	if [ -d /run/systemd/system ]; then
+		doas systemctl restart bluetooth
+	else
+		doas rc-service bluetooth restart
+	fi
 }
 
 _full_reconnection() {
