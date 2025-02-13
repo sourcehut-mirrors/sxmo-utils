@@ -52,11 +52,37 @@ timerrun() {
 }
 
 stopwatchrun() {
+	# shellcheck disable=SC2317
+	reset() {
+		start="$(date +%s)"
+		# cursor up, clear, cursor at start of line, time, cursor down
+		printf '\33[1A\33[2K\r%s\n' "$(date -u -d "@$time" +%H:%M:%S)"
+		if [ -n "$sid" ]; then
+			kill "$sid" >/dev/null 2>&1
+		fi
+	}
+	# shellcheck disable=SC2317
+	finish() {
+		jobs -p | xargs -r kill >/dev/null 2>&1
+		wait
+		exit
+	}
+	trap finish INT TERM EXIT
 	start="$(date +%s)"
-	while : ; do
-		time="$(($(date +%s) - start))"
-		printf '%s\r' "$(date -u -d "@$time" +%H:%M:%S)"
-		sxmo_aligned_sleep 1
+	(
+		trap reset USR1
+		while : ; do
+			time="$(($(date +%s) - start))"
+			# clear, cursor at start of line, time
+			printf '\33[2K\r%s' "$(date -u -d "@$time" +%H:%M:%S)"
+			sxmo_aligned_sleep 1 &
+			sid=$!
+			wait
+		done
+	) &
+	jid=$!
+	while read -r _ ; do
+		kill -s USR1 "$jid"
 	done
 }
 
