@@ -161,6 +161,7 @@ write_line_app sic "$icon_msg Sic" "sxmo_terminal.sh sic"
 write_line_app siglo "$icon_clk Siglo" "siglo"
 write_line_app simple-scan "$icon_scn Simple Scan" "simple-scan"
 write_line_app snapshot "$icon_cam Snapshot" "snapshot"
+write_line_app solanum "$icon_pom Solanum" "solanum"
 write_line_app gnome-sound-recorder "$icon_mic Sound Recorder" "gnome-sound-recorder"
 ([ -z "$WAYLAND_DISPLAY" ] && command -v st >/dev/null) && \
 	write_line "$icon_trm St" "st -e $SHELL"

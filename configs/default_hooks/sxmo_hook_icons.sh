@@ -102,6 +102,7 @@ icon_phn="󰏲" #phone
 icon_phx="󰏵" #hangup
 icon_plk="󰏸" # phone locked
 icon_pls=""
+icon_pom="" # pomodoro timer
 icon_prn="" # printer (🖨️)
 icon_prv="" #previous
 icon_pst=""
