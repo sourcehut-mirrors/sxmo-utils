@@ -453,11 +453,7 @@ case "$ACTION" in
 		;;
 	"uptopedge")
 		sxmo_dmenu.sh close
-		if pgrep mako >/dev/null; then
-			makoctl dismiss --all
-		elif pgrep dunst >/dev/null; then
-			dunstctl close-all
-		fi
+		dunstctl close-all
 		exit 0
 		;;
 	"twodownbottomedge")

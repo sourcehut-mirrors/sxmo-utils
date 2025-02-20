@@ -45,17 +45,17 @@ sxmo_hook_statusbar.sh all
 sxmo_jobs.sh start statusbar_periodics sxmo_run_aligned.sh 60 \
 	sxmo_hook_statusbar.sh periodics
 
-# mako/dunst are required for warnings.
+# dunst is required for warnings.
+superctl start dunst
+
 # load some other little things here too.
 case "$SXMO_WM" in
 	sway)
-		superctl start mako
 		superctl start sxmo_wob
 		superctl start sxmo_menumode_toggler
 		superctl start bonsaid
 		;;
 	dwm)
-		superctl start dunst
 		superctl start sxmo_xob
 
 		# Auto hide cursor with touchscreen, Show it with a mouse

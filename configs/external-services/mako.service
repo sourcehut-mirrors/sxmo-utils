@@ -1,7 +1,0 @@
-[Unit]
-Description=lightweight notification daemon for Wayland compositors
-
-[Service]
-Type=simple
-Restart=always
-ExecStart=/usr/bin/mako

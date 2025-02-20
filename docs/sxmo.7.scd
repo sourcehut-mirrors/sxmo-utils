@@ -164,13 +164,10 @@ used.
 	_sxmo_hook_inputhandles.sh_ on presses.
 
 *dunst*
-	_dunst_(1) is our notification daemon for Xorg.
+	_dunst_(1) is our notification daemon.
 
 *geoclue-agent*
 	Proxy location data to map applications. 
-
-*mako*
-	_mako_(1) is our notification daemon for Wayland.
 
 *mmsd-tng*
 	_mmsd-tng_(1) manages incoming MMS messages.
