@@ -5,3 +5,4 @@ Description=Sxmo: watch audio changes and update the status bar
 Type=simple
 Restart=always
 ExecStart=/usr/bin/sxmo_soundmonitor.sh
+RestartSec=1s
