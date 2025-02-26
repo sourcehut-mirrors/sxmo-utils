@@ -313,39 +313,64 @@ set_battery() {
 
 	case "$state" in
 		fully-charged)
-				BATCMP="$icon_bat_c_3"
+				BATCMP="$icon_bat_c_full"
 				;;
 		charging)
-			if [ "$percentage" -lt 25 ]; then
+			if [ "$percentage" -lt 10 ]; then
 				BATCMP="$icon_bat_c_0"
+			elif [ "$percentage" -lt 20 ]; then
+				BATCMP="$icon_bat_c_10"
+			elif [ "$percentage" -lt 30 ]; then
+				BATCMP="$icon_bat_c_20"
+			elif [ "$percentage" -lt 40 ]; then
+				BATCMP="$icon_bat_c_30"
 			elif [ "$percentage" -lt 50 ]; then
-				BATCMP="$icon_bat_c_1"
-			elif [ "$percentage" -lt 75 ]; then
-				BATCMP="$icon_bat_c_2"
+				BATCMP="$icon_bat_c_40"
+			elif [ "$percentage" -lt 60 ]; then
+				BATCMP="$icon_bat_c_50"
+			elif [ "$percentage" -lt 70 ]; then
+				BATCMP="$icon_bat_c_60"
+			elif [ "$percentage" -lt 80 ]; then
+				BATCMP="$icon_bat_c_70"
+			elif [ "$percentage" -lt 90 ]; then
+				BATCMP="$icon_bat_c_80"
+			elif [ "$percentage" -lt 95 ]; then
+				BATCMP="$icon_bat_c_90"
 			else
 				# Treat 'Full' status as same as 'fully-charged'
-				BATCMP="$icon_bat_c_3"
+				fgcolor=green
+				BATCMP="$icon_bat_c_full"
 			fi
 			;;
 		discharging)
-			if [ "$percentage" -lt 25 ]; then
+			if [ "$percentage" -lt 10 ]; then
 				fgcolor=red
-				if [ "$percentage" -lt 5 ]; then
-					BATCMP="$icon_bat_0"
-				elif [ "$percentage" -lt 10 ]; then
-					BATCMP="$icon_bat_1"
-				elif [ "$percentage" -lt 15 ]; then
-					BATCMP="$icon_bat_2"
-				else
-					BATCMP="$icon_bat_3"
-				fi
+				BATCMP="$icon_bat_warning"
+			elif [ "$percentage" -lt 20 ]; then
+				fgcolor=red
+				BATCMP="$icon_bat_10"
+			elif [ "$percentage" -lt 30 ]; then
+				fgcolor=orange
+				BATCMP="$icon_bat_20"
+			elif [ "$percentage" -lt 40 ]; then
+				fgcolor=orange
+				BATCMP="$icon_bat_30"
 			elif [ "$percentage" -lt 50 ]; then
 				fgcolor=orange
-				BATCMP="$icon_bat_1"
-			elif [ "$percentage" -lt 75 ]; then
-				BATCMP="$icon_bat_2"
+				BATCMP="$icon_bat_40"
+			elif [ "$percentage" -lt 60 ]; then
+				BATCMP="$icon_bat_50"
+			elif [ "$percentage" -lt 70 ]; then
+				BATCMP="$icon_bat_60"
+			elif [ "$percentage" -lt 80 ]; then
+				BATCMP="$icon_bat_70"
+			elif [ "$percentage" -lt 90 ]; then
+				BATCMP="$icon_bat_80"
+			elif [ "$percentage" -lt 95 ]; then
+				BATCMP="$icon_bat_90"
 			else
-				BATCMP="$icon_bat_3"
+				# Treat 'Full' status as same as 'fully-charged'
+				BATCMP="$icon_bat_full"
 			fi
 			;;
 	esac
