@@ -2,11 +2,11 @@ sxmo(7)
 
 # NAME
 
-sxmo - a simple X mobile operating system
+sxmo - a simple X mobile interface
 
 # SYNOPSIS
 
-*Sxmo* is a collection of simple and suckless programs and scripts used together
+*Sxmo* is a collection of simple programs and shell scripts used together
 to create a fully functional mobile user interface adhering to the Unix
 philosophy. We focus on Linux smartphones such as the Pinephone. Sxmo is
 primarily written in POSIX shell scripts and can be easily modified, customised
@@ -15,6 +15,9 @@ and extended using our hook system.
 Sxmo provides an interface that is notably different from most other mobile
 interfaces, especially in the degree of customisability, so reading this manual
 is *strongly* recommended.
+
+If you're just looking for a quick getting started guide with videos demonstrating
+various gestures, then check https://sxmo.org/docs/gettingstarted .
 
 # DESCRIPTION
 
@@ -514,7 +517,7 @@ SEE ALSO: _lisgd_(1)
 ## VIRTUAL KEYBOARDS
 
 A virtual keyboard is essential on mobile devices that lack a hardware keyboard.
-We use _svkbd_(1) on Xorg and _wvkbd_(1) on Wayland. They contain layouts
+We use  _wvkbd_(1) on Wayland and _svkbd_(1) on Xorg. They contain layouts
 specialized for mobile devices and suitable for a variety of international
 scripts.
 
@@ -525,7 +528,7 @@ The default hardware key to toggle the keyboard is the volume down button.
 Note that with both svkbd and wvkbd, you decide when the keyboard hides and
 shows. It does not pop up automatically on selection of text input fields.
 
-SEE ALSO: _svkbd_(1) or _wvkbd_(1).
+SEE ALSO: _wvkbd_(1) or _svkbd_(1).
 
 ## HARDWARE KEYBOARD
 
@@ -536,7 +539,7 @@ TODO: Describe dwm/sway bindings?
 
 ## STYLUS
 
-Sxmo relies on _dwm_(1) and _sway_(1) to handle stylus input. You can
+Sxmo relies on  _sway_(1) or _dwm_(1) to handle stylus input. You can
 enable/disable stylus input from the *Config Menu*.
 
 # MENUS
