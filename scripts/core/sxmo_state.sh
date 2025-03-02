@@ -5,8 +5,11 @@
 . sxmo_common.sh
 
 SXMO_STATE="${SXMO_STATE:-$XDG_RUNTIME_DIR/sxmo.state}"
-if command -v peanutbutter > /dev/null; then
+if command -v peanutbutter > /dev/null && [ -n "$WAYLAND_DISPLAY" ]; then
 	#no separate lock stage needed when peanutbutter is used
+	SXMO_STATES="${SXMO_STATES:-unlock screenoff}"
+elif command -v smlock > /dev/null && [ -z "$WAYLAND_DISPLAY" ]; then
+	#no separate lock stage needed when smlock is used
 	SXMO_STATES="${SXMO_STATES:-unlock screenoff}"
 else
 	SXMO_STATES="${SXMO_STATES:-unlock lock screenoff}"
