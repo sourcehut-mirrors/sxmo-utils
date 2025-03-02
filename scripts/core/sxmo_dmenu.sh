@@ -8,9 +8,12 @@
 # Note: Only pass parameters to this script that are unambiguous across all
 # supported implementations! (dmenu, wofi, dmenu), which are only:
 
+# --show-over-lockscreen
 # -p PROMPT
 # -i            (case insensitive)
 
+# -- options need to proceed - options as these are handled by sxmo_dmenu.sh
+# directly.
 
 # include common definitions
 # shellcheck source=scripts/core/sxmo_common.sh
@@ -79,6 +82,12 @@ if [ -n "$WAYLAND_DISPLAY" ]; then
 	fi
 fi
 
+# Need to pass any options first before menu args
+if [ "$1" = "--show-over-lockscreen" ]; then
+	SHOW_OVER_LOCKSCREEN_FLAG=1
+	shift
+fi
+
 if [ -n "$WAYLAND_DISPLAY" ] || [ -n "$DISPLAY" ]; then
 	case "$SXMO_MENU" in
 		bemenu)
@@ -101,6 +110,13 @@ if [ -n "$WAYLAND_DISPLAY" ] || [ -n "$DISPLAY" ]; then
 			exit "$returned"
 			;;
 		dmenu)
+			if [ -n "$SHOW_OVER_LOCKSCREEN_FLAG" ]; then
+				# List of screenlockers that are running to check for embedding
+				if pgrep smlock >/dev/null; then
+					set -- "$@" -w smlock
+				fi
+			fi
+			# SXMO_DMENU_OPTS may contain multiple arguments, so we want it to be split.
 			# shellcheck disable=SC2086
 			exec dmenu $SXMO_DMENU_OPTS -l "$(sxmo_rotate.sh isrotated > /dev/null && \
 				printf %s "${SXMO_DMENU_LANDSCAPE_LINES:-5}" || \
