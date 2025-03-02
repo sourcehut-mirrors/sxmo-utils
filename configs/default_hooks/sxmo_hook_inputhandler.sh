@@ -448,7 +448,7 @@ case "$ACTION" in
 		exit 0
 		;;
 	"twodowntopedge")
-		sxmo_dmenu.sh isopen || sxmo_appmenu.sh sys
+		sxmo_hook_quickactions.sh
 		exit 0
 		;;
 	"uptopedge")
