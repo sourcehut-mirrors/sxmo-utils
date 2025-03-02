@@ -183,7 +183,7 @@ EOF
 		PICKED="$(
 			printf "%s\n" "$CHOICES" |
 				cut -d'^' -f1 |
-				sxmo_dmenu.sh -i -p "Incall Menu"
+				sxmo_dmenu.sh --show-over-lockscreen -i -p "Incall Menu"
 		)" || exit
 
 		sxmo_log "Picked is $PICKED"
@@ -239,7 +239,7 @@ incoming_call_menu() {
 		# shellcheck disable=SC2086
 		#  (MENU_OPTS is not quoted because we want to split args here)
 		PICKED="$(
-			cat <<EOF | sxmo_dmenu.sh -i $MENU_OPTS -p "$CONTACTNAME"
+			cat <<EOF | sxmo_dmenu.sh --show-over-lockscreen -i $MENU_OPTS -p "$CONTACTNAME"
 $icon_phn Pickup
 $icon_phx Hangup
 $icon_mut Ignore
