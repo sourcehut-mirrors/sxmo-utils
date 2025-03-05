@@ -19,9 +19,13 @@ do
 	$(rfkill list bluetooth | grep "yes" >/dev/null \
 		&& printf "%s Bluetooth" "$icon_tof" \
 		|| printf "%s Bluetooth" "$icon_ton")
+	$([ "$(playerctl -l)" != "No players found" ] \
+		&& printf "%s Previous" "$icon_arl")
 	$(pacmd list-sink-inputs | grep -c 'state: RUNNING' >/dev/null \
 		&& printf "%s Music" "$icon_pau" \
 		|| printf "%s Music" "$icon_itm")
+	$([ "$(playerctl -l)" != "No players found" ] \
+		&& printf "%s Next" "$icon_arr")
 	$([ "$(brightnessctl -d "white:flash" get)" -gt 0 ] \
 		&& printf "%s Torch" "$icon_ton" \
 		|| printf "%s Torch" "$icon_tof")
@@ -34,7 +38,9 @@ EOF
 	case "$PICKED" in
 		'Close Menu'|'') exit 0 ;;
 		*"Bluetooth") doas sxmo_bluetoothtoggle.sh ;;
+		*"Previous") playerctl previous ;;
 		*"Music") playerctl play-pause ;;
+		*"Next") playerctl next ;;
 		*"Screen Off") sxmo_state.sh set screenoff && exit 0;;
 		*"Torch") sxmo_flashtoggle.sh ;;
 		*"Wifi") doas sxmo_wifitoggle.sh ;;
