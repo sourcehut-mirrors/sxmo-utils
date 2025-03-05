@@ -68,13 +68,17 @@ docs: $(DOCS)
 
 html-docs: $(HTMLDOCS)
 
-test: shellcheck shellspec test_legacy_nerdfont test_status_led
+test: shellcheck shellspec editorconfig test_legacy_nerdfont test_status_led
 
 shellcheck:
 	find . -type f -name '*.sh' -print0 | xargs -0 shellcheck -x --shell=sh
 
 shellspec: ${PROGRAMS}
 	shellspec
+
+# ec is typically provided by the editorconfig-checker package
+editorconfig:
+	ec
 
 test_status_led: programs/sxmo_status_led.test
 	./programs/sxmo_status_led.test
