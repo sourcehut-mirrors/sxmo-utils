@@ -16,7 +16,7 @@ do
 	PICKED="$(grep . <<-EOF | sxmo_dmenu.sh --show-over-lockscreen
 	Close Menu
 	$icon_pwr Screen Off
-	$(rfkill list bluetooth | grep "yes" /dev/null \
+	$(rfkill list bluetooth | grep "yes" >/dev/null \
 		&& printf "%s Bluetooth" "$icon_tof" \
 		|| printf "%s Bluetooth" "$icon_ton")
 	$(pacmd list-sink-inputs | grep -c 'state: RUNNING' >/dev/null \
