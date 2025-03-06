@@ -21,7 +21,7 @@ fi
 
 case "$SXMO_MENU" in
 	dmenu)
-		exec dmenu_run "$@"
+		exec dmenu_path | sxmo_dmenu.sh "$@" | ${SHELL:-"/bin/sh"}
 		;;
 	bemenu)
 		exec bemenu-run "$@"
