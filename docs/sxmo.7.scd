@@ -96,13 +96,12 @@ If you encounter any bugs, want to request features, or have questions. See BUGS
 # INITIALIZATION
 
 Sxmo is typically started via _tinydm_(1), which launches the window manager of
-your choice (_sway_(1) or _dwm_(1)) by invoking _sxmo_winit.sh_ or
-_sxmo_xinit.sh_, respectively. Both scripts wrap around a shared _sxmo_init.sh_.
-The entry points _sxmo_winit.sh_ and _sxmo_xinit.sh_ are represented by
-*.desktop* files in */usr/share/wayland-sessions/* or */usr/share/xsessions*.
-This implies you also can use use any other display manager that reads from
-there. You may want to consider another display manager if your device is a
-multi-user device.
+your choice (_sway_(1), _dwm_(1), or _i3_(1)) by invoking _sxmo_swayinit.sh_,
+_sxmo_dwminit.sh_, or sxmo_i3init.sh respectively. These scripts wrap around a
+shared _sxmo_init.sh_. The entry points are referenced from *.desktop* files in
+*/usr/share/wayland-sessions/* or */usr/share/xsessions*. This means you also
+can use use any other display manager that reads from there. You may want to
+consider another display manager if your device is a multi-user device.
 
 _tinydm_(1) is a tiny automatic login manager for single user machines, meaning
 it has no password prompt. For security we always recommend setting up full disk

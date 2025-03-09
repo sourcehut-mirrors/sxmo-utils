@@ -4,7 +4,7 @@
 
 # This script have to be sourced from other session init scripts.
 # The scripts have to implement envvars, defaults, with_dbus, and cleanup
-# methods. See sxmo_winit.sh as example.
+# methods. See sxmo_swayinit.sh as example.
 
 start() {
 	[ -f "$XDG_STATE_HOME"/sxmo.log ] && mv "$XDG_STATE_HOME"/sxmo.log "$XDG_STATE_HOME"/sxmo.log.old
