@@ -29,8 +29,6 @@ else
 	VERSION := $(shell git -c safe.directory="*" describe --tags)
 endif
 
-OPENRC:=1
-
 CC ?= $(CROSS_COMPILE)gcc
 PROGRAMS = \
 	programs/sxmo_aligned_sleep \
