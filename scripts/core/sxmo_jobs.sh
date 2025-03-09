@@ -43,7 +43,6 @@ stop() {
 				pid="$(cat "$ROOT"/"$id")"
 				kill ${force:+-9} "$pid" 2> /dev/null
 				rm "$ROOT"/"$id"
-				wait "$pid"
 			fi
 			;;
 	esac
