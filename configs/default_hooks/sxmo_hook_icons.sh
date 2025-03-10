@@ -138,6 +138,7 @@ icon_tof=""
 icon_ton=""
 icon_trh="" # trash
 icon_trm='' #terminal
+icon_trn="" # train
 icon_upc="󰁠" #up in circle
 icon_usb="" # usb
 icon_usr="󰀄" # user, avatar
