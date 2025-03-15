@@ -46,6 +46,14 @@ sxmo_type() {
 	sxmo_type.sh -s 200 "$@" # dunno why this is necessary but it sucks without
 }
 
+get_focused_window() {
+	exec 0<<EOF
+$(sxmo_wm.sh focusedwindow -r)
+EOF
+	read -r WMCLASS
+	read -r WMNAME
+}
+
 call_entries() {
 	shown_incall_menu=
 	sxmo_modemcall.sh list_active_calls | while read -r line; do
@@ -70,7 +78,7 @@ call_entries() {
 }
 
 getprogchoices() {
-	RES="$(sxmo_hook_contextmenu.sh "$1")"
+	RES="$(sxmo_hook_contextmenu.sh "$WMCLASS" "$WMNAME")"
 	if [ -n "$RES" ]; then
 		WINNAME="$(printf %s "$RES" | head -n1)"
 		CHOICES="$(printf %s "$RES" | tail -n+2)"
@@ -112,7 +120,7 @@ quit() {
 }
 
 mainloop() {
-	getprogchoices "$@"
+	getprogchoices
 	PICKED="$(
 		printf "%s\n" "$CHOICES" |
 		cut -d'^' -f1 |
@@ -135,16 +143,23 @@ mainloop() {
 	printf 'sxmo_appmenu: Eval: <%s> from picked <%s> with loop <%s>\n' \
 		"$CMD" "$PICKED" "$LOOP" >&2
 
-	if printf %s "$LOOP" | grep -q 1; then
-		eval "$CMD"
-		mainloop "$@"
-	else
-		eval "$CMD"
+	eval "$CMD"
+
+	if ! printf %s "$LOOP" | grep -q 1; then
 		quit
 	fi
 }
 
 # Allow loading from shellspec
 if [ -z "$SHELLSPEC_PATH" ]; then
-	mainloop "$@"
+	if [ $# -gt 0 ] ; then
+		WMCLASS="$1"
+		WMNAME="$2"
+	else
+		get_focused_window
+	fi
+
+	while true; do
+		mainloop
+	done
 fi

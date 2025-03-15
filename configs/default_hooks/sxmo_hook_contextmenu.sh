@@ -11,8 +11,8 @@
 # shellcheck source=configs/default_hooks/sxmo_hook_icons.sh
 . sxmo_hook_icons.sh
 
-XPROPOUT="$(sxmo_wm.sh focusedwindow)"
-WMCLASS="${1:-$(printf %s "$XPROPOUT" | grep app: | cut -d" " -f2- | tr '[:upper:]' '[:lower:]')}"
+WMCLASS="$1"
+WMNAME="$2"
 
 superd_service_isrunning() {
 	superctl status "$1" | grep -q started
@@ -21,12 +21,6 @@ superd_service_isrunning() {
 sxmo_service_isrunning() {
 	sxmo_jobs.sh running "$1" > /dev/null
 }
-
-if [ -z "$XPROPOUT" ]; then
-	sxmo_log "detected no active window, no problem, opening system menu"
-else
-	sxmo_log "opening menu for wmclass $WMCLASS"
-fi
 
 case "$WMCLASS" in
 	scripts)
@@ -214,7 +208,6 @@ case "$WMCLASS" in
 		WINNAME=St
 		;;
 	*foot*|*st*|*terminal*|org.gnome.vte.application|*alacritty*)
-		WMNAME="${1:-$(printf %s "$XPROPOUT" | grep title: | cut -d" " -f2- | tr '[:upper:]' '[:lower:]')}"
 
 		# These git commands only launch the editor.
 		case "$WMNAME" in
@@ -362,8 +355,8 @@ case "$WMCLASS" in
 		*git*)
 			# git am, branch, config, tag (and other commands which launch both).
 			CHOICES="
-				$icon_fil ${PAGER:-less} menu ^ 0 ^ sxmo_appmenu.sh '$WMCLASS ${PAGER:-less}'
-				$icon_edt $EDITOR menu ^ 0 ^ sxmo_appmenu.sh '$WMCLASS $EDITOR'
+				$icon_fil ${PAGER:-less} menu ^ 0 ^ sxmo_appmenu.sh $WMCLASS '${PAGER:-less}'
+				$icon_edt $EDITOR menu ^ 0 ^ sxmo_appmenu.sh $WMCLASS '$EDITOR'
 				$icon_mnu Terminal menu ^ 0 ^ sxmo_appmenu.sh $WMCLASS
 			"
 			WINNAME=git
