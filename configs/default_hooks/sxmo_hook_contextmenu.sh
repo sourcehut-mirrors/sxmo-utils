@@ -458,19 +458,11 @@ case "$WMCLASS" in
 			# Now we fallback to the default terminal menu
 			case "$WMCLASS" in
 				*st*)
-					STSELMODEON="$(
-						printf %s "$XPROPOUT" | grep -E '^_ST_SELMODE.+=' | cut -d= -f2 | tr -d ' '
-					)"
 					CHOICES="
 						$icon_itm Type complete   ^ 0 ^ sxmo_type -M Ctrl -M Shift -k u
+						$icon_itm Toggle Selmode  ^ 0 ^ sxmo_type -M Ctrl -M Shift -k s
 						$icon_cpy Copy complete   ^ 0 ^ sxmo_type -M Ctrl -M Shift -k i
-						$icon_itm Selmode $(
-							[ "$STSELMODEON" = 1 ] &&
-							printf %b "$icon_ton" ||
-							printf %b "$icon_tof"
-							printf %b '^ 0 ^ sxmo_type -M Ctrl -M Shift -k s'
-						)
-						$([ "$STSELMODEON" = 1 ] && echo 'Copy selection ^ 0 ^ sxmo_type -M Ctrl -M Shift -k c')
+						$icon_cpy Copy selection  ^ 0 ^ sxmo_type -M Ctrl -M Shift -k c
 						$icon_pst Paste           ^ 0 ^ sxmo_type -M Ctrl -M Shift -k v
 						$icon_zmi Zoom in         ^ 1 ^ sxmo_type -M Ctrl -M Shift -k Prior
 						$icon_zmo Zoom out        ^ 1 ^ sxmo_type -M Ctrl -M Shift -k Next
