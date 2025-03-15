@@ -11,8 +11,8 @@ cleanly_quit() {
 
 # check if iio-sensor-proxy found a proximity sensor
 dbus-send --system --dest=net.hadess.SensorProxy --print-reply=literal \
-          /net/hadess/SensorProxy org.freedesktop.DBus.Properties.Get \
-          string:net.hadess.SensorProxy string:HasAccelerometer | grep -q 'true' || exit
+	/net/hadess/SensorProxy org.freedesktop.DBus.Properties.Get \
+	string:net.hadess.SensorProxy string:HasAccelerometer | grep -q 'true' || exit
 
 trap 'cleanly_quit' INT TERM EXIT
 
