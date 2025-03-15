@@ -16,9 +16,11 @@ stop_proximity_lock() {
 	sxmo_jobs.sh stop proximity_lock
 }
 
-XPROPOUT="$(sxmo_wm.sh focusedwindow)"
-WMCLASS="$(printf %s "$XPROPOUT" | grep app: | cut -d" " -f2- | tr '[:upper:]' '[:lower:]')"
-WMNAME="$(printf %s "$XPROPOUT" | grep title: | cut -d" " -f2- | tr '[:upper:]' '[:lower:]')"
+exec 0<<EOF
+$(sxmo_wm.sh focusedwindow -r)
+EOF
+read -r WMCLASS
+read -r WMNAME
 
 sxmo_debug "STATE: $(sxmo_state.sh get) ACTION: $ACTION WMCLASS: $WMCLASS WMNAME: $WMNAME"
 
