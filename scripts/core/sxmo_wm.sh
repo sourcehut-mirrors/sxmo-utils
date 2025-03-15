@@ -108,36 +108,24 @@ swayinputevent() {
 	fi
 }
 
-i3focusedwindow() {
-	i3-msg -t get_tree | jq -r '
-		recurse(.nodes[]) |
-		select(.focused == true) |
-		{
-			app_id: (if .app_id != null then
-					.app_id
-				else
-					.window_properties.class
-				end),
-			name: .name,
-		} |
-		select(.app_id != null and .name != null) |
-		"app: " + .app_id, "title: " + .name
-	'
-}
-
 xorgfocusedwindow() {
-	activeoutput="$(xprop -id "$(xdotool getactivewindow 2>/dev/null)" 2>/dev/null)"
-	printf %s "$activeoutput" | \
-		grep ^WM_CLASS | cut -d" " -f3- | cut -d"," -f2 | \
-		xargs printf 'app: %s'
-	printf "\n"
-	printf %s "$activeoutput" | \
-		grep ^WM_NAME | cut -d" " -f3- | cut -d"," -f1 |
-		xargs printf 'title: %s'
+	xprop -id "$(xdotool getactivewindow 2>/dev/null)" 2>/dev/null | awk '
+		/^WM_CLASS/ {
+			sub(/^WM_CLASS[^=]*= ?"[^"]*", "/, "")
+			sub(/"$/, "")
+			class = $0
+		}
+		/^WM_NAME/ {
+			sub(/^WM_NAME[^=]*= ?"/, "")
+			sub(/"$/, "")
+			title = $0
+		}
+		END { printf "%s\n%s\n", class, title }
+	'
 }
 
-swayfocusedwindow() {
-	swaymsg -t get_tree | jq -r '
+ipc_focusedwindow() {
+	jq -r '
 		recurse(.nodes[]) |
 		select(.focused == true) |
 		{
@@ -145,12 +133,35 @@ swayfocusedwindow() {
 					.app_id
 				else
 					.window_properties.class
-				end),
-			name: .name,
+				end) | gsub("\n"; "\\n"),
+			name: (.name | gsub("\n"; "\\n")),
 		} |
 		select(.app_id != null and .name != null) |
-		"app: " + .app_id, "title: " + .name
+		"\(.app_id)\n\(.name)"
 	'
+}
+
+raw_focusedwindow() {
+	case "$SXMO_WM" in
+		dwm) xorgfocusedwindow ;;
+		i3) i3-msg -t get_tree | ipc_focusedwindow ;;
+		sway) swaymsg -t get_tree | ipc_focusedwindow ;;
+	esac
+}
+
+focusedwindow() {
+	if [ "$1" = "-r" ]; then
+		raw_focusedwindow
+	else
+		# This script originally output this format, which is a bit
+		# harder to parse. Keep it for backwards compatibility in case
+		# anyone was using it.
+		raw_focusedwindow | {
+			read -r app
+			read -r title
+			printf "app: %s\ntitle: %s\n" "$app" "$title"
+		}
+	fi
 }
 
 i3paste () {
@@ -399,6 +410,14 @@ xorgtogglebar() {
 
 action="$1"
 shift
+
+case "$action" in
+	focusedwindow)
+		focusedwindow "$@"
+		exit
+		;;
+esac
+
 case "$SXMO_WM" in
 	dwm) "xorg$action" "$@";;
 	*) "$SXMO_WM$action" "$@";;
