@@ -47,6 +47,7 @@ icon_don="" # dot on
 icon_dop="" # dot point
 icon_dot="󰇘" # searching, connecting, etc.
 icon_drw="󰏬" # Drawing tablet
+icon_dsk="󰋊" # hard disk
 icon_ear="" # earpiece
 icon_edt="󰎞" #editor
 icon_ema="" # emacs
