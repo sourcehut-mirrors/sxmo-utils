@@ -386,7 +386,7 @@ case "$ACTION" in
 		exit
 		;;
 	"volup_one")
-		sxmo_appmenu.sh
+		sxmo_appmenu.sh "$WMCLASS" "$WMNAME"
 		exit
 		;;
 	"volup_two")
@@ -446,7 +446,7 @@ case "$ACTION" in
 		exit 0
 		;;
 	"downtopedge")
-		sxmo_dmenu.sh isopen || sxmo_appmenu.sh
+		sxmo_dmenu.sh isopen || sxmo_appmenu.sh "$WMCLASS" "$WMNAME"
 		exit 0
 		;;
 	"twodowntopedge")
