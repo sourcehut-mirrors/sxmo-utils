@@ -104,7 +104,7 @@ if [ -n "$WAYLAND_DISPLAY" ] || [ -n "$DISPLAY" ]; then
 			# (wofi is a bit confused after rotating to horizontal mode though)
 			# shellcheck disable=SC2046
 			#  (not quoted because we want to split args here)
-			wofi $(sxmo_rotate.sh isrotated > /dev/null && echo -W "${SXMO_WOFI_LANDSCAPE_WIDTH:-640}" -H "${SXMO_WOFI_LANDSCAPE_HEIGHT:-200}" -l top) "$@"
+			wofi -k /dev/null $(sxmo_rotate.sh isrotated > /dev/null && echo -W "${SXMO_WOFI_LANDSCAPE_WIDTH:-640}" -H "${SXMO_WOFI_LANDSCAPE_HEIGHT:-200}" -l top) "$@"
 			returned=$?
 			cleanmode
 			exit "$returned"
