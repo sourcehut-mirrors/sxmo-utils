@@ -230,7 +230,7 @@ case "$WMCLASS" in
 						;;
 				esac
 				;;
-			*" sms")
+			*" SMS")
 				case "$ACTION" in
 					*"upbottomedge")
 						number="$(printf %s "$WMNAME" | sed -e 's|^\"||' -e 's|\"$||' | cut -f1 -d' ')"
