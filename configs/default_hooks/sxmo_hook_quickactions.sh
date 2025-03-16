@@ -11,6 +11,19 @@
 
 # WARNING: The menus in this script will be displayed over the lockscreen
 
+player_options() {
+	case "$(playerctl status 2>/dev/null)" in
+		"") ;; # no player found
+		*"Playing"*) cat - <<-EOF
+			$icon_arl Previous
+			$icon_pau Pause
+			$icon_arr Next
+			EOF
+			;;
+		*) printf "%s Play" "$icon_itm" ;;
+	esac
+}
+
 while true
 do
 	PICKED="$(grep . <<-EOF | sxmo_dmenu.sh --show-over-lockscreen
@@ -19,13 +32,7 @@ do
 	$(rfkill list bluetooth | grep "yes" >/dev/null \
 		&& printf "%s Bluetooth" "$icon_tof" \
 		|| printf "%s Bluetooth" "$icon_ton")
-	$([ "$(playerctl -l)" != "No players found" ] \
-		&& printf "%s Previous" "$icon_arl")
-	$(pacmd list-sink-inputs | grep -c 'state: RUNNING' >/dev/null \
-		&& printf "%s Music" "$icon_pau" \
-		|| printf "%s Music" "$icon_itm")
-	$([ "$(playerctl -l)" != "No players found" ] \
-		&& printf "%s Next" "$icon_arr")
+	$(player_options)
 	$([ "$(brightnessctl -d "white:flash" get)" -gt 0 ] \
 		&& printf "%s Torch" "$icon_ton" \
 		|| printf "%s Torch" "$icon_tof")
@@ -39,7 +46,8 @@ EOF
 		'Close Menu'|'') exit 0 ;;
 		*"Bluetooth") doas sxmo_bluetoothtoggle.sh ;;
 		*"Previous") playerctl previous ;;
-		*"Music") playerctl play-pause ;;
+		*"Pause") playerctl pause ;;
+		*"Play") playerctl play ;;
 		*"Next") playerctl next ;;
 		*"Screen Off") sxmo_state.sh set screenoff && exit 0;;
 		*"Torch") sxmo_flashtoggle.sh ;;
