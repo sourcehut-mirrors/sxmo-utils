@@ -8,6 +8,14 @@ LOGDIRNUM="$1"
 
 # Wrap this in a terminal if not already done
 if [ -z "$TERMNAME" ]; then
+	# If it's already open, switch to it.
+	if [ "$SXMO_WM" = "sway" ] && [ -z "$SSH_CLIENT" ]; then
+		regesc_termname="$(echo "$TERMNAME" | sed 's|+|\\+|g')"
+		if swaymsg -q "[title=\"^$regesc_termname\$\"]" focus; then
+			exit 0
+		fi
+	fi
+
 	TERMNAME="$LOGDIRNUM SMS"
 	export TERMNAME
 	exec sxmo_terminal.sh "$0" "$@"
@@ -16,14 +24,6 @@ fi
 # include common definitions
 # shellcheck source=scripts/core/sxmo_common.sh
 . sxmo_common.sh
-
-# If it's already open, switch to it.
-if [ "$SXMO_WM" = "sway" ] && [ -z "$SSH_CLIENT" ]; then
-	regesc_termname="$(echo "$TERMNAME" | sed 's|+|\\+|g')"
-	if swaymsg -q "[title=\"^$regesc_termname\$\"]" focus; then
-		exit 0
-	fi
-fi
 
 mkcontactssedcmd() {
 	pnc find "$LOGDIRNUM" | while read -r NUMBER; do
