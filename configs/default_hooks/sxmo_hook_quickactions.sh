@@ -33,9 +33,11 @@ do
 		&& printf "%s Bluetooth" "$icon_tof" \
 		|| printf "%s Bluetooth" "$icon_ton")
 	$(player_options)
-	$([ "$(brightnessctl -d "white:flash" get)" -gt 0 ] \
-		&& printf "%s Torch" "$icon_ton" \
-		|| printf "%s Torch" "$icon_tof")
+	$(if brightness="$(brightnessctl -d "white:flash" get)"; then
+		printf "%s Flashlight " "$icon_fll"
+		[ "$brightness" -gt 0 ] &&
+			printf %b "$icon_ton" || printf %b "$icon_tof";
+	fi)
 	$(rfkill list wifi | grep "yes" >/dev/null \
 		&& printf "%s Wifi" "$icon_tof" \
 		|| printf "%s Wifi" "$icon_ton")
@@ -50,7 +52,7 @@ EOF
 		*"Play") playerctl play ;;
 		*"Next") playerctl next ;;
 		*"Screen Off") sxmo_state.sh set screenoff && exit 0;;
-		*"Torch") sxmo_flashtoggle.sh ;;
+		*"Flashlight"*) sxmo_flashtoggle.sh ;;
 		*"Wifi") doas sxmo_wifitoggle.sh ;;
 	esac
 done
