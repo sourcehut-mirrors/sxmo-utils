@@ -120,7 +120,7 @@ xorgfocusedwindow() {
 			sub(/"$/, "")
 			title = $0
 		}
-		END { printf "%s\n%s\n", class, title }
+		END { printf "%s\n%s\n", tolower(class), tolower(title) }
 	'
 }
 
@@ -133,8 +133,8 @@ ipc_focusedwindow() {
 					.app_id
 				else
 					.window_properties.class
-				end) | gsub("\n"; "\\n"),
-			name: (.name | gsub("\n"; "\\n")),
+				end) | gsub("\n"; "\\n") | ascii_downcase,
+			name: (.name | gsub("\n"; "\\n") | ascii_downcase),
 		} |
 		select(.app_id != null and .name != null) |
 		"\(.app_id)\n\(.name)"
