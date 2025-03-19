@@ -1127,6 +1127,12 @@ The following variables are used in device profiles, see DEVICES.
 	$VOL_DOWN_ID"*. See for example the
 	sxmo-utils/scripts/deviceprofiles/sxmo_deviceprofile_xiaomi,beryllium.sh
 	file.
+*SXMO_WOFI_SMALLSCREEN* (display)
+	Can be set to 0 on devices like laptops and desktops which do not have a small screen
+	and to 1 on mobile device with smaller screens. On smaller screens, wofi
+	will be configured to more efficiently make use of the screen real estate.
+	[default: 1 or unset]
+
 
 ## ADDING DEVICE_SPECIFIC HOOKS
 

@@ -102,10 +102,15 @@ if [ -n "$WAYLAND_DISPLAY" ] || [ -n "$DISPLAY" ]; then
 		wofi)
 			#let wofi handle the number of lines dynamically
 			# (wofi is a bit confused after rotating to horizontal mode though)
-			# shellcheck disable=SC2046
-			#  (not quoted because we want to split args here)
-			wofi -k /dev/null $(sxmo_rotate.sh isrotated > /dev/null && echo -W "${SXMO_WOFI_LANDSCAPE_WIDTH:-640}" -H "${SXMO_WOFI_LANDSCAPE_HEIGHT:-200}" -l top) "$@"
-			returned=$?
+			if [ "$SXMO_WOFI_SMALLSCREEN" = "0" ]; then
+				wofi -k /dev/null "$@"
+				returned=$?
+			else
+				# shellcheck disable=SC2046
+				#  (not quoted because we want to split args here)
+				wofi -k /dev/null $(sxmo_rotate.sh isrotated > /dev/null && echo -W "${SXMO_WOFI_LANDSCAPE_WIDTH:-640}" -H "${SXMO_WOFI_LANDSCAPE_HEIGHT:-200}" -l top) "$@"
+				returned=$?
+			fi
 			cleanmode
 			exit "$returned"
 			;;
