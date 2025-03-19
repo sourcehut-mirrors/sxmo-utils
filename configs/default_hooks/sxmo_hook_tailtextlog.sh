@@ -8,6 +8,8 @@ LOGDIRNUM="$1"
 
 # Wrap this in a terminal if not already done
 if [ -z "$TERMNAME" ]; then
+	TERMNAME="$LOGDIRNUM SMS"
+
 	# If it's already open, switch to it.
 	if [ "$SXMO_WM" = "sway" ] && [ -z "$SSH_CLIENT" ]; then
 		regesc_termname="$(echo "$TERMNAME" | sed 's|+|\\+|g')"
@@ -16,7 +18,6 @@ if [ -z "$TERMNAME" ]; then
 		fi
 	fi
 
-	TERMNAME="$LOGDIRNUM SMS"
 	export TERMNAME
 	exec sxmo_terminal.sh "$0" "$@"
 fi
