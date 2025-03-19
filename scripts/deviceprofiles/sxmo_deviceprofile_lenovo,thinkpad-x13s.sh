@@ -1,0 +1,6 @@
+#!/bin/sh
+export SXMO_STATES="unlock locker"
+export SXMO_UNLOCK_IDLE_TIME=300
+export SXMO_WORKSPACE_WRAPPING=10
+export SXMO_WOFI_SMALLSCREEN=0
+
