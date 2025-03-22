@@ -29,30 +29,30 @@ do
 	PICKED="$(grep . <<-EOF | sxmo_dmenu.sh --show-over-lockscreen
 	Close Menu
 	$icon_pwr Screen Off
-	$(rfkill list bluetooth | grep "yes" >/dev/null \
-		&& printf "%s Bluetooth" "$icon_tof" \
-		|| printf "%s Bluetooth" "$icon_ton")
+	$icon_bth Bluetooth $(rfkill list bluetooth | grep "yes" >/dev/null \
+		&& printf %b "$icon_tof" \
+		||  printf %b "$icon_ton")
 	$(player_options)
 	$(if brightness="$(brightnessctl -d "white:flash" get)"; then
 		printf "%s Flashlight " "$icon_fll"
 		[ "$brightness" -gt 0 ] &&
 			printf %b "$icon_ton" || printf %b "$icon_tof";
 	fi)
-	$(rfkill list wifi | grep "yes" >/dev/null \
-		&& printf "%s Wifi" "$icon_tof" \
-		|| printf "%s Wifi" "$icon_ton")
+	$icon_wifi_signal_4 Wifi $(rfkill list wifi | grep "yes" >/dev/null \
+		&& printf %b "$icon_tof" \
+		|| printf %b "$icon_ton")
 EOF
 )"
 
 	case "$PICKED" in
 		'Close Menu'|'') exit 0 ;;
-		*"Bluetooth") doas sxmo_bluetoothtoggle.sh ;;
+		*"Bluetooth"*) doas sxmo_bluetoothtoggle.sh ;;
 		*"Previous") playerctl previous ;;
 		*"Pause") playerctl pause ;;
 		*"Play") playerctl play ;;
 		*"Next") playerctl next ;;
 		*"Screen Off") sxmo_state.sh set screenoff && exit 0;;
 		*"Flashlight"*) sxmo_flashtoggle.sh ;;
-		*"Wifi") doas sxmo_wifitoggle.sh ;;
+		*"Wifi"*) doas sxmo_wifitoggle.sh ;;
 	esac
 done
