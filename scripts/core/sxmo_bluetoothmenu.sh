@@ -129,7 +129,7 @@ toggle_connection() {
 			spawn bluetoothctl -a NoInputNoOutput
 			send -- "select $controller\r"
 			send -- "disconnect $mac\r"
-			expect "Successful disconnected"
+			expect "Disconnection successful"
 			send -- "exit\r"
 			wait
 		EOF
@@ -228,7 +228,7 @@ device_loop() {
 					spawn bluetoothctl -a NoInputNoOutput
 					send -- "select $controller\r"
 					send -- "disconnect $mac\r"
-					expect "Successful disconnected"
+					expect "Disconnection successful"
 					send -- "exit\r"
 					wait
 				EOF
