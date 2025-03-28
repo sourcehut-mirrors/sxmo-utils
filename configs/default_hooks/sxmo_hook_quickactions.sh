@@ -27,7 +27,7 @@ player_options() {
 while true
 do
 	PICKED="$(grep . <<-EOF | sxmo_dmenu.sh --show-over-lockscreen
-	Close Menu
+	$icon_cls Close Menu
 	$icon_pwr Screen Off
 	$icon_bth Bluetooth $(rfkill list bluetooth | grep "yes" >/dev/null \
 		&& printf %b "$icon_tof" \
@@ -45,7 +45,7 @@ EOF
 )"
 
 	case "$PICKED" in
-		'Close Menu'|'') exit 0 ;;
+		*'Close Menu'|'') exit 0 ;;
 		*"Bluetooth"*) doas sxmo_bluetoothtoggle.sh ;;
 		*"Previous") playerctl previous ;;
 		*"Pause") playerctl pause ;;
