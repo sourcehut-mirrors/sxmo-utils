@@ -207,7 +207,7 @@ case "$WMCLASS" in
 		"
 		WINNAME=St
 		;;
-	*foot*|*st*|*terminal*|org.gnome.vte.application|*alacritty*)
+	*foot*|st|st-*|*terminal*|org.gnome.vte.application|*alacritty*)
 
 		# These git commands only launch the editor.
 		case "$WMNAME" in
@@ -450,7 +450,7 @@ case "$WMCLASS" in
 		*)
 			# Now we fallback to the default terminal menu
 			case "$WMCLASS" in
-				*st*)
+				st|st-*)
 					CHOICES="
 						$icon_itm Type complete   ^ 0 ^ sxmo_type -M Ctrl -M Shift -k u
 						$icon_itm Toggle Selmode  ^ 0 ^ sxmo_type -M Ctrl -M Shift -k s
