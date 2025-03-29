@@ -12,6 +12,7 @@
 # note that you should *not* use glyphs in range U+F500 - U+FD46 as these wont render.
 # this is a known bug in nerdfonts: https://github.com/ryanoasis/nerd-fonts/issues/365
 
+icon_2fa="󰦯" # authenticaton
 icon_a2x="⇄"
 icon_a2y="⇅"
 icon_ac1="↖"
@@ -25,6 +26,7 @@ icon_arr="→"
 icon_aru="↑"
 icon_att=""
 icon_audio="♫"
+icon_bag="" # shopping bag
 icon_bel=""
 icon_bok=""
 icon_brightness="󰃝"
@@ -51,6 +53,7 @@ icon_dsk="󰋊" # hard disk
 icon_ear="" # earpiece
 icon_edt="󰎞" #editor
 icon_ema="" # emacs
+icon_emj="" # emoji, smiley
 icon_eml="󰇮" #email
 icon_exp="󰁌" #expand
 icon_fbw=""
@@ -103,6 +106,7 @@ icon_pau=""
 icon_phl="󰏹" #phonelog
 icon_phn="󰏲" #phone
 icon_phx="󰏵" #hangup
+icon_pie="" # pie chart
 icon_plk="󰏸" # phone locked
 icon_pls=""
 icon_pom="" # pomodoro timer
@@ -154,6 +158,7 @@ icon_wn2=""
 icon_wrh=""
 icon_wtr="" #weather
 icon_ytb="" #youtube
+icon_zip="󰗄" # archive
 icon_zmi="󰛭" # Zoom in/magnify
 icon_zmo="󰛬" # Zoom out/demagnify
 icon_zzz="" #sleep/suspend/crust
