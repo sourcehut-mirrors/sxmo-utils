@@ -1131,7 +1131,7 @@ The following variables are used in device profiles, see DEVICES.
 	Can be set to 0 on devices like laptops and desktops which do not have a small screen
 	and to 1 on mobile device with smaller screens. On smaller screens, wofi
 	will be configured to more efficiently make use of the screen real estate.
-	[default: 1 or unset]
+	\[default: 1 or unset]
 
 
 ## ADDING DEVICE_SPECIFIC HOOKS
