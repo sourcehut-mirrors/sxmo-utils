@@ -51,11 +51,12 @@ _sxmo_find_runtime_dir() {
 
 	# Try something existing
 	for root in /run /var/run; do
-		path="$root/user/$(id -u)"
-		if [ -d "$path" ] && [ -w "$path" ]; then
-			printf %s "$path"
-			return
-		fi
+		for path in "$root/user-$(id -u)" "$root/user/$(id -u)"; do
+			if [ -d "$path" ] && [ -w "$path" ]; then
+				printf %s "$path"
+				return
+			fi
+		done
 	done
 
 	if command -v mkrundir > /dev/null 2>&1; then
