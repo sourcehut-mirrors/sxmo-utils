@@ -34,41 +34,21 @@ if [ -z "$SXMO_MENU" ]; then
 	esac
 fi
 
+# Need to pass any options first before menu args
 case "$1" in
-	isopen)
-		case "$SXMO_MENU" in
-			bemenu)
-				exec pgrep bemenu >/dev/null
-				;;
-			wofi)
-				exec pgrep wofi >/dev/null
-				;;
-			dmenu)
-				exec pgrep dmenu >/dev/null
-				;;
-		esac
+	"--show-over-lockscreen")
+		SHOW_OVER_LOCKSCREEN_FLAG=1
+		shift
 		;;
-	close)
-		case "$SXMO_MENU" in
-			bemenu)
-				if ! pgrep bemenu >/dev/null; then
-					exit
-				fi
-				exec pkill bemenu >/dev/null
-				;;
-			wofi)
-				if ! pgrep wofi >/dev/null; then
-					exit
-				fi
-				exec pkill wofi >/dev/null
-				;;
-			dmenu)
-				if ! pgrep dmenu >/dev/null; then
-					exit
-				fi
-				exec pkill dmenu >/dev/null
-				;;
-		esac
+	"isopen")
+		exec pgrep "$SXMO_MENU" >/dev/null
+		;;
+	"close")
+		if pgrep "$SXMO_MENU" >/dev/null; then
+			exec pkill "$SXMO_MENU" >/dev/null
+		else
+			exit
+		fi
 		;;
 esac
 
@@ -93,12 +73,6 @@ if [ -n "$WAYLAND_DISPLAY" ]; then
 			fi
 			;;
 	esac
-fi
-
-# Need to pass any options first before menu args
-if [ "$1" = "--show-over-lockscreen" ]; then
-	SHOW_OVER_LOCKSCREEN_FLAG=1
-	shift
 fi
 
 wofi_wrapper() {
