@@ -235,3 +235,5 @@ bindsym Print exec sxmo_screenshot.sh
 bindsym button2 kill
 
 exec i3 --get-socketpath > "$XDG_RUNTIME_DIR"/sxmo.i3sock
+
+# vim: ft=i3config
