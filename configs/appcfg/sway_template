@@ -237,13 +237,13 @@ titlebar_border_thickness 3
 hide_edge_borders smart
 
 # Need playerctl installed and running
-bindsym XF86AudioPlay exec playerctl play-pause
-bindsym XF86AudioStop exec playerctl stop
-bindsym XF86AudioNext exec playerctl next
-bindsym XF86AudioPrev exec playerctl previous
+bindsym --locked XF86AudioPlay exec playerctl play-pause
+bindsym --locked XF86AudioStop exec playerctl stop
+bindsym --locked XF86AudioNext exec playerctl next
+bindsym --locked XF86AudioPrev exec playerctl previous
 
-bindsym XF86MonBrightnessUp exec sxmo_brightness.sh up
-bindsym XF86MonBrightnessDown exec sxmo_brightness.sh down
+bindsym --locked XF86MonBrightnessUp exec sxmo_brightness.sh up
+bindsym --locked XF86MonBrightnessDown exec sxmo_brightness.sh down
 
 bindsym Print exec sxmo_screenshot.sh
 
