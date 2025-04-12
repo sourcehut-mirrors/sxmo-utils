@@ -238,6 +238,7 @@ hide_edge_borders smart
 
 # Need playerctl installed and running
 bindsym --locked XF86AudioPlay exec playerctl play-pause
+bindsym --locked XF86AudioPause exec playerctl play-pause
 bindsym --locked XF86AudioStop exec playerctl stop
 bindsym --locked XF86AudioNext exec playerctl next
 bindsym --locked XF86AudioPrev exec playerctl previous
