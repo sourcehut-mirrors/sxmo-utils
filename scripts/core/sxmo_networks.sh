@@ -276,7 +276,7 @@ EOF
 		)" || exit
 
 		case "$CHOICE" in
-			*"Close Menu" )
+			""|*"Close Menu" )
 				exit
 				;;
 			*"Add a GSM Network" )
