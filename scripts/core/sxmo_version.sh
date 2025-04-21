@@ -31,6 +31,11 @@ case "$SXMO_WM" in
 		;;
 esac
 
+if [ -d /run/systemd/system ]; then
+	systemctl --version
+else
+	echo "no systemD"
+fi
 printf "superd "
 /usr/bin/superctl --version
 pactl info
