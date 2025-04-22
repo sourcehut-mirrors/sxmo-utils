@@ -10,6 +10,10 @@ packages:
   - scd2html
 sources:
   - https://git.sr.ht/~mil/sxmo-utils
+triggers:
+  - action: email
+    condition: failure
+    to: "maintainers@sxmo.org"
 tasks:
   - test: |
       cd sxmo-utils
