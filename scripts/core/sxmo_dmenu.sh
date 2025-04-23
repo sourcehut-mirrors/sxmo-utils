@@ -115,6 +115,17 @@ if [ -n "$WAYLAND_DISPLAY" ] || [ -n "$DISPLAY" ]; then
 			exit "$returned"
 			;;
 		dmenu)
+			# i3 and bspwm need the return focus as this commit 1d21a2d6 in sxmo-dmenu
+			# causes the event to be consumed by dmenu and not used to return focus
+			# dwm doesn't get affected by it.
+			# How to reproduce: use sxmo_dmenu.sh whilst looking at a terminal window.
+			# After it will show unfocused, firefox was also affected.
+			# Standard dmenu isn't affected by this, unsure how to fix.
+			FOCUSED_WINDOW=$(xdotool getwindowfocus)
+			ID=$(xprop -id "$FOCUSED_WINDOW" WM_CLASS)
+			case "$ID" in
+				*"dmenu"*|*"not found"*) FOCUSED_WINDOW= ;;
+			esac
 			if [ -n "$SHOW_OVER_LOCKSCREEN_FLAG" ]; then
 				# List of screenlockers that are running to check for embedding
 				if pgrep smlock >/dev/null; then
@@ -123,9 +134,17 @@ if [ -n "$WAYLAND_DISPLAY" ] || [ -n "$DISPLAY" ]; then
 			fi
 			# SXMO_DMENU_OPTS may contain multiple arguments, so we want it to be split.
 			# shellcheck disable=SC2086
-			exec dmenu $SXMO_DMENU_OPTS -l "$(sxmo_rotate.sh isrotated > /dev/null && \
+			dmenu $SXMO_DMENU_OPTS -l "$(sxmo_rotate.sh isrotated > /dev/null && \
 				printf %s "${SXMO_DMENU_LANDSCAPE_LINES:-5}" || \
 				printf %s "${SXMO_DMENU_PORTRAIT_LINES:-12}")" "$@"
+			EXIT_STATUS="$?"
+			case "$FOCUSED_WINDOW" in
+				"") exit "$EXIT_STATUS" ;;
+				*)
+					xdotool windowfocus "$FOCUSED_WINDOW"
+					exit "$EXIT_STATUS"
+
+			esac
 			;;
 	esac
 else
