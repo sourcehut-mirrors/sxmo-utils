@@ -1356,8 +1356,9 @@ We have the following support channels for questions and bug reports:
 	stay around for answers when asking questions. A web-based chat is available
 	via https://webchat.oftc.net/?channels=#sxmo
 
-*#otfc#sxmo:matrix.org* (Matrix)
-	This is a Matrix bridge to the IRC chat. See https://matrix.to/#/#\_oftc\_#sxmo:matrix.org .
+*#sxmo:postmarketos.org* (Matrix)
+	This is a Matrix channel which is bridged to the IRC chat. See
+	https://matrix.to/#/#sxmo:postmarketos.org .
 
 *PostmarketOS Wiki* (web)
 	The postmarketOS Wiki contains user-maintained Tips & Tricks pages for Sxmo
