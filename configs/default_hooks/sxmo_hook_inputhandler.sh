@@ -142,7 +142,7 @@ case "$WMCLASS" in
 				;;
 		esac
 		;;
-	*"firefox"*)
+	*"firefox"*|*"librewolf"*)
 		case "$ACTION" in
 			# you're probably dragging the scrollbar
 			*"uprightedge") exit 0 ;;
