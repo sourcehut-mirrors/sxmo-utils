@@ -8,6 +8,7 @@ superctl stop sxmo_soundmonitor
 superctl stop wireplumber
 superctl stop pipewire-pulse
 superctl stop pipewire
+pkill mpv
 
 # give pipewire time
 sleep 5s
