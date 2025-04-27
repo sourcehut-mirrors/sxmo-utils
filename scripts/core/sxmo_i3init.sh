@@ -29,12 +29,12 @@ defaults() {
 
 defaultkeyboard() {
 	if command -v svkbd-mobile-intl >/dev/null; then
-		export KEYBOARD=svkbd-mobile-intl
+		export KEYBOARD="svkbd-mobile-intl -d"
 	elif command -v svkbd-mobile-plain >/dev/null; then
-		export KEYBOARD=svkbd-mobile-plain
+		export KEYBOARD="svkbd-mobile-plain -d"
 	else
 		#legacy
-		export KEYBOARD=svkbd-sxmo
+		export KEYBOARD="svkbd-sxmo -d"
 	fi
 }
 
