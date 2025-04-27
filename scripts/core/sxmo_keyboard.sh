@@ -12,7 +12,7 @@ isopen() {
 	fi
 	case "$KEYBOARD" in
 		'onboard') dbus-send --type=method_call --print-reply --dest=org.onboard.Onboard /org/onboard/Onboard/Keyboard org.freedesktop.DBus.Properties.Get string:"org.onboard.Onboard.Keyboard" string:"Visible" || exit 0 ;;
-		*) pidof "$KEYBOARD" > /dev/null ;;
+		*) sxmo_jobs.sh running sxmo_keyboard > /dev/null ;;
 	esac
 }
 
@@ -24,9 +24,7 @@ open() {
 		case "$KEYBOARD" in
 			'onboard') dbus-send --type=method_call --print-reply --dest=org.onboard.Onboard /org/onboard/Onboard/Keyboard org.onboard.Onboard.Keyboard.Show ;;
 			*)
-				#Note: KEYBOARD_ARGS is not quoted by design as it may includes a pipe and further tools
-				# shellcheck disable=SC2086
-				isopen || eval "$KEYBOARD" $KEYBOARD_ARGS >> "${XDG_STATE_HOME:-$HOME}"/sxmo.log 2>&1 &
+				isopen || sxmo_jobs.sh start --group sxmo_keyboard sh -c "$KEYBOARD $KEYBOARD_ARGS" &
 			;;
 		esac
 	fi
@@ -36,7 +34,7 @@ close() {
 	if [ -n "$KEYBOARD" ]; then # avoid killing everything !
 		case "$KEYBOARD" in
 			'onboard') dbus-send --type=method_call --print-reply --dest=org.onboard.Onboard /org/onboard/Onboard/Keyboard org.onboard.Onboard.Keyboard.Hide ;;
-			*) pkill -f "$KEYBOARD" ;;
+			*) sxmo_jobs.sh stop sxmo_keyboard ;;
 		esac
 	fi
 }
