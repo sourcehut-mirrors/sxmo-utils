@@ -38,12 +38,17 @@ stop() {
 			done
 			;;
 		*)
-			if [ -f "$ROOT/$id" ]; then
+			if [ -f "$ROOT/$id.group" ]; then
+				sxmo_debug "stop group $id"
+				pid="$(cat "$ROOT/$id.group")"
+				kill ${force:+-9} -- "-$pid" 2> /dev/null
+			elif [ -f "$ROOT/$id" ]; then
 				sxmo_debug "stop $id"
 				pid="$(cat "$ROOT"/"$id")"
 				kill ${force:+-9} "$pid" 2> /dev/null
-				rm "$ROOT"/"$id"
 			fi
+
+			rm "$ROOT/$id" "$ROOT/$id.group" 2>/dev/null || true
 			;;
 	esac
 }
@@ -65,6 +70,10 @@ start() {
 				no_restart=1
 				shift
 				;;
+			--group)
+				has_group=1
+				shift
+				;;
 			*)
 				id="$1"
 				shift
@@ -72,6 +81,12 @@ start() {
 				;;
 		esac
 	done
+
+	if [ -n "$has_group" ]; then
+		groupfile="$ROOT/$id.group"
+	else
+		groupfile="/dev/null"
+	fi
 
 	if [ -f "$ROOT/$id" ]; then
 		if [ -n "$no_restart" ]; then
@@ -83,13 +98,16 @@ start() {
 	fi
 
 	sxmo_debug "start $id"
-	(
-		# We need a subshell so we can close the lock fd, without
-		# releasing the lock
+	# yes we know expressions don't expand, we want that to be done in the
+	# nested shell
+	# shellcheck disable=SC2016
+	setsid sh -c '
 		exec 3<&-
-		"$@" &
-		printf "%s\n" "$!" > "$ROOT"/"$id"
-	)
+		echo $$ > "$1"
+		cat /proc/self/stat | cut -d" " -f 6 > "$2"
+		shift 2
+		exec "$@"
+	' sh "$ROOT/$id" "$groupfile" "$@" &
 }
 
 running() {
