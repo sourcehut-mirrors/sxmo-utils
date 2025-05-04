@@ -154,6 +154,7 @@ icon_usr="󰀄" # user, avatar
 icon_vid="" #video
 icon_vim=''
 icon_vlc="󰕼"
+icon_wap="" # whatsapp
 icon_wif=""
 icon_wfo="󰖪" # wifi off
 icon_wfh="󰀂" # wifi hotspot
