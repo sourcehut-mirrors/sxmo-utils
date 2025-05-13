@@ -28,12 +28,14 @@ fi
 # Load our sound daemons
 
 if [ -z "$SXMO_NO_AUDIO" ]; then
-	if [ "$(command -v pulseaudio)" ]; then
-		superctl start pulseaudio
-	elif [ "$(command -v pipewire)" ]; then
-		# pipewire-pulse will start pipewire
-		superctl start pipewire-pulse
-		superctl start wireplumber
+	if [ -d /run/systemd/system ]; then
+		if [ "$(command -v pulseaudio)" ]; then
+			superctl start pulseaudio
+		elif [ "$(command -v pipewire)" ]; then
+			# pipewire-pulse will start pipewire
+			superctl start pipewire-pulse
+			superctl start wireplumber
+		fi
 	fi
 
 	# monitor for headphone for statusbar
