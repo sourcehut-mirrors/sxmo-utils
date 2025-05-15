@@ -24,7 +24,7 @@ open() {
 		case "$KEYBOARD" in
 			'onboard') dbus-send --type=method_call --print-reply --dest=org.onboard.Onboard /org/onboard/Onboard/Keyboard org.onboard.Onboard.Keyboard.Show ;;
 			*)
-				isopen || sxmo_jobs.sh start --group sxmo_keyboard sh -c "$KEYBOARD $KEYBOARD_ARGS" &
+				sxmo_jobs.sh start --group sxmo_keyboard sh -c "$KEYBOARD $KEYBOARD_ARGS" &
 			;;
 		esac
 	fi
@@ -40,7 +40,8 @@ close() {
 }
 
 if [ "$1" = "toggle" ]; then
-	close || open
+	#shellcheck disable=SC2015
+	isopen && close || open
 elif [ "$1" = "close" ]; then
 	if isopen; then
 		close
@@ -48,5 +49,5 @@ elif [ "$1" = "close" ]; then
 elif [ "$1" = "isopen" ]; then
 	isopen || exit 1
 else
-	open
+	isopen || open
 fi
