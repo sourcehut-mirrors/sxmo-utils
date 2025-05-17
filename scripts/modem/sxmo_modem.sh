@@ -8,6 +8,11 @@
 # shellcheck source=scripts/core/sxmo_common.sh
 . sxmo_common.sh
 
+if [ -z "$XDG_RUNTIME_DIR" ]; then
+	echo "XDG_RUNTIME_DIR must be set" >&2
+	exit 1
+fi
+
 # We use this directory to store states, so it must exist
 mkdir -p "$XDG_RUNTIME_DIR/sxmo_calls"
 
@@ -31,7 +36,7 @@ cleanupnumber() {
 }
 
 checkforfinishedcalls() {
-	exec 3<> "${XDG_RUNTIME_DIR:-HOME}/sxmo_modem.checkforfinishedcalls.lock"
+	exec 3<> "$XDG_RUNTIME_DIR/sxmo_modem.checkforfinishedcalls.lock"
 	flock -x 3
 	#find all finished calls
 	for FINISHEDCALLID in $(
@@ -193,7 +198,7 @@ checkforstucksms() {
 }
 
 checkfornewtexts() {
-	exec 3<> "${XDG_RUNTIME_DIR:-HOME}/sxmo_modem.checkfornewtexts.lock"
+	exec 3<> "$XDG_RUNTIME_DIR/sxmo_modem.checkfornewtexts.lock"
 	flock -x 3
 	TEXTIDS="$(
 		mmcli -m any --messaging-list-sms |
