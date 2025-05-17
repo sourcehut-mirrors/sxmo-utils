@@ -11,11 +11,6 @@
 # shellcheck source=scripts/core/sxmo_common.sh
 . sxmo_common.sh
 
-info() {
-	sxmo_log "$*"
-	printf "%s\n" "$*" # some functions run from commandline
-}
-
 # We attempt to delete all objects from mmsd-tng after we receive/send them.
 # However, sometimes (e.g., a crash) there are stuck or "lost" mms, i.e.,
 # mmsd-tng still has objects in its database.  Often mmsd-tng will resolve this
@@ -24,7 +19,7 @@ info() {
 checkforlostmms() {
 	# generate a list of all messages on the server
 	if ! RES="$(dbus-send --dest=org.ofono.mms --print-reply /org/ofono/mms/modemmanager org.ofono.mms.Service.GetMessages)"; then
-		info "mmsdtng is busy or something is broken."
+		sxmo_log "mmsdtng is busy or something is broken."
 		return 1
 	fi
 
@@ -38,33 +33,33 @@ checkforlostmms() {
 	# received
 	if [ "$count" -gt 0 ]; then
 		sxmo_notify_user.sh "WARNING: Found $count unprocessed mms. Run $0 checkforlostmms --force to process them."
-		info "Found the following $count unprocessed mms:"
+		sxmo_log "Found the following $count unprocessed mms:"
 		while read -r line; do
 			MESSAGE_STATUS="$(mmsctl -M -o "/org/ofono/mms/modemmanager/$line" | jq -r '.attrs.Status')"
 			case "$MESSAGE_STATUS" in
 				sent|received)
-					info "* $line (status:$MESSAGE_STATUS)."
+					sxmo_log "* $line (status:$MESSAGE_STATUS)."
 					if [ "$1" = "--force" ]; then
-						info "Processing."
+						sxmo_log "Processing."
 						processmms "/org/ofono/mms/modemmanager/$line"
 					fi
 					;;
 				draft|expired)
-					info "* $line (status:$MESSAGE_STATUS)."
+					sxmo_log "* $line (status:$MESSAGE_STATUS)."
 					if [ "$1" = "--force" ]; then
-						info "Deleting."
+						sxmo_log "Deleting."
 						dbus-send --dest=org.ofono.mms --print-reply "/org/ofono/mms/modemmanager/$line" org.ofono.mms.Message.Delete
 					fi
 					;;
 				*)
-					info "* $line (status:$MESSAGE_STATUS). WARNING: UNKNOWN STATUS!"
+					sxmo_log "* $line (status:$MESSAGE_STATUS). WARNING: UNKNOWN STATUS!"
 					;;
 			esac
 		done < "$ALL_MMS_TEMP"
 		if [ "$1" = "--force" ]; then
-			info "Finished."
+			sxmo_log "Finished."
 		else
-			info "Run $0 checkforlostmms --force to process (if sent or received) or delete (if expired or draft)."
+			sxmo_log "Run $0 checkforlostmms --force to process (if sent or received) or delete (if expired or draft)."
 		fi
 	fi
 	rm "$ALL_MMS_TEMP"
