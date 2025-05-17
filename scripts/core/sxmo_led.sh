@@ -20,7 +20,12 @@ blink_leds() {
 
 [ -z "$SXMO_DISABLE_LEDS" ] || exit 1
 
-exec 3<> "${XDG_RUNTIME_DIR:-$HOME}/sxmo.led.lock"
+if [ -z "$XDG_RUNTIME_DIR" ]; then
+	echo "XDG_RUNTIME_DIR must be set" >&2
+	exit 1
+fi
+
+exec 3<> "$XDG_RUNTIME_DIR/sxmo.led.lock"
 
 cmd="$1"
 shift
