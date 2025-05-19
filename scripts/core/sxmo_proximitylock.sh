@@ -11,7 +11,7 @@
 finish() {
 	sxmo_wakelock.sh unlock sxmo_proximity_lock_running
 	sxmo_state.sh restore "$storeid"
-	exit
+	pkill -P $$
 }
 
 near() {
@@ -26,25 +26,28 @@ far() {
 
 trap 'finish' TERM INT EXIT
 
+# check if iio-sensor-proxy found a proximity sensor
+dbus-send --system --dest=net.hadess.SensorProxy --print-reply=literal \
+	/net/hadess/SensorProxy org.freedesktop.DBus.Properties.Get \
+	string:net.hadess.SensorProxy string:HasProximity | grep -q 'true' || exit
+
 sxmo_wakelock.sh lock sxmo_proximity_lock_running infinite
 
-# find the device
-if [ -z "$SXMO_PROX_RAW_BUS" ]; then
-	prox_raw_bus="$(find /sys/devices/platform -name 'in_proximity_raw' | head -n1)"
-else
-	prox_raw_bus="$SXMO_PROX_RAW_BUS"
-fi
-
 storeid="$(sxmo_state.sh store)"
+last=far
 
-while : ; do
-	value="$(cat "$prox_raw_bus")"
-	if [ "$value" -gt 100 ] && [ "$last" != "near" ]; then
-		near
-		last=near
-	elif [ "$value" -lt 100 ] && [ "$last" != "far" ]; then
-		far
-		last=far
+monitor-sensor --proximity | while read -r line; do
+	if echo "$line" | grep -q ".*Proximity value.*1"; then
+		if "$last" != "near"; then
+			near
+			last=near
+		fi
+	elif echo "$line" | grep -q ".*Proximity value.*0"; then
+		if "$last" != "far"; then
+			far
+			last=far
+		fi
 	fi
-	sleep 0.5
-done
+done &
+
+wait
