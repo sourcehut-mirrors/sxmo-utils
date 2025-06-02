@@ -28,7 +28,7 @@ fi
 # Load our sound daemons
 
 if [ -z "$SXMO_NO_AUDIO" ]; then
-	if [ -d /run/systemd/system ]; then
+	if ! [ -d /run/systemd/system ]; then
 		if [ "$(command -v pulseaudio)" ]; then
 			superctl start pulseaudio
 		elif [ "$(command -v pipewire)" ]; then
