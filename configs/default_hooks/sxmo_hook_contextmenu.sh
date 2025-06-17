@@ -41,7 +41,7 @@ case "$WMCLASS" in
 				superd_service_isrunning sxmo_modemmonitor &&
 				printf %b "$icon_ton ^ 1 ^ superctl stop sxmo_modemmonitor" ||
 				printf %b "$icon_tof ^ 1 ^ superctl start sxmo_modemmonitor"
-			) && sxmo_hook_statusbar.sh modem_monitor
+			) && sxmo_hook_statusbar.sh modem
 			$icon_wrh Restart System Daemons     ^ 1 ^ sxmo_hook_restart_modem_daemons.sh && sxmo_hook_statusbar.sh modem
 			$icon_inf Modem Info                 ^ 0 ^ sxmo_modeminfo.sh
 			$icon_phl Modem Log                  ^ 0 ^ sxmo_modemlog.sh
