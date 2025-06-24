@@ -12,11 +12,10 @@ AUDIOONLY=0
 youtubesearch() {
 	QUERY="$1"
 	youtube-cli "$QUERY" |
-		grep -Ev '^(Channelid|Atom feed|Channel title|Published|Viewcount|Userid):' |
-		sed -E 's/^(URL|Duration):\s+/\t/g' |
-		tr -d '\n' |
-		sed 's/===/\n/g' |
-		gawk -F'\t' '{ print $3 " " $1 " " $2}'
+		grep -Ev '^(Channel|Published|Views):' |
+		sed -E 's/^URL:\s+/\t/g' |
+		awk '{$1=$1};1' |
+		paste - - -
 }
 
 searchmenu() {
