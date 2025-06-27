@@ -37,6 +37,22 @@ mode "menu" {
     bindsym XF86AudioLowerVolume exec wtype -k Down
 }
 
+# Mode specifically for use with Nokia N900 hardware keyboard
+mode "N900" {
+    # follow the standard sxmo keybinds as far as possible
+    bindsym t exec $term; mode "default"
+    bindsym q mode "default"
+    bindsym Shift+p exec sxmo_appmenu.sh sys; mode "default"
+    bindsym p exec sxmo_appmenu.sh; mode "default"
+    bindsym d exec $menu; mode "default"
+    bindsym Shift+q kill; mode "default"
+    bindsym i exec sxmo_wmmenu.sh windowswitcher; mode "default"
+    bindsym Shift+c reload; mode "default"
+    bindsym f fullscreen; mode "default"
+    bindsym Shift+space floating toggle; mode "default"
+    bindsym a focus parent; mode "default"
+}
+
 ### Key bindings
 #
 # Basics:
@@ -245,6 +261,13 @@ bindsym --locked XF86AudioPrev exec playerctl previous
 
 bindsym --locked XF86MonBrightnessUp exec sxmo_brightness.sh up
 bindsym --locked XF86MonBrightnessDown exec sxmo_brightness.sh down
+
+# Nokia N900-specific key bindings:
+# 1. Bind lock key (XF86ScreenSaver)
+#      Use keycode due to https://github.com/swaywm/sway/issues/8438
+bindcode --release --locked --input-device="1:1:gpio_keys" 160 exec sxmo_state.sh set unlock
+# 2. Workaround the lack of a free ModX key on hardware keyboard
+bindsym --input-device="1:1:TWL4030_Keypad" Shift+space mode "N900"
 
 bindsym Print exec sxmo_screenshot.sh
 
