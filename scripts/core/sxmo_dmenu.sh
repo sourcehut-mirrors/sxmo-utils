@@ -88,6 +88,18 @@ if [ "$1" = "--show-over-lockscreen" ]; then
 	shift
 fi
 
+wofi_wrapper() {
+	#let wofi handle the number of lines dynamically
+	# (wofi is a bit confused after rotating to horizontal mode though)
+	if [ "$SXMO_WOFI_SMALLSCREEN" = "0" ]; then
+		wofi -k /dev/null "$@"
+	else
+		# shellcheck disable=SC2046
+		#  (not quoted because we want to split args here)
+		wofi -k /dev/null $(sxmo_rotate.sh isrotated > /dev/null && echo -W "${SXMO_WOFI_LANDSCAPE_WIDTH:-640}" -H "${SXMO_WOFI_LANDSCAPE_HEIGHT:-200}" -l top) "$@"
+	fi
+}
+
 if [ -n "$WAYLAND_DISPLAY" ] || [ -n "$DISPLAY" ]; then
 	case "$SXMO_MENU" in
 		bemenu)
@@ -100,19 +112,17 @@ if [ -n "$WAYLAND_DISPLAY" ] || [ -n "$DISPLAY" ]; then
 			exit "$returned"
 			;;
 		wofi)
-			#let wofi handle the number of lines dynamically
-			# (wofi is a bit confused after rotating to horizontal mode though)
-			if [ "$SXMO_WOFI_SMALLSCREEN" = "0" ]; then
-				wofi -k /dev/null "$@"
-				returned=$?
-			else
-				# shellcheck disable=SC2046
-				#  (not quoted because we want to split args here)
-				wofi -k /dev/null $(sxmo_rotate.sh isrotated > /dev/null && echo -W "${SXMO_WOFI_LANDSCAPE_WIDTH:-640}" -H "${SXMO_WOFI_LANDSCAPE_HEIGHT:-200}" -l top) "$@"
-				returned=$?
-			fi
+			picked="$(wofi_wrapper "$@")"
+			returned=$?
+
 			cleanmode
-			exit "$returned"
+
+			if [ -z "$picked" ]; then
+				exit 1
+			else
+				printf "%s\n" "$picked"
+				exit "$returned"
+			fi
 			;;
 		dmenu)
 			# i3 and bspwm need the return focus as this commit 1d21a2d6 in sxmo-dmenu
