@@ -1,5 +1,5 @@
 [Desktop Entry]
-Name=Swmo
-Exec=sxmo_swayinit.sh
+Name=Sxmo + i3
+Exec=sxmo_i3init.sh
 Terminal=false
 Type=Application

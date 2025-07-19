@@ -1,5 +1,5 @@
 [Desktop Entry]
-Name=Sxmo
-Exec=sxmo_dwminit.sh
+Name=Sxmo + Sway
+Exec=sxmo_swayinit.sh
 Terminal=false
 Type=Application

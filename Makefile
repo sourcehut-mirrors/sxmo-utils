@@ -109,13 +109,13 @@ install-html-docs: $(HTMLDOCS)
 	cd docs && find . -type f -name '*.html' -exec install -D -m 0644 "{}" "$(DESTDIR)$(PREFIX)/share/doc/sxmo/html/{}" \; && cd ..
 
 install-sway:
-	install -D -m 0644 -t $(DESTDIR)$(PREFIX)/share/wayland-sessions/ configs/applications/swmo.desktop
+	install -D -m 0644 -t $(DESTDIR)$(PREFIX)/share/wayland-sessions/ configs/sessions/swmo.desktop
 
 install-dwm:
-	install -D -m 0644 -t $(DESTDIR)$(PREFIX)/share/xsessions/ configs/applications/sxmo.desktop
+	install -D -m 0644 -t $(DESTDIR)$(PREFIX)/share/xsessions/ configs/sessions/sxmo.desktop
 
 install-i3:
-	install -D -m 0644 -t $(DESTDIR)$(PREFIX)/share/xsessions/ configs/applications/sxmo_i3.desktop
+	install -D -m 0644 -t $(DESTDIR)$(PREFIX)/share/xsessions/ configs/sessions/sxmo_i3.desktop
 
 install-scripts: $(PROGRAMS)
 	cd configs && find . -type f -not -exec install -D -m 0644 "{}" "$(DESTDIR)$(PREFIX)/share/sxmo/{}" \; && cd ..
