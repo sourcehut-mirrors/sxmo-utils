@@ -86,7 +86,7 @@ while true; do
 			sort_loop
 			;;
 		"Open in terminal")
-			cd "$(pwd)" && sxmo_terminal.sh && continue
+			exec sxmo_terminal.sh
 			;;
 		"Close Menu")
 			exit 0
