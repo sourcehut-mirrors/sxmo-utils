@@ -476,6 +476,7 @@ int set_main(struct status_handle *led, int argi, int argc, char *argv[]) {
 			color_id = COLOR_BLUE;
 		} else {
 			error("Unknown color \"%s\", expected one of \"red\", \"green\", or \"blue\"", color_str);
+			exit(1);
 		}
 
 		info("setting color %s(%d) to %ld\n", color_str, color_id, value);
