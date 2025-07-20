@@ -136,13 +136,13 @@ install-scripts: $(PROGRAMS)
 
 	install -D -m 0640 -t $(DESTDIR)$(SYSCONFDIR)/doas.d/ configs/doas/50-sxmo.conf
 
-	install -D -m 0644 -T configs/xorg/monitor.conf $(DESTDIR)$(PREFIX)/share/X11/xorg.conf.d/90-monitor.conf
+	install -D -m 0644 configs/xorg/monitor.conf $(DESTDIR)$(PREFIX)/share/X11/xorg.conf.d/90-monitor.conf
 
 	mkdir -p $(DESTDIR)$(SYSCONFDIR)/NetworkManager/dispatcher.d
 
-	install -D -m 0644 -T configs/appcfg/mpv_input.conf $(DESTDIR)$(SYSCONFDIR)/mpv/input.conf
+	install -D -m 0644 configs/appcfg/mpv_input.conf $(DESTDIR)$(SYSCONFDIR)/mpv/input.conf
 
-	install -D -m 0755 -T configs/profile.d/sxmo_init.sh $(DESTDIR)$(SYSCONFDIR)/profile.d/sxmo_init.sh
+	install -D -m 0755 configs/profile.d/sxmo_init.sh $(DESTDIR)$(SYSCONFDIR)/profile.d/sxmo_init.sh
 
 	# Migrations
 	install -D -t $(DESTDIR)$(PREFIX)/share/sxmo/migrations migrations/*
