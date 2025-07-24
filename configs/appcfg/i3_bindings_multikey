@@ -1,0 +1,3 @@
+bindsym XF86AudioRaiseVolume exec sxmo_multikey.sh volup volup_one volup_two volup_three
+bindsym XF86AudioLowerVolume exec sxmo_multikey.sh voldown voldown_one voldown_two voldown_three
+bindsym XF86PowerOff exec sxmo_multikey.sh powerbutton powerbutton_one powerbutton_two powerbutton_three

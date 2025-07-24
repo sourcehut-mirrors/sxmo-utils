@@ -13,6 +13,13 @@ envvars() {
 	command -v $SXMO_TERMINAL "" >/dev/null || export SXMO_TERMINAL="st"
 	command -v "$KEYBOARD" >/dev/null || defaultkeyboard
 	[ -z "$MOZ_USE_XINPUT2" ] && export MOZ_USE_XINPUT2=1
+	if [ -n "$SXMO_DISABLE_KEYBINDS" ]; then
+		export SXMO_BINDING_PROVIDER="buttons_disabled"
+	elif command -v bonsaictl > /dev/null; then
+		export SXMO_BINDING_PROVIDER="bonsai"
+	else
+		export SXMO_BINDING_PROVIDER="multikey"
+	fi
 }
 
 defaults() {
