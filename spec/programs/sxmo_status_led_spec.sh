@@ -250,6 +250,7 @@ Describe 'Multicolor Leds'
 	End
 
 	It 'Preserves colors that arent passed to set'
+		cp "$led/max_brightness" "$led/brightness"
 		echo "150 140 130" > "$led/multi_intensity"
 		When call led set red 50
 		The file "$led/multi_intensity" contents should eq "150 120 130"
@@ -279,5 +280,39 @@ Describe 'Multicolor Leds'
 
 		When call led blink red blue
 		The file "$led/multi_intensity" contents should eq "$expected_intesnity"
+	End
+
+	It 'Restores the brightness after a blink'
+		echo "90" > "$led/brightness"
+		echo "140" > "$led/max_brightness"
+		echo "3 4 5" > "$led/multi_intensity"
+		expected_brightness="$(
+			%text
+			#|0
+			#|140
+			#|0
+			#|90
+		)"
+
+		When call led blink red blue
+		The file "$led/brightness" contents should eq "$expected_brightness"
+	End
+
+	It 'Compensates for brightness when setting an led'
+		echo "50" > "$led/brightness"
+		echo "100" > "$led/max_brightness"
+		echo "20 40 1" > "$led/multi_intensity"
+		echo "red green blue" > "$led/multi_index"
+		expected_brightness="$(
+			%text
+			#|0
+			#|140
+			#|0
+			#|90
+		)"
+
+		When call led set red 100
+		The file "$led/brightness" contents should eq "100"
+		The file "$led/multi_intensity" contents should eq "100 20 1"
 	End
 End

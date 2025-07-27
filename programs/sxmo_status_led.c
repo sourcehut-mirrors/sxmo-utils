@@ -33,12 +33,15 @@ enum color {
 	COLOR_MAX,
 };
 
-typedef union {
-	double colors[COLOR_MAX];
-	struct {
-		double red;
-		double green;
-		double blue;
+typedef struct {
+	int global_brightness;
+	union {
+		double colors[COLOR_MAX];
+		struct {
+			double red;
+			double green;
+			double blue;
+		};
 	};
 } led_state;
 
@@ -323,7 +326,7 @@ double led_abs_to_pct(struct status_handle *led, enum color led_color, int brigh
 }
 
 led_state led_state_read(struct status_handle *led) {
-	led_state state = {{ 0, 0, 0 }};
+	led_state state = { 0 };
 
 	if (led->type == LED_MULTICOLOR) {
 		int colors[3];
@@ -339,6 +342,12 @@ led_state led_state_read(struct status_handle *led) {
 		for (int i = 0; i < 3; i++) {
 			state.colors[led->multicolor.color_ids[i]] =
 				led_abs_to_pct(led, led->multicolor.color_ids[i], colors[i]);
+		}
+
+		ret = fscanf(led->multicolor.brightness, "%d", &state.global_brightness);
+		if (ret != 1) {
+			error("Failed to parse brightness file");
+			state.global_brightness = 0;
 		}
 
 		// This isn't necessary, but it makes the output more consistent
@@ -370,9 +379,14 @@ void led_state_write(struct status_handle *led, led_state state, int color_mask)
 		if (color_mask != all_color_mask) {
 			info("state missing colors, reading them\n");
 			led_state base_state = led_state_read(led);
+			double color_scaler = (double)base_state.global_brightness
+				/ (double)led->multicolor.max_brightness;
+
 			for (int i = 0; i < COLOR_MAX; i++) {
-				if ((color_mask & BIT(i)) == 0)
-					state.colors[i] = base_state.colors[i];
+				if (color_mask & BIT(i))
+					continue;
+
+				state.colors[i] = base_state.colors[i] * color_scaler;
 			}
 		}
 
@@ -387,7 +401,7 @@ void led_state_write(struct status_handle *led, led_state state, int color_mask)
 			led_pct_to_abs(led, COLOR_MAX, state.colors[color_ids[2]])
 		);
 
-		fprintf(led->multicolor.brightness, "%d", led->multicolor.max_brightness);
+		fprintf(led->multicolor.brightness, "%d\n", state.global_brightness);
 
 		fflush(intensity);
 		fflush(led->multicolor.brightness);
@@ -410,10 +424,14 @@ void led_state_write(struct status_handle *led, led_state state, int color_mask)
 }
 
 void blink_pattern(char *colors[], int argc, struct status_handle *led) {
-	led_state new_state = {{ 0, 0, 0 }};
-	led_state null_state = {{ 0, 0, 0 }};
-	led_state old_state = led_state_read(led);
 	int color_mask = BIT(COLOR_RED) | BIT(COLOR_BLUE) | BIT(COLOR_GREEN);
+	led_state null_state = { 0 };
+	led_state old_state = led_state_read(led);
+
+	led_state new_state = { 0 };
+	if (led->type == LED_MULTICOLOR) {
+		new_state.global_brightness = led->multicolor.max_brightness;
+	}
 
 	for (int i=0; i<argc; i++) {
 		if (strcmp("red", colors[i]) == 0) {
@@ -447,7 +465,11 @@ void set_usage(char *name) {
 int set_main(struct status_handle *led, int argi, int argc, char *argv[]) {
 	int args = argc - (argi);
 	int color_mask = 0;
-	led_state state;
+
+	led_state state = { 0 };
+	if (led->type == LED_MULTICOLOR) {
+		state.global_brightness = led->multicolor.max_brightness;
+	}
 
 	if (args % 2 != 0 || args < 2) {
 		set_usage(argv[0]);
