@@ -25,11 +25,14 @@ if pnc valid "$REFORMATTED"; then
 	exit
 fi
 
-notify-send "\"$1\" is not a valid phone number"
+PICKED="$(cat <<-EOF | sxmo_dmenu.sh -p "Invalid Number"
+	Abort
+	Use as is
+EOF
+)"
 
-PICKED="$(printf "Ok\nUse as it is\n" | sxmo_dmenu.sh -p "Invalid Number")"
-if [ "$PICKED" = "Use as it is" ]; then
-	returnvalid "$1"
+if [ "$PICKED" = "Abort" ]; then
+	exit 1
 fi
 
-exit 1
+returnvalid "$1"

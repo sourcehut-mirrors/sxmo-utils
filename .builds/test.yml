@@ -1,13 +1,14 @@
 image: alpine/edge
 packages:
-  - shellcheck
   - editorconfig-checker
-  - shellspec
-  - jq
   - icu-dev
+  - jq
   - linux-headers
-  - scdoc
+  - pnc
   - scd2html
+  - scdoc
+  - shellcheck
+  - shellspec
 sources:
   - https://git.sr.ht/~mil/sxmo-utils
 triggers:
