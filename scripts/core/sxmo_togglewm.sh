@@ -20,7 +20,7 @@ switch_to() {
 	fi
 }
 
-CHOICE="$(grep -v "$SXMO_WM" <<-EOF | sxmo_dmenu.sh -p "Toggle WM"
+CHOICE="$(grep -v "$SXMO_WM" <<-EOF | sxmo_dmenu.sh -p "Switch WM"
 	i3
 	dwm
 	sway

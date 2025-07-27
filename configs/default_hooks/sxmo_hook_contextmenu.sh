@@ -109,7 +109,7 @@ case "$WMCLASS" in
 			$icon_lck Lock               ^ 0 ^ sxmo_state.sh set lock
 			$icon_lck Lock (Screen off)  ^ 0 ^ sxmo_state.sh set screenoff
 			$icon_out Logout             ^ 0 ^ confirm Logout && sxmo_power.sh logout
-			$icon_rol Toggle WM          ^ 0 ^ sxmo_power.sh togglewm
+			$icon_rol Switch WM          ^ 0 ^ sxmo_power.sh togglewm
 			$icon_rld Reboot             ^ 0 ^ confirm Reboot && sxmo_power.sh reboot
 			$icon_pwr Poweroff           ^ 0 ^ confirm Poweroff && sxmo_power.sh poweroff
 		"
