@@ -1,6 +1,12 @@
-# shellcheck disable=SC2317
+# shellcheck disable=SC2317,SC2218,SC2329
 # SPDX-License-Identifier: AGPL-3.0-only
 # Copyright 2024 Sxmo Contributors
+
+#Disabled checks:
+#SC2317 -- Command appears to be unreachable.
+#SC2218 -- This function is only defined later
+#SC2329 -- This function is never invoked
+
 
 led() {
 	./programs/sxmo_status_led --debug-led-dir "$led_dir" "$@"

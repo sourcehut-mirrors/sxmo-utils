@@ -7,6 +7,7 @@
 . sxmo_common.sh
 
 printf "Sxmo "
+# shellcheck disable=SC2218
 cat "$(xdg_data_path sxmo/version)"
 case "$SXMO_WM" in
 	dwm)

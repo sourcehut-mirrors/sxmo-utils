@@ -52,7 +52,8 @@ timerrun() {
 }
 
 stopwatchrun() {
-	# shellcheck disable=SC2317
+	# shellcheck disable=SC2317,SC2329
+	# SC2329: function never invoked ( shellcheck did'nt recognize the trap)
 	reset() {
 		start="$(date +%s)"
 		# cursor up, clear, cursor at start of line, time, cursor down
@@ -61,7 +62,7 @@ stopwatchrun() {
 			kill "$sid" >/dev/null 2>&1
 		fi
 	}
-	# shellcheck disable=SC2317
+	# shellcheck disable=SC2317,SC2329
 	finish() {
 		jobs -p | xargs -r kill >/dev/null 2>&1
 		wait
