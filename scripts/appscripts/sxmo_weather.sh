@@ -33,7 +33,7 @@ FORECAST() {
 	OUTPUT="$(grep . <<-EOF | sxmo_dmenu.sh -i -l 10
 		Close Menu
 		Right Now
-		Forcast
+		Forecast
 EOF
 )"
 	case "$OUTPUT" in
@@ -42,7 +42,7 @@ EOF
 			WEATHER="$(curl wttr.in/"$PLACE"?format=4 | tr '+' ' ')"
 			notify-send "$WEATHER"
 			;;
-		"Forcast")
+		"Forecast")
 			if [ "$SXMO_TERMINAL" = "alacritty" ]; then
 				sxmo_terminal.sh sh -c "curl http://wttr.in/$PLACE | less -SR"
 			else
