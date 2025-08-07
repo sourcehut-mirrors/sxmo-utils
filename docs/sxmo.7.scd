@@ -1043,8 +1043,6 @@ over a network.
 HOOKS: _sxmo_hook_notifications.sh_ (runs when there is any notification),
 _sxmo_hook_notification.sh_ (runs once for each notification)
 
-See _sxmo_notifs.sh_(1)
-
 # DEVICES
 
 This section describes how to add a new device to sxmo. If you are instead
@@ -1236,7 +1234,7 @@ The default values for environment variables are set in
 	sxmobar components. Value is trial and error (default is 29).
 *SXMO_NOTIFDIR*
 	The directory where notifications are stored (mediated by
-	_sxmo_notifs.sh_(1))
+	_sxmo_notifs.sh_)
 *SXMO_OS* 
 	the distribution (postmarketos, archlinux, etc.)
 *SXMO_TERMINAL*
