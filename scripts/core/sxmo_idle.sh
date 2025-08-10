@@ -64,7 +64,7 @@ case "$SXMO_WM" in
 	dwm|i3)
 		xorgidle "$@"
 		;;
-	*)
-		exec "${SXMO_WM}idle" "$@"
+	sway|river)
+		exec swayidle "$@"
 		;;
 esac

@@ -100,13 +100,16 @@ programs/%.test: programs/%.c
 clean:
 	rm -f ${PROGRAMS} ${DOCS} ${HTMLDOCS} programs/test_legacy_nerdfont programs/sxmo_status_led.test
 
-install: install-sway install-dwm install-i3 install-scripts install-docs
+install: install-sway install-river install-dwm install-i3 install-scripts install-docs
 
 install-docs: $(DOCS)
 	cd docs && find . -type f -name '*.7' -exec install -D -m 0644 "{}" "$(DESTDIR)$(MANDIR)/man7/{}" \; && find . -type f -name '*.1' -exec install -D -m 0644 "{}" "$(DESTDIR)$(MANDIR)/man1/{}" \; && cd ..
 
 install-html-docs: $(HTMLDOCS)
 	cd docs && find . -type f -name '*.html' -exec install -D -m 0644 "{}" "$(DESTDIR)$(PREFIX)/share/doc/sxmo/html/{}" \; && cd ..
+
+install-river:
+	install -D -m 0644 -t $(DESTDIR)$(PREFIX)/share/wayland-sessions/ configs/applications/srmo.desktop
 
 install-sway:
 	install -D -m 0644 -t $(DESTDIR)$(PREFIX)/share/wayland-sessions/ configs/sessions/swmo.desktop

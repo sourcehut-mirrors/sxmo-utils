@@ -52,6 +52,11 @@ superctl start dunst
 
 # load some other little things here too.
 case "$SXMO_WM" in
+	river)
+		superctl start sxmo_wob
+		superctl start bonsaid
+		superctl start sxmo_riverbar
+		;;
 	sway)
 		superctl start sxmo_wob
 		superctl start sxmo_menumode_toggler

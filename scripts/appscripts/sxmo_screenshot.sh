@@ -16,7 +16,7 @@ check_command() {
 	command -v "$1" > /dev/null
 }
 
-sway_screenshot() {
+wayland_screenshot() {
 	check_command grim || exit_msg "grim command must be available to take a screenshot."
 	check_command slurp || exit_msg "slurp command must be available to make a selection."
 
@@ -43,8 +43,8 @@ xorg_screenshot() {
 
 screenshot() {
 	case "$SXMO_WM" in
-		sway)
-			sway_screenshot "$@"
+		sway|river)
+			wayland_screenshot "$@"
 			;;
 		dwm)
 			xorg_screenshot "$@"
@@ -57,7 +57,7 @@ screenshot() {
 
 yank() {
 	printf %s "$1" | case "$SXMO_WM" in
-		sway)
+		sway|river)
 			wl-copy
 			;;
 		dwm)

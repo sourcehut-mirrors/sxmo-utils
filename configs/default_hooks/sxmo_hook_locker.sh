@@ -7,7 +7,7 @@ sxmo_jobs.sh start idle_locker sxmo_idle.sh -w \
 		resume 'sxmo_wm.sh dpms off'
 
 case "$SXMO_WM" in
-	sway)
+	sway|river)
 		swaylockd
 		;;
 	dwm)

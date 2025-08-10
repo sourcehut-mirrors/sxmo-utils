@@ -6,7 +6,7 @@ case "$SXMO_WM" in
 	dwm|i3)
 		exec feh "${1+--bg-$1}" "$bg"
 		;;
-	sway)
+	sway|river)
 		exec swaybg -i "$bg" ${1+-m "$1"}
 		;;
 	"")

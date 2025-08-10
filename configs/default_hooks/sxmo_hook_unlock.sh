@@ -21,6 +21,12 @@ if [ -e "$XDG_CACHE_HOME/sxmo/sxmo.noidle" ]; then
 	sxmo_jobs.sh stop idle_locker
 else
 	case "$SXMO_WM" in
+		river)
+			sxmo_jobs.sh start idle_locker sxmo_idle.sh -w \
+				timeout "${SXMO_UNLOCK_IDLE_TIME:-120}" 'sh -c "
+					exec sxmo_state.sh idle
+				"'
+			;;
 		sway)
 			sxmo_jobs.sh start idle_locker sxmo_idle.sh -w \
 				timeout "${SXMO_UNLOCK_IDLE_TIME:-120}" 'sh -c "

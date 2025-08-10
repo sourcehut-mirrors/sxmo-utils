@@ -2,6 +2,7 @@
 # SPDX-License-Identifier: AGPL-3.0-only
 # Copyright 2022 Sxmo Contributors
 
+# shellcheck disable=SC2317
 # include common definitions
 # shellcheck source=scripts/core/sxmo_common.sh
 . sxmo_common.sh
@@ -47,6 +48,28 @@ swaydpms() {
 
 i3inputevent() {
 	xorginputevent "$@"
+}
+
+wldpms() {
+	STATE=off
+	if ! wlr-randr --json \
+		| jq ".[] | .enabled" \
+		| grep -q "true"; then
+		STATE=on
+	fi
+
+	if [ -z "$1" ]; then
+		printf %s "$STATE"
+	elif [ "$1" = on ] && [ "$STATE" != on ]; then
+		wlr-randr --json | jq -r '.[] | .name' | while read -r output; do
+			wlr-randr --output "$output" --off
+		done
+	elif [ "$1" = off ] && [ "$STATE" != off ] ; then
+		wlr-randr --json | jq -r '.[] | .name' | while read -r output; do
+			wlr-randr --output "$output" --on
+		done
+	fi
+
 }
 
 xorginputevent() {
@@ -419,6 +442,17 @@ case "$action" in
 esac
 
 case "$SXMO_WM" in
-	dwm) "xorg$action" "$@";;
-	*) "$SXMO_WM$action" "$@";;
+	dwm)
+		"xorg$action" "$@"
+		;;
+	sway|river)
+		# We don't yet support everything
+		if type "wl$action" > /dev/null; then
+			"wl$action" "$@"
+			exit
+		fi
+		;;
 esac
+
+printf "%s not implemented for %s\n" "$action" "$SXMO_WM" >&2
+exit 1

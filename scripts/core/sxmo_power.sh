@@ -25,6 +25,7 @@ case "$1" in
 		case "$SXMO_WM" in
 			"i3") i3-msg exit ;;
 			"sway") swaymsg exit ;;
+			"river") riverctl exit ;;
 			"dwm") pkill dwm ;;
 		esac
 		;;

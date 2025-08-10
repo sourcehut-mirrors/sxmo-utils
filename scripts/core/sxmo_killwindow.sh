@@ -9,5 +9,6 @@
 case "$SXMO_WM" in
 	i3) i3-msg kill ;;
 	sway) swaymsg kill;;
+	river) riverctl close;;
 	dwm) xdotool windowkill "$(xdotool getactivewindow)";;
 esac

@@ -309,6 +309,13 @@ i3() {
 
 sway() {
 	defaultconfig "$(xdg_data_path sxmo/appcfg/sway_template)" "$XDG_CONFIG_HOME/sxmo/sway" 644
+}
+
+river() {
+	defaultconfig "$(xdg_data_path sxmo/appcfg/river)" "$XDG_CONFIG_HOME/sxmo/river" 644
+}
+
+wayland() {
 	defaultconfig "$(xdg_data_path sxmo/appcfg/foot.ini)" "$XDG_CONFIG_HOME/foot/foot.ini" 644
 	defaultconfig "$(xdg_data_path sxmo/appcfg/bonsai_tree.json)" "$XDG_CONFIG_HOME/sxmo/bonsai_tree.json" 644
 	defaultconfig "$(xdg_data_path sxmo/appcfg/wob.ini)" "$XDG_CONFIG_HOME/wob/wob.ini" 644
@@ -355,6 +362,7 @@ for MODE in "$@"; do
 			common
 			i3
 			sway
+			river
 			xorg
 			checkhooks
 			;;
@@ -368,6 +376,12 @@ for MODE in "$@"; do
 				sway)
 					common
 					sway
+					wayland
+					;;
+				river)
+					common
+					river
+					wayland
 					;;
 				dwm)
 					common
@@ -377,6 +391,7 @@ for MODE in "$@"; do
 					common
 					i3
 					sway
+					river
 					xorg
 					;;
 			esac

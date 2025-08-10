@@ -1,0 +1,7 @@
+[Unit]
+Description=The sxmo_riverbar.sh as a service
+
+[Service]
+Type=simple
+Restart=always
+ExecStart=sxmo_riverbar.sh
