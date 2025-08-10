@@ -1,5 +1,5 @@
 [Desktop Entry]
-Name=Rwmo
-Exec=sxmo_rinit.sh
+Name=Sxmo River
+Exec=sxmo_riverinit.sh
 Terminal=false
 Type=Application

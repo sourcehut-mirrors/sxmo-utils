@@ -138,6 +138,9 @@ do
     # Control screen backlight brightness with brightnessctl (https://github.com/Hummer12007/brightnessctl)
     riverctl map $mode None XF86MonBrightnessUp   spawn 'sxmo_brightness.sh up'
     riverctl map $mode None XF86MonBrightnessDown spawn 'sxmo_brightness.sh down'
+
+    riverctl map-switch $mode lid open spawn 'sxmo_wm.sh dpms on'
+    riverctl map-switch $mode lid close spawn 'sxmo_wm.sh dpms off'
 done
 
 # Launch appmenu

@@ -95,19 +95,7 @@ case "$WMCLASS" in
 			$icon_trm Hooks                      ^ 0 ^ sxmo_hookmenu.sh
 			$icon_upc Upgrade Pkgs               ^ 0 ^ sxmo_terminal.sh sxmo_upgrade.sh
 			$icon_sfl Migrate configuration      ^ 0 ^ sxmo_terminal.sh sxmo_migrate.sh
-			$(
-				case "$SXMO_WM" in
-					sway)
-						echo "$icon_cfg Edit configuration ^ 0 ^ sxmo_terminal.sh $EDITOR $XDG_CONFIG_HOME/sxmo/xinit"
-						;;
-					river)
-						echo "$icon_cfg Edit configuration ^ 0 ^ sxmo_terminal.sh $EDITOR $XDG_CONFIG_HOME/sxmo/river"
-						;;
-					dwm)
-						echo "$icon_cfg Edit configuration ^ 0 ^ sxmo_terminal.sh $EDITOR $XDG_CONFIG_HOME/sxmo/dwm"
-						;;
-				esac
-			)
+			$(sxmo_wm.sh configmenuentry)
 			$(command -v pmos-tweaks >/dev/null && echo "$icon_cfg PostmarketOS Tweaks	     ^ 0 ^ GDK_SCALE=1 pmos-tweaks")
 			$icon_cfg Suspend Blockers           ^ 0 ^ sxmo_terminal.sh sxmo_debug_suspend.sh
 			$icon_inf Log                        ^ 0 ^ sxmo_terminal.sh tail -n 100 -f ${XDG_STATE_HOME:-$HOME}/sxmo.log

@@ -24,6 +24,7 @@ CHOICE="$(grep -v "$SXMO_WM" <<-EOF | sxmo_dmenu.sh -p "Switch WM"
 	i3
 	dwm
 	sway
+	river
 EOF
 )" || exit
 
@@ -32,4 +33,5 @@ case "$CHOICE" in
 	i3) switch_to "xsessions/sxmo_i3.desktop" ;;
 	dwm) switch_to "xsessions/sxmo.desktop" ;;
 	sway) switch_to "wayland-sessions/swmo.desktop" ;;
+	river) switch_to "wayland-sessions/sxmo_river.desktop" ;;
 esac

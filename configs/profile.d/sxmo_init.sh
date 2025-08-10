@@ -19,6 +19,11 @@ _sxmo_is_running() {
 			unset _XDG_RUNTIME_DIR
 			return 0
 		fi
+	elif [ -e "$XDG_RUNTIME_DIR"/dbus.bus ] && pidof river > /dev/null; then
+		printf "Detected the River environment\n" >&2
+		export SXMO_WM=river
+		unset _XDG_RUNTIME_DIR
+		return 0
 	fi
 
 	if [ -f "${_XDG_RUNTIME_DIR}"/sxmo.i3sock ]; then

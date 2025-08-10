@@ -24,9 +24,8 @@ with_dbus() {
 
 cleanup() {
 	sxmo_jobs.sh stop all
-	pkill bemenu
-	pkill wvkbd
-	pkill superd
+	sxmo_dmenu.sh close
+	sxmo_keyboard.sh close
 }
 
 # shellcheck source=scripts/core/sxmo_init.sh

@@ -4,6 +4,8 @@
 
 # shellcheck disable=SC2317
 # include common definitions
+# shellcheck source=configs/default_hooks/sxmo_hook_icons.sh
+. sxmo_hook_icons.sh
 # shellcheck source=scripts/core/sxmo_common.sh
 . sxmo_common.sh
 
@@ -191,7 +193,11 @@ i3paste () {
 	xclip -o
 }
 
-swaypaste() {
+riverfocusedwindow() {
+	lswt -j | jq -r '.toplevels | map(select(.activated))[0] | ."app-id", .title'
+}
+
+wlpaste() {
 	wl-paste
 }
 
@@ -247,6 +253,21 @@ i3togglelayout() {
 	i3-msg layout toggle splith splitv tabbed
 }
 
+riverexec() {
+	riverctl spawn "$@"
+}
+
+riverexecwait() {
+	PIDFILE="$(mktemp)"
+	printf '"%s" & printf %%s "$!" > "%s"' "$*" "$PIDFILE" \
+		| xargs -I{} riverctl spawn '{}'
+	while : ; do
+		sleep 0.5
+		kill -0 "$(cat "$PIDFILE")" 2> /dev/null || break
+	done
+	rm "$PIDFILE"
+}
+
 swaytogglelayout() {
 	swaymsg layout toggle splith splitv tabbed
 }
@@ -260,6 +281,10 @@ xorgtogglelayout() {
 
 i3switchfocus() {
 	sxmo_wmmenu.sh i3windowswitcher
+}
+
+rivertogglelayout() {
+	riverctl toggle-fullscreen
 }
 
 swayswitchfocus() {
@@ -345,6 +370,10 @@ i3previousworkspace() {
 	_i3getpreviousworkspace | xargs -r i3-msg -- workspace
 }
 
+rivernextworkspace() {
+	river-shifttags
+}
+
 swaypreviousworkspace() {
 	_swaygetpreviousworkspace | xargs -r swaymsg -- workspace
 }
@@ -358,6 +387,10 @@ xorgpreviousworkspace() {
 
 i3movenextworkspace() {
 	i3-msg "move container to workspace $(_i3getnextworkspace)"
+}
+
+riverpreviousworkspace() {
+	river-shifttags --shift -1
 }
 
 swaymovenextworkspace() {
@@ -431,19 +464,45 @@ xorgtogglebar() {
 	xdotool key --clearmodifiers "Super+b"
 }
 
+rivertogglebar() {
+	if superctl status sxmo_riverbar | grep -q started; then
+		superctl stop sxmo_riverbar
+	else
+		superctl start sxmo_riverbar
+	fi
+}
+
+configmenuentry() {
+	case "$SXMO_WM" in
+		sway)
+			echo "$icon_cfg Edit configuration ^ 0 ^ sxmo_terminal.sh $EDITOR $XDG_CONFIG_HOME/sxmo/xinit"
+			;;
+		river)
+			echo "$icon_cfg Edit configuration ^ 0 ^ sxmo_terminal.sh $EDITOR $XDG_CONFIG_HOME/sxmo/river"
+			;;
+		dwm)
+			echo "$icon_cfg Edit configuration ^ 0 ^ sxmo_terminal.sh $EDITOR $XDG_CONFIG_HOME/sxmo/dwm"
+			;;
+	esac
+}
+
+
 action="$1"
 shift
 
-case "$action" in
-	focusedwindow)
-		focusedwindow "$@"
-		exit
-		;;
-esac
+# invoke action covering all wms
+if type "$action" > /dev/null; then
+	"$action" "$@"
+	exit
+fi
 
+# invoke action covering multiple wms
 case "$SXMO_WM" in
-	dwm)
-		"xorg$action" "$@"
+	dwm|i3)
+		if type "xorg$action" > /dev/null; then
+			"xorg$action" "$@"
+			exit
+		fi
 		;;
 	sway|river)
 		# We don't yet support everything
@@ -454,5 +513,11 @@ case "$SXMO_WM" in
 		;;
 esac
 
-printf "%s not implemented for %s\n" "$action" "$SXMO_WM" >&2
-exit 1
+#  invoke action covering single wm
+if type "$SXMO_WM$action" > /dev/null; then
+	"$SXMO_WM$action" "$@"
+	exit
+else
+	printf "%s not implemented for %s\n" "$action" "$SXMO_WM" >&2
+	exit 1
+fi

@@ -25,7 +25,7 @@ unalias dmenu
 
 if [ -z "$SXMO_MENU" ]; then
 	case "$SXMO_WM" in
-		sway)
+		sway|river)
 			SXMO_MENU=bemenu
 			;;
 		dwm|i3)
