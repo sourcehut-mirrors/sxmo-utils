@@ -14,38 +14,20 @@ i3dpms() {
 }
 
 xorgdpms() {
-	STATE=off
+	STATE=on
 	if xset q | grep -q "Off: 3"; then
-		STATE=on
+		STATE=off
 	fi
 
 	if [ -z "$1" ]; then
 		printf %s "$STATE"
-	elif [ "$1" = on ] && [ "$STATE" != on ]; then
+	elif [ "$1" = off ] && [ "$STATE" != off ]; then
 		xset dpms 0 0 3
 		xset dpms force off
-	elif [ "$1" = off ] && [ "$STATE" != off ]; then
+	elif [ "$1" = on ] && [ "$STATE" != on ]; then
 		xset dpms 0 0 0
 		xset dpms force on
 	fi
-}
-
-swaydpms() {
-	STATE=off
-	if ! swaymsg -t get_outputs \
-		| jq ".[] | .dpms" \
-		| grep -q "true"; then
-		STATE=on
-	fi
-
-	if [ -z "$1" ]; then
-		printf %s "$STATE"
-	elif [ "$1" = on ] && [ "$STATE" != on ]; then
-		swaymsg -- output '*' power false
-	elif [ "$1" = off ] && [ "$STATE" != off ] ; then
-		swaymsg -- output '*' power true
-	fi
-
 }
 
 i3inputevent() {
@@ -53,22 +35,22 @@ i3inputevent() {
 }
 
 wldpms() {
-	STATE=off
+	STATE=on
 	if ! wlr-randr --json \
 		| jq ".[] | .enabled" \
 		| grep -q "true"; then
-		STATE=on
+		STATE=off
 	fi
 
 	if [ -z "$1" ]; then
 		printf %s "$STATE"
 	elif [ "$1" = on ] && [ "$STATE" != on ]; then
 		wlr-randr --json | jq -r '.[] | .name' | while read -r output; do
-			wlr-randr --output "$output" --off
+			wlr-randr --output "$output" --on
 		done
 	elif [ "$1" = off ] && [ "$STATE" != off ] ; then
 		wlr-randr --json | jq -r '.[] | .name' | while read -r output; do
-			wlr-randr --output "$output" --on
+			wlr-randr --output "$output" --off
 		done
 	fi
 

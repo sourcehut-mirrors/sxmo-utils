@@ -19,7 +19,7 @@
 sxmo_led.sh blink blue &
 
 [ "$SXMO_WM" = "sway" ] && swaymsg mode default
-sxmo_wm.sh dpms off
+sxmo_wm.sh dpms on
 sxmo_wm.sh inputevent touchscreen off
 
 sxmo_jobs.sh stop periodic_blink

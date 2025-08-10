@@ -3,8 +3,8 @@
 # Copyright 2022 Sxmo Contributors
 
 sxmo_jobs.sh start idle_locker sxmo_idle.sh -w \
-	timeout 10 'sxmo_wm.sh dpms on' \
-		resume 'sxmo_wm.sh dpms off'
+	timeout 10 'sxmo_wm.sh dpms off' \
+		resume 'sxmo_wm.sh dpms on'
 
 case "$SXMO_WM" in
 	sway|river)
