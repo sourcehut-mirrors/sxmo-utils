@@ -171,6 +171,11 @@ raw_focusedwindow() {
 		dwm) xorgfocusedwindow ;;
 		i3) i3-msg -t get_tree | ipc_focusedwindow ;;
 		sway) swaymsg -t get_tree | ipc_focusedwindow ;;
+		river) lswt -j | jq -r '
+			.toplevels |
+				map(select(.activated))[0] |
+				(."app-id" | ascii_downcase), (.title | ascii_downcase)
+		'
 	esac
 }
 
@@ -191,10 +196,6 @@ focusedwindow() {
 
 i3paste () {
 	xclip -o
-}
-
-riverfocusedwindow() {
-	lswt -j | jq -r '.toplevels | map(select(.activated))[0] | ."app-id", .title'
 }
 
 wlpaste() {
