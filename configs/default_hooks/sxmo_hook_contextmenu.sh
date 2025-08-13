@@ -19,7 +19,7 @@ superd_service_isrunning() {
 }
 
 sxmo_service_isrunning() {
-	sxmo_jobs.sh running "$1" > /dev/null
+	sxmo_jobs.sh running "$1" -q
 }
 
 case "$WMCLASS" in

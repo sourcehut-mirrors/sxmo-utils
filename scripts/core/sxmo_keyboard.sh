@@ -12,7 +12,7 @@ isopen() {
 	fi
 	case "$KEYBOARD" in
 		'onboard') dbus-send --type=method_call --print-reply --dest=org.onboard.Onboard /org/onboard/Onboard/Keyboard org.freedesktop.DBus.Properties.Get string:"org.onboard.Onboard.Keyboard" string:"Visible" || exit 0 ;;
-		*) sxmo_jobs.sh running sxmo_keyboard > /dev/null ;;
+		*) sxmo_jobs.sh running sxmo_keyboard -q ;;
 	esac
 }
 

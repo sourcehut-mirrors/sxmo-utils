@@ -32,7 +32,7 @@ set_state() {
 		return
 	fi
 
-	if sxmo_jobs.sh running proximity_lock; then
+	if sxmo_jobs.sh running proximity_lock -q; then
 		sxmobar -a -e bold -f orange state 90 "$icon_state_proximity" # circle with dot
 		return
 	fi
