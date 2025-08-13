@@ -14,14 +14,20 @@ finish() {
 	pkill -P $$
 }
 
+last=
+
 near() {
+	if [ "$last" = "near" ]; then return; fi
 	sxmo_debug "near"
 	sxmo_state.sh set screenoff
+	last=near
 }
 
 far() {
+	if [ "$last" = "far" ]; then return; fi
 	sxmo_debug "far"
 	sxmo_state.sh set unlock
+	last=far
 }
 
 trap 'finish' TERM INT EXIT
@@ -34,20 +40,22 @@ dbus-send --system --dest=net.hadess.SensorProxy --print-reply=literal \
 sxmo_wakelock.sh lock sxmo_proximity_lock_running infinite
 
 storeid="$(sxmo_state.sh store)"
-last=far
 
 monitor-sensor --proximity | while read -r line; do
-	if echo "$line" | grep -q ".*Proximity value.*1"; then
-		if "$last" != "near"; then
-			near
-			last=near
-		fi
-	elif echo "$line" | grep -q ".*Proximity value.*0"; then
-		if "$last" != "far"; then
+	case "$line" in
+		"=== Has proximity sensor (near: 0)")
 			far
-			last=far
-		fi
-	fi
+			;;
+		"=== Has proximity sensor (near: 1)")
+			near
+			;;
+		"Proximity value changed: 1")
+			near
+			;;
+		"Proximity value changed: 0")
+			far
+			;;
+	esac
 done &
 
 wait
