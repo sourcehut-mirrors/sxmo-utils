@@ -245,6 +245,11 @@ checkhooks() {
 		fi
 		case "$hook" in
 			*.needs-migration)
+				#if there is already a new one, use that one instead and skip this one
+				if [ -e "${hook%.needs-migration}" ]; then
+					rm "$hook"
+					continue
+				fi
 				defaulthook="$(PATH="$DEFAULT_PATH" command -v "$(basename "$hook" ".needs-migration")")"
 				[ "$MODE" = sync ] && continue # ignore this already synced hook
 				;;
@@ -253,8 +258,6 @@ checkhooks() {
 				continue
 				;;
 			*)
-				#if there is already one marked as needing migration, use that one instead and skip this one
-				[ -e "$hook.needs-migration" ] && continue
 				defaulthook="$(PATH="$DEFAULT_PATH" command -v "$(basename "$hook")")"
 				;;
 		esac
