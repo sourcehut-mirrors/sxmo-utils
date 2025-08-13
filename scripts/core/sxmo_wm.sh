@@ -36,22 +36,16 @@ i3inputevent() {
 
 wldpms() {
 	STATE=on
-	if ! wlr-randr --json \
-		| jq ".[] | .enabled" \
-		| grep -q "true"; then
+	if ! wlopm | grep -q "on"; then
 		STATE=off
 	fi
 
 	if [ -z "$1" ]; then
 		printf %s "$STATE"
 	elif [ "$1" = on ] && [ "$STATE" != on ]; then
-		wlr-randr --json | jq -r '.[] | .name' | while read -r output; do
-			wlr-randr --output "$output" --on
-		done
+		wlopm --on "*"
 	elif [ "$1" = off ] && [ "$STATE" != off ] ; then
-		wlr-randr --json | jq -r '.[] | .name' | while read -r output; do
-			wlr-randr --output "$output" --off
-		done
+		wlopm --off "*"
 	fi
 
 }
