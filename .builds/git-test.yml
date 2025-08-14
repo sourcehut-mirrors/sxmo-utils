@@ -1,3 +1,6 @@
+# Duplicated from test.yml
+# Its goal is to notice maintainers on git submitted builds failures,
+# aka git push, and not on mailing list submitted patches, aka emails.
 image: alpine/edge
 packages:
   - editorconfig-checker
@@ -11,9 +14,17 @@ packages:
   - shellspec
 sources:
   - https://git.sr.ht/~mil/sxmo-utils
+triggers:
+  - action: email
+    condition: failure
+    to: "maintainers@sxmo.org"
 tasks:
   - environment: |
       cd sxmo-utils
+      if [ "$BUILD_SUBMITTER" != "git.sr.ht" ]
+      then
+        complete-build
+      fi
       if [ "$(git remote get-url origin)" != "https://git.sr.ht/~mil/sxmo-utils" ]
       then
         complete-build
