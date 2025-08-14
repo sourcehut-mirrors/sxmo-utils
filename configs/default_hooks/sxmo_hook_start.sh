@@ -82,6 +82,11 @@ case "$SXMO_WM" in
 		if [ "$KEYBOARD" = "onboard" ]; then
 			onboard "$KEYBOARD_ARGS"
 		fi
+		case "$SXMO_WM" in
+			i3)
+				xbindkeys -f "$XDG_CONFIG_HOME/sxmo/xbindkeysrc_$SXMO_BINDING_PROVIDER"
+				;;
+		esac
 		;;
 esac
 

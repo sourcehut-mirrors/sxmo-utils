@@ -305,9 +305,9 @@ common() {
 
 i3() {
 	defaultconfig "$(xdg_data_path sxmo/appcfg/i3_template)" "$XDG_CONFIG_HOME/sxmo/i3" 644
-	defaultconfig "$(xdg_data_path sxmo/appcfg/i3_bindings_bonsai)" "$XDG_CONFIG_HOME/sxmo/i3_bindings_bonsai" 644
-	defaultconfig "$(xdg_data_path sxmo/appcfg/i3_bindings_buttons_disabled)" "$XDG_CONFIG_HOME/sxmo/i3_bindings_buttons_disabled" 644
-	defaultconfig "$(xdg_data_path sxmo/appcfg/i3_bindings_multikey)" "$XDG_CONFIG_HOME/sxmo/i3_bindings_multikey" 644
+	defaultconfig "$(xdg_data_path sxmo/appcfg/xbindkeysrc_bonsai)" "$XDG_CONFIG_HOME/sxmo/xbindkeysrc_bonsai" 644
+	defaultconfig "$(xdg_data_path sxmo/appcfg/xbindkeysrc_buttons_disabled)" "$XDG_CONFIG_HOME/sxmo/xbindkeysrc_buttons_disabled" 644
+	defaultconfig "$(xdg_data_path sxmo/appcfg/xbindkeysrc_multikey)" "$XDG_CONFIG_HOME/sxmo/xbindkeysrc_multikey" 644
 }
 
 sway() {

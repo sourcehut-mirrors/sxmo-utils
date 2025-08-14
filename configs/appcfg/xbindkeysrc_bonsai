@@ -1,0 +1,19 @@
+# Space to setup configversion
+# Bonsai controls via hardware keys
+"bonsaictl -e volup_pressed"
+	XF86_AudioRaiseVolume
+
+"bonsaictl -e volup_released"
+	release+XF86_AudioRaiseVolume
+
+"bonsaictl -e voldown_pressed"
+	XF86_AudioLowerVolume
+
+"bonsaictl -e voldown_released"
+	release+XF86_AudioLowerVolume
+
+"bonsaictl -e power_pressed"
+	XF86_PowerOff
+
+"bonsaictl -e power_released"
+	release+XF86_PowerOff

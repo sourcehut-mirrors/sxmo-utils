@@ -1,1 +1,0 @@
-bindsym XF86PowerOff exec sxmo_hook_inputhandler.sh powerbutton_one

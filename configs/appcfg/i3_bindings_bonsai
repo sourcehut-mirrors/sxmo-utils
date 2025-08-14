@@ -1,8 +1,0 @@
-bindsym XF86AudioRaiseVolume exec bonsaictl -e volup_pressed
-bindsym --release XF86AudioRaiseVolume exec bonsaictl -e volup_released
-
-bindsym XF86AudioLowerVolume exec bonsaictl -e voldown_pressed
-bindsym --release XF86AudioLowerVolume exec bonsaictl -e voldown_released
-
-bindsym XF86PowerOff exec bonsaictl -e power_pressed
-bindsym --release XF86PowerOff exec bonsaictl -e power_released

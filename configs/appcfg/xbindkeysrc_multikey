@@ -1,0 +1,10 @@
+# Space to setup configversion
+# Multikey controls via hardware keys
+"sxmo_multikey.sh volup volup_one volup_two volup_three"
+	XF86_AudioRaiseVolume
+
+"sxmo_multikey.sh voldown voldown_one voldown_two voldown_three"
+	XF86_AudioLowerVolume
+
+"sxmo_multikey.sh powerbutton powerbutton_one powerbutton_two powerbutton_three"
+	XF86_PowerOff
