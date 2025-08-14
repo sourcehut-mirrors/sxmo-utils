@@ -1,6 +1,3 @@
-# Duplicated from test.yml
-# Its goal is to notice maintainers on git submitted builds failures,
-# aka git push, and not on mailing list submitted patches, aka emails.
 image: alpine/edge
 packages:
   - editorconfig-checker
