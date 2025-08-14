@@ -191,6 +191,9 @@ used.
 	This script monitors the battery status using _upower_(1) and ensures the
 	status bar is updated accordingly.
 
+*sxmo_brightness*
+	Adjust screen brightness
+
 *sxmo_conky*
 	Starts conky (desktop widget) 
 

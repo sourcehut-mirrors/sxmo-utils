@@ -21,7 +21,11 @@ setvalue() {
 }
 
 up() {
-	brightnessctl -q set 5%+
+	if [ -n "$1" ]; then
+		brightnessctl -q set "$1"%+
+	else
+		brightnessctl -q set 5%+
+	fi
 }
 
 down() {
@@ -35,7 +39,11 @@ down() {
 	fi
 
 	if [ "$((value-5))" -ge "${SXMO_MIN_BRIGHTNESS:-5}" ]; then
-		brightnessctl -q set 5%-
+		if [ -n "$1" ]; then
+			brightnessctl -q set "$1"%-
+		else
+			brightnessctl -q set 5%-
+		fi
 		return
 	fi
 
@@ -50,5 +58,28 @@ getvalue() {
 		| grep -o "[0-9]*"
 }
 
+case "$1" in
+	silent)
+		SILENT=1
+		shift
+		;;
+	-h|--help)
+		cat << EOF
+Usage: sxmo_brightness.sh [options] [value]
+
+Options:
+  silent		Prevents notification with (w/x)ob. Use this as first arg to below options.
+  notify		Notify with (w/x)ob current brightness.
+  setvalue VALUE	Set current brightness to VALUE.
+  up VALUE		Up the brightness by 5%% or if VALUE supplied, by VALUE.
+  down VALUE		Lower the brightness by 5%% or if VALUE supplied, by VALUE. Caps out at SXMO_MIN_BRIGHTNESS.
+  getvalue		Get current value.
+EOF
+		exit 0
+		;;
+esac
+
 "$@"
-notify
+if [ -z "$SILENT" ]; then
+	notify
+fi
