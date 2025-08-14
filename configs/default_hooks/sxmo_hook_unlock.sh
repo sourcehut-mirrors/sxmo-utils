@@ -34,7 +34,13 @@ else
 					exec sxmo_state.sh idle
 				"'
 			;;
-		dwm|i3)
+		i3)
+			# Idle fails to trigger if formatted like sway
+			sxmo_jobs.sh start idle_locker sxmo_idle.sh -w \
+				timeout "${SXMO_UNLOCK_IDLE_TIME:-120}" \
+					'sh -c "i3-msg mode default; exec sxmo_state.sh idle"'
+			;;
+		dwm)
 			sxmo_jobs.sh start idle_locker sxmo_idle.sh -w \
 				timeout "${SXMO_UNLOCK_IDLE_TIME:-120}" "sxmo_state.sh idle"
 			;;
