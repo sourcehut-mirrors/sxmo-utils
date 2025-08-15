@@ -94,6 +94,7 @@ case "$cmd" in
 	lock) lock "$@";;
 	unlock) unlock "$@";;
 	run)
+		# shellcheck disable=SC2317,SC2329
 		finish() {
 			if [ -n "$cmdpid" ]; then
 				kill "$cmdpid" 2> /dev/null
