@@ -64,17 +64,19 @@ case "$1" in
 		shift
 		;;
 	-h|--help)
-		cat << EOF
-Usage: sxmo_brightness.sh [options] [value]
+		#editorconfig-checker-disable
+		cat <<- EOF
+		Usage: sxmo_brightness.sh [options] [value]
 
-Options:
-  silent		Prevents notification with (w/x)ob. Use this as first arg to below options.
-  notify		Notify with (w/x)ob current brightness.
-  setvalue VALUE	Set current brightness to VALUE.
-  up VALUE		Up the brightness by 5%% or if VALUE supplied, by VALUE.
-  down VALUE		Lower the brightness by 5%% or if VALUE supplied, by VALUE. Caps out at SXMO_MIN_BRIGHTNESS.
-  getvalue		Get current value.
-EOF
+		Options:
+		  silent		Prevents notification with (w/x)ob. Use this as first arg to below options.
+		  notify		Notify with (w/x)ob current brightness.
+		  setvalue VALUE	Set current brightness to VALUE.
+		  up VALUE		Up the brightness by 5%% or if VALUE supplied, by VALUE.
+		  down VALUE		Lower the brightness by 5%% or if VALUE supplied, by VALUE. Caps out at SXMO_MIN_BRIGHTNESS.
+		  getvalue		Get current value.
+		EOF
+		#editorconfig-checker-enable
 		exit 0
 		;;
 esac
