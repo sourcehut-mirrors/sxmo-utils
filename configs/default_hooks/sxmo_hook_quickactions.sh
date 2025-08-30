@@ -33,7 +33,7 @@ do
 		&& printf %b "$icon_tof" \
 		||  printf %b "$icon_ton")
 	$(player_options)
-	$(if brightness="$(brightnessctl -d "white:flash" get)"; then
+	$(if brightness="$(brightnessctl -l -m | grep -e "white:torch" -e "white:flash" | cut -d ',' -f 3)"; then
 		printf "%s Flashlight " "$icon_fll"
 		[ "$brightness" -gt 0 ] &&
 			printf %b "$icon_ton" || printf %b "$icon_tof";

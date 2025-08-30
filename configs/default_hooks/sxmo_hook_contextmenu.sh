@@ -813,7 +813,7 @@ case "$WMCLASS" in
 			)
 			$(command -v megapixels >/dev/null && echo "$icon_cam Camera ^ 0 ^ GDK_SCALE=2 megapixels")
 			$(
-				if brightness="$(brightnessctl -d "white:flash" get)"; then
+				if brightness="$(brightnessctl -l -m | grep -e "white:torch" -e "white:flash" | cut -d ',' -f 3)"; then
 					printf "%s Flashlight " "$icon_fll"
 					[ "$brightness" -gt 0 ] &&
 						printf %b "$icon_ton" ||  printf %b "$icon_tof";
