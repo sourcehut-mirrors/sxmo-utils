@@ -90,6 +90,34 @@ mainloop() {
 			fi
 		done &
 
+	# Monitor for 3GPP USSD
+	dbus-monitor --system "interface='org.freedesktop.DBus.Properties',member='PropertiesChanged',arg0='org.freedesktop.ModemManager1.Modem.Modem3gpp.Ussd'" |
+		while read -r line; do
+			case "$line" in
+				*"/org/freedesktop/ModemManager1/Modem"*)
+					MODEM=$(echo "$line" | awk -F'[;=]' '{print $6}')
+					CHANGED=0
+					;;
+				*"string \"NetworkNotification"*)
+					TYPE="NetworkNotification"
+					CHANGED=1
+					;;
+				*"string \"NetworkRequest"*)
+					TYPE="NetworkRequest"
+					CHANGED=1
+					;;
+				*)
+					CHANGED=0
+					;;
+			esac
+
+			if [ "$CHANGED" = "1" ]; then
+				# Fetch message (third argument) in sxmo_ussd.sh to save time in this loop
+				sxmo_terminal.sh sxmo_ussd.sh "$MODEM" "$TYPE" "" &
+			fi
+
+		done &
+
 	if [ -f "${SXMO_MMS_BASE_DIR:-"$HOME"/.mms/modemmanager}/mms" ]; then
 		# monitor for received mms
 		dbus-monitor "interface='org.ofono.mms.Service',type='signal',member='MessageAdded'" |

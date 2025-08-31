@@ -812,14 +812,18 @@ significant security risk involved if your device gets compromised!
 
 HOOKS: _sxmo_hook_modem.sh_ (runs when the modem changes states)
 
-## CALLING
+## CALLING AND USSD
 
 To place a new call, you can use the *Dialer* entry in the Main Menu. You will
 be prompted for a contact or number to dial. Once the call connects, a menu will
-automatically be launched which hang up or send DTMF tones.
+automatically be launched, allowing you hang up or send DTMF tones.
 
 A proximity lock is automatically enabled that will lock and turn off your
 screen during a call if you have the phone close to your ear. See STATES.
+
+The *Dialer* entry also allows you to initiate USSD sessions. If additional
+input is required during the session, the menu will continue to come up until
+the session is ended by either the network or yourself, using the menu.
 
 HOOKS: _sxmo_hook_call_audio.sh_ (launch programs when a call is initiated and
 finished)

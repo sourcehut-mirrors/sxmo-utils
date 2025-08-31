@@ -63,6 +63,19 @@ EOF
 	sxmo_jobs.sh start incall_menu sxmo_modemcall.sh incall_menu
 }
 
+dial_ussd() {
+
+	USSD="$1"
+	DBUS_MODEM=$(mmcli -J -L | jq -r '."modem-list"[]')
+	MM_BUS="org.freedesktop.ModemManager1"
+	USSD_IFACE="org.freedesktop.ModemManager1.Modem.Modem3gpp.Ussd"
+
+	sxmo_log "Dialling USSD: $USSD"
+	OUTPUT=$(busctl --json=short call "$MM_BUS" "$DBUS_MODEM" "$USSD_IFACE" Initiate "s" "$USSD" | jq -r '.data[]')
+
+	sxmo_terminal.sh sxmo_ussd.sh "$DBUS_MODEM" "Unknown" "$OUTPUT" &
+}
+
 dial_menu() {
 	# Initial menu with recently contacted people
 	NUMBER="$(
@@ -81,6 +94,17 @@ Close Menu
 $(sxmo_contacts.sh --all --no-groups)
 EOF
 		)"
+
+	# USSD submenu
+	elif [ "$NUMBER" = "Dial USSD" ]; then
+		NUMBER="$(
+			grep . <<EOF | sxmo_dmenu.sh -p Number -i
+Close Menu
+EOF
+		)"
+
+		dial_ussd "$NUMBER"
+		exit 0
 	fi
 
 	NUMBER="$(printf "%s\n" "$NUMBER" | cut -d: -f2 | tr -d -- '- ')"
