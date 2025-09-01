@@ -18,7 +18,7 @@ set $term sxmo_terminal.sh
 # Your preferred application launcher
 # Note: pass the final command to i3msg so that the resulting window can be opened
 # on the original workspace that the command was run on.
-set $menu dmenu-run
+set $menu dmenu_run
 
 font pango:Sxmo 11
 
