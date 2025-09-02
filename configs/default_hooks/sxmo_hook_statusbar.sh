@@ -434,12 +434,7 @@ set_volume() {
 			VOLCMP="$VOLCMP $icon_spl"
 		fi
 	fi
-
-	if sxmo_modemaudio.sh is_call_audio_mode; then
-		sxmobar -a -f green volume 50 "$VOLCMP"
-	else
-		sxmobar -a volume 50 "$VOLCMP"
-	fi
+	sxmobar -a volume 50 "$VOLCMP"
 }
 
 set_notch() {

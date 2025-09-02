@@ -145,14 +145,6 @@ incall_menu() {
 $icon_cls Close menu                ^ exit
 $icon_aru Volume ($(sxmo_audio.sh vol get)) ^ sxmo_audio.sh vol up 20
 $icon_ard Volume  ^ sxmo_audio.sh vol down 20
-$(sxmo_modemaudio.sh is_enabled_speaker \
-	&& printf "%s" "$icon_ton" \
-	|| printf "%s" "$icon_tof"
-) Speaker ^ sxmo_modemaudio.sh toggle_speaker
-$(sxmo_modemaudio.sh is_muted_mic \
-	&& printf "%s Mic ^ sxmo_modemaudio.sh unmute_mic" "$icon_tof" \
-	|| printf "%s Mic ^ sxmo_modemaudio.sh mute_mic" "$icon_ton"
-)
 $icon_cfg Audio Settings ^ sxmo_audio.sh
 $(
 	list_active_calls | while read -r line; do

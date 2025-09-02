@@ -277,9 +277,6 @@ alphabetical order is provided below:
 	suspension may happen or should be blocked because certain programs are
 	active.
 
-*sxmo_hook_call_audio.sh*
-	Runs phone successfully enables/disables callaudio mode.
-
 *sxmo_hook_contextmenu.sh*
 	Runs when a menu is loaded and an application is active. This hook defines
 	all the context menus. You may override or add menus for applications here.

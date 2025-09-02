@@ -171,19 +171,6 @@ _inportssubmenu() {
 	done
 }
 
-_callaudiodsubmenu() {
-	if ! command -v callaudiocli > /dev/null; then
-		return
-	fi
-
-	if sxmo_modemaudio.sh is_call_audio_mode; then
-		printf "  %s callaudiod 'Call Mode' profile ^ sxmo_modemaudio.sh disable_call_audio_mode\n" "$icon_ton"
-	else
-		printf "  %s callaudiod 'Call Mode' profile ^ sxmo_modemaudio.sh enable_call_audio_mode\n" "$icon_tof"
-	fi
-
-}
-
 _ringmodesubmenu() {
 	if [ -f "$XDG_CONFIG_HOME"/sxmo/.noring ]; then
 		printf " %s Ring ^ rm -f \"$XDG_CONFIG_HOME\"/sxmo/.noring\n" "$icon_tof"
@@ -244,8 +231,6 @@ else
 fi
 )
 $(_inportssubmenu "$default_source_name")
-Call Options:
-$(_callaudiodsubmenu)
 $(_ringmodesubmenu)
 EOF
 }
