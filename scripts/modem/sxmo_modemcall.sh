@@ -160,6 +160,19 @@ $(
 			fi
 		done
 	done
+
+	default_sink="$(pactl get-default-sink)"
+	sink="$(pactl --format=json list sinks | jq -r ".[] | select(.name == \"$default_sink\" )")"
+	active_port="$(printf "%s\n" "$sink" | jq -r .active_port)"
+	ports="$(printf "%s\n" "$sink" | jq -r '.ports[] | select(.availability != "not available")')"
+	printf "%s\n" "$ports" | jq -r '[.name, .description] | @tsv' | \
+		while IFS="	" read -r name desc; do
+		if [ "$name" = "$active_port" ]; then
+			printf "%s %s ^ true\n" "$icon_ton" "$desc"
+		else
+			printf "%s %s ^ pactl set-sink-port @DEFAULT_SINK@ \"%s\"\n" "$icon_tof" "$desc" "$name"
+		fi
+	done
 )
 $(
 	list_active_calls | while read -r line; do
