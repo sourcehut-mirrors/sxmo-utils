@@ -147,6 +147,21 @@ $icon_aru Volume ($(sxmo_audio.sh vol get)) ^ sxmo_audio.sh vol up 20
 $icon_ard Volume  ^ sxmo_audio.sh vol down 20
 $icon_cfg Audio Settings ^ sxmo_audio.sh
 $(
+	cards="$(pactl -f json list cards | jq -r '.[] | select(any(.profiles | keys[]; startswith("Voice Call")))')"
+	printf "%s\n" "$cards" | jq -r '[.name, .active_profile] | @tsv' | \
+		while IFS="	" read -r card active_profile; do
+		printf "%s %s\n" "$icon_nte" "$card"
+		printf "%s\n" "$cards" | jq -r "select(.name == \"$card\") | .profiles | to_entries[] | select(.value.available) | select(.key | startswith(\"Voice Call\")) | [.key, .value.description] | @tsv" | \
+			while IFS="	" read -r profile desc; do
+			if [ "$profile" = "$active_profile" ]; then
+				printf "%s %s ^ true\n" "$icon_chk" "$desc"
+			else
+				printf "  %s ^ pactl set-card-profile %s \"%s\"\n" "$desc" "$card" "$profile"
+			fi
+		done
+	done
+)
+$(
 	list_active_calls | while read -r line; do
 		CALLID="$(printf %s "$line" | cut -d" " -f1 | xargs basename)"
 		NUMBER="$(vid_to_number "$CALLID")"
