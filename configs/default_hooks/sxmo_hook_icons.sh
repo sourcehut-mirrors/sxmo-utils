@@ -168,6 +168,7 @@ icon_zip="󰗄" # archive
 icon_zmi="󰛭" # Zoom in/magnify
 icon_zmo="󰛬" # Zoom out/demagnify
 icon_zzz="" #sleep/suspend/crust
+icon_nte=""
 
 # modem states
 

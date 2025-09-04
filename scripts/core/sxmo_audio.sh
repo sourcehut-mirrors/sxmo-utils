@@ -121,6 +121,10 @@ sinkset() {
 	pactl set-default-sink "$1"
 }
 
+profileset() {
+	pactl set-card-profile "$1" "$2"
+}
+
 # get a list of sinks
 _sinkssubmenu() {
 	[ -z "$1" ] && default_sink="$(pactl get-default-sink)" || default_sink="$1"
@@ -156,6 +160,22 @@ _sourcessubmenu() {
 		else
 			printf "  %s %s ^ sourceset %s\n" "$icon_mic" "$description" "$name"
 		fi
+	done
+}
+
+_cardssubmenu() {
+	cards="$(pactl -f json list cards)"
+	printf "%s\n" "$cards" | jq -r '.[] | [.name, .active_profile] | @tsv' | \
+		while IFS="	" read -r card active_profile; do
+		printf "%s %s\n" "$icon_nte" "$card"
+		printf "%s\n" "$cards" | jq -r ".[] | select(.name == \"$card\") | .profiles | to_entries[] | select(.value.available) | [.key, .value.description] | @tsv" | \
+			while IFS="	" read -r profile desc; do
+			if [ "$profile" = "$active_profile" ]; then
+				printf "%s %s ^ true\n" "$icon_chk" "$desc"
+			else
+				printf "  %s ^ profileset %s \"%s\"\n" "$desc" "$card" "$profile"
+			fi
+		done
 	done
 }
 
@@ -231,6 +251,8 @@ else
 fi
 )
 $(_inportssubmenu "$default_source_name")
+Cards:
+$(_cardssubmenu)
 $(_ringmodesubmenu)
 EOF
 }
