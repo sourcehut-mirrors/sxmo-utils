@@ -170,10 +170,6 @@ focusedwindow() {
 	fi
 }
 
-i3paste () {
-	xclip -o
-}
-
 wlpaste() {
 	wl-paste
 }
@@ -478,8 +474,17 @@ action="$1"
 shift
 
 # invoke action covering all wms
-if type "$action" > /dev/null; then
-	"$action" "$@"
+# but skip command paste as it doesn't trigger properly
+if [ "$action" != "paste" ]; then
+	if type "$action" > /dev/null; then
+		"$action" "$@"
+		exit
+	fi
+fi
+
+#  invoke action covering single wm
+if type "$SXMO_WM$action" > /dev/null; then
+	"$SXMO_WM$action" "$@"
 	exit
 fi
 
@@ -500,11 +505,6 @@ case "$SXMO_WM" in
 		;;
 esac
 
-#  invoke action covering single wm
-if type "$SXMO_WM$action" > /dev/null; then
-	"$SXMO_WM$action" "$@"
-	exit
-else
-	printf "%s not implemented for %s\n" "$action" "$SXMO_WM" >&2
-	exit 1
-fi
+# Error if no match was found
+printf "%s not implemented for %s\n" "$action" "$SXMO_WM" >&2
+exit 1
