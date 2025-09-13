@@ -32,6 +32,9 @@ This script manipulates the brightness of your screen.
 *getvalue*
 	Get current value.
 
+*smooth_brightness_adjustment* <VALUE>
+	Adjust the brightness by steps of 1 to VALUE
+
 # SEE ALSO
 
 _sxmo_(7)

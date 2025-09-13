@@ -92,6 +92,10 @@ case "$WMCLASS" in
 				printf "%s" "$icon_ton" || printf "%s" "$icon_tof"
 			) ^ 1 ^ toggle_daemon 'Keyboard Autorotate' kb_autorotate sxmo_keyboard_autorotate.sh")
 			$icon_ror Rotate                     ^ 1 ^ sxmo_rotate.sh rotate
+			$icon_brightness Adaptive Brightness $(
+				superd_service_isrunning sxmo_adaptivebrightness &&
+				printf "%s" "$icon_ton" || printf "%s" "$icon_tof"
+			) ^ 1 ^ supertoggle_daemon sxmo_adaptivebrightness
 			$icon_trm Hooks                      ^ 0 ^ sxmo_hookmenu.sh
 			$icon_upc Upgrade Pkgs               ^ 0 ^ sxmo_terminal.sh sxmo_upgrade.sh
 			$icon_sfl Migrate configuration      ^ 0 ^ sxmo_terminal.sh sxmo_migrate.sh

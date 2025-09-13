@@ -50,6 +50,9 @@ sxmo_jobs.sh start statusbar_periodics sxmo_run_aligned.sh 60 \
 # dunst is required for warnings.
 superctl start dunst
 
+# start adaptive brightness at boot
+# superctl start sxmo_adaptivebrightness
+
 # load some other little things here too.
 case "$SXMO_WM" in
 	river)

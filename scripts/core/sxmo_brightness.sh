@@ -38,12 +38,14 @@ down() {
 		return
 	fi
 
-	if [ "$((value-5))" -ge "${SXMO_MIN_BRIGHTNESS:-5}" ]; then
-		if [ -n "$1" ]; then
+
+	if [ -n "$1" ]; then
+		if [ "$((value-$1))" -ge "${SXMO_MIN_BRIGHTNESS:-5}" ]; then
 			brightnessctl -q set "$1"%-
-		else
-			brightnessctl -q set 5%-
+			return
 		fi
+	elif [ "$((value-5))" -ge "${SXMO_MIN_BRIGHTNESS:-5}" ]; then
+		brightnessctl -q set 5%-
 		return
 	fi
 
@@ -52,10 +54,33 @@ down() {
 
 getvalue() {
 	# need brightnessctl release after 0.5.1 to have --percentage
-	brightnessctl info \
-		| grep "Current brightness:" \
-		| awk '{ print $NF }' \
-		| grep -o "[0-9]*"
+	brightnessctl info | awk -F'[(%]' 'NR==2{print $2}'
+}
+
+smooth_brightness_adjustment() {
+	# $1 is target
+	current_brightness=$(getvalue)
+	if [ "$current_brightness" -eq "$1" ]; then
+		return
+	fi
+
+	count=0
+
+	# Set variables depending on the difference between current and wanted brightness
+	if [ "$current_brightness" -gt "$1" ]; then
+		difference=$((current_brightness - $1))
+		direction="down"
+	elif [ "$current_brightness" -lt "$1" ]; then
+		difference=$(($1 - current_brightness))
+		direction="up"
+	fi
+
+	while [ "$count" -lt "$difference" ]; do
+		# Call up or down with value of 1
+		"$direction" 1
+		count=$((count + 1))
+		sleep 0.4
+	done
 }
 
 case "$1" in
@@ -75,6 +100,7 @@ case "$1" in
 		  up VALUE		Up the brightness by 5%% or if VALUE supplied, by VALUE.
 		  down VALUE		Lower the brightness by 5%% or if VALUE supplied, by VALUE. Caps out at SXMO_MIN_BRIGHTNESS.
 		  getvalue		Get current value.
+		  smooth_brightness_adjustment VALUE	Adjust the brightness by steps of 1 to VALUE
 		EOF
 		#editorconfig-checker-enable
 		exit 0
