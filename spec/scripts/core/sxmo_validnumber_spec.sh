@@ -2,7 +2,7 @@
 # Copyright (c) 2025 Sxmo Contributors
 # Copyright (c) 2025 Aren Moynihan
 
-# NOTE: test numbers in this scrcipt start at +12015550123, and are incremented
+# NOTE: test numbers in this script start at +12015550123, and are incremented
 # from there. 201 is the lowest valid area code, and 555-0XXX is reserved for
 # fictious numbers. Hopefully this is enough to avoid accidentally including a
 # real phone number.
