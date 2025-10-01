@@ -19,6 +19,15 @@ swayfocusedname() {
 	swaymsg -t get_outputs | jq -r '.[] | select(.focused == true) | .name'
 }
 
+riverfocusedname() {
+	river-bedload -print outputs | jq -r '.[] | select(.focused).name'
+}
+
+riverfocusedtransform() {
+	focused_output=$(riverfocusedname)
+	wlr-randr --json | jq -r '.[] | select(.name == "'"$focused_output"'").transform'
+}
+
 restart_sxmo_hook_lisgd() {
 	if [ ! -e "$XDG_CACHE_HOME"/sxmo/sxmo.nogesture ]; then
 		superctl restart sxmo_hook_lisgd
@@ -47,6 +56,17 @@ swayisrotated() {
 	return 0;
 }
 
+riverisrotated() {
+	rotation="$(
+		riverfocusedtransform | sed -e s/270/right/ -e s/90/left/ -e s/180/reverse/
+	)"
+	if [ "$rotation" = "normal" ]; then
+		return 1;
+	fi
+	printf %s "$rotation"
+	return 0;
+}
+
 xorgrotinvert() {
 	sxmo_keyboard.sh close
 	xrandr -o inverted
@@ -58,6 +78,14 @@ xorgrotinvert() {
 
 swayrotinvert() {
 	swaymsg -- output "-" transform 180
+	restart_sxmo_hook_lisgd
+	sxmo_hook_rotate.sh invert
+	exit 0
+}
+
+riverrotinvert() {
+	focused_output=$(river-bedload -print outputs | jq -r ".[] | select(.focused).name")
+	wlr-randr --output "$focused_output" --transform 180
 	restart_sxmo_hook_lisgd
 	sxmo_hook_rotate.sh invert
 	exit 0
@@ -79,6 +107,14 @@ swayrotnormal() {
 	exit 0
 }
 
+riverrotnormal() {
+	focused_output=$(river-bedload -print outputs | jq -r ".[] | select(.focused).name")
+	wlr-randr --output "$focused_output" --transform normal
+	restart_sxmo_hook_lisgd
+	sxmo_hook_rotate.sh normal
+	exit 0
+}
+
 xorgrotright() {
 	sxmo_keyboard.sh close
 	xrandr -o right
@@ -90,6 +126,14 @@ xorgrotright() {
 
 swayrotright() {
 	swaymsg -- output "-" transform 90
+	restart_sxmo_hook_lisgd
+	sxmo_hook_rotate.sh right
+	exit 0
+}
+
+riverrotright() {
+	focused_output=$(river-bedload -print outputs | jq -r ".[] | select(.focused).name")
+	wlr-randr --output "$focused_output" --transform 270
 	restart_sxmo_hook_lisgd
 	sxmo_hook_rotate.sh right
 	exit 0
@@ -111,10 +155,21 @@ swayrotleft() {
 	exit 0
 }
 
+riverrotleft() {
+	focused_output=$(river-bedload -print outputs | jq -r ".[] | select(.focused).name")
+	wlr-randr --output "$focused_output" --transform 90
+	restart_sxmo_hook_lisgd
+	sxmo_hook_rotate.sh left
+	exit 0
+}
+
 isrotated() {
 	case "$SXMO_WM" in
 		sway)
 			"swayisrotated"
+			;;
+		river)
+			"riverisrotated"
 			;;
 		dwm|i3)
 			"xorgisrotated"
@@ -136,6 +191,9 @@ fi
 case "$SXMO_WM" in
 	sway)
 		"sway$1" "$@"
+		;;
+	river)
+		"river$1" "$@"
 		;;
 	dwm|i3)
 		"xorg$1" "$@"
