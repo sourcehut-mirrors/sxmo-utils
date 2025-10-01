@@ -109,6 +109,12 @@ riverctl map normal Super Right send-layout-cmd rivertile "main-location right"
 riverctl map normal Super Down  send-layout-cmd rivertile "main-location bottom"
 riverctl map normal Super Left  send-layout-cmd rivertile "main-location left"
 
+# Declare a menu mode, like in sway, to use vol up/down and power when navigating in menus.
+riverctl declare-mode menu
+riverctl map menu None XF86PowerOff spawn "wtype -k Return"
+riverctl map menu None XF86AudioRaiseVolume spawn "wtype -k Up"
+riverctl map menu None XF86AudioLowerVolume spawn "wtype -k Down"
+
 # Declare a passthrough mode. This mode has only a single mapping to return to
 # normal mode. This makes it useful for testing a nested wayland compositor
 riverctl declare-mode passthrough
@@ -119,13 +125,40 @@ riverctl map normal Super F11 enter-mode passthrough
 # Super+F11 to return to normal mode
 riverctl map passthrough Super F11 enter-mode normal
 
+# bonsaictl should be working, but for an obscure reason it doesn't.
+multikey_retrocompat() {
+	sxmo_multikey.sh clear
+	for mode in normal locked
+	do
+		riverctl map $mode None XF86PowerOff spawn "sxmo_multikey.sh \
+			powerbutton \
+			powerbutton_one \
+			powerbutton_two \
+			powerbutton_three"
+		riverctl map $mode None XF86AudioRaiseVolume spawn \
+			"sxmo_multikey.sh \
+			volup \
+			volup_one \
+			volup_two \
+			volup_three"
+		riverctl map $mode None XF86AudioLowerVolume spawn \
+			"sxmo_multikey.sh \
+			voldown \
+			voldown_one \
+			voldown_two \
+			voldown_three"
+	done
+}
+
+multikey_retrocompat
+
 # Various media key mapping examples for both normal and locked mode which do
 # not have a modifier
 for mode in normal locked
 do
     # Control pulse audio volume with pamixer (https://github.com/cdemoulins/pamixer)
-    riverctl map $mode None XF86AudioRaiseVolume  spawn 'sxmo_audio.sh vol up'
-    riverctl map $mode None XF86AudioLowerVolume  spawn 'sxmo_audio.sh vol down'
+    #riverctl map $mode None XF86AudioRaiseVolume  spawn 'sxmo_audio.sh vol up'
+    #riverctl map $mode None XF86AudioLowerVolume  spawn 'sxmo_audio.sh vol down'
     riverctl map $mode None XF86AudioMute         spawn 'sxmo_audio.sh vol togglemute'
     riverctl map $mode None XF86AudioMicMute      spawn 'sxmo_audio.sh mic togglemute'
 

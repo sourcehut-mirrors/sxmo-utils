@@ -73,13 +73,26 @@ case "$1" in
 esac
 
 if [ -n "$WAYLAND_DISPLAY" ]; then
-	if sxmo_state.sh get | grep -q unlock; then
-		swaymsg mode menu -q # disable default button inputs
-		cleanmode() {
-			swaymsg mode default -q
-		}
-		trap 'cleanmode' TERM INT
-	fi
+	case "$SXMO_WM" in
+		sway)
+			if sxmo_state.sh get | grep -q unlock; then
+				swaymsg mode menu -q # disable default button inputs
+				cleanmode() {
+					swaymsg mode default -q
+				}
+				trap 'cleanmode' TERM INT
+			fi
+			;;
+		river)
+			if sxmo_state.sh get | grep -q unlock; then
+				riverctl enter-mode menu # disable default button inputs
+				cleanmode() {
+					riverctl enter-mode normal
+				}
+				trap 'cleanmode' TERM INT
+			fi
+			;;
+	esac
 fi
 
 # Need to pass any options first before menu args
