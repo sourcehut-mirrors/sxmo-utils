@@ -404,6 +404,11 @@ swayworkspace() {
 	swaymsg "workspace $1"
 }
 
+riverworkspace() {
+	tags=$((1 << ($1 - 1)))
+	riverctl set-focused-tags "$tags"
+}
+
 xorgworkspace() {
 	if [ -z "$DISPLAY" ]; then
 		export DISPLAY=:0
@@ -417,6 +422,11 @@ i3moveworkspace() {
 
 swaymoveworkspace() {
 	swaymsg "move container to workspace $1"
+}
+
+rivermoveworkspace() {
+	tags=$((1 << ($1 - 1)))
+	riverctl set-view-tags "$tags"
 }
 
 xorgmoveworkspace() {

@@ -125,6 +125,136 @@ EOF
 	done
 }
 
+# The generic river menu
+riverwmmenu() {
+	WMINDEX=0
+
+	while : ; do
+		# For now justs swap between fullscreen and tiled.
+		LAYOUT_LINE="tiled $icon_arr fullscreen"
+		CHOICES="$(grep . <<EOF
+$icon_cls Close Menu
+$icon_mov Move menu
+$icon_rld Switch menu
+$(printf "%s" "$icon_rld $LAYOUT_LINE")
+$icon_trh Kill window
+EOF
+		)"
+		PICKED="$(printf "%s" "$CHOICES" | grep . | dmenu -I "$WMINDEX" -p "WM Menu")"
+		WMINDEX="$(($(printf "%s" "$CHOICES" | grep -nm1 "^$PICKED$" | cut -d: -f1) -1))"
+
+		case "$PICKED" in
+			""|"$icon_cls Close Menu")
+				return
+				;;
+			"$icon_mov Move menu")
+				rivermovemenu
+				;;
+			"$icon_rld Switch menu")
+				riverwindowswitcher
+				;;
+			"$icon_rld $LAYOUT_LINE")
+				sxmo_wm.sh togglelayout
+				;;
+			"$icon_trh Kill window")
+				sxmo_killwindow.sh
+				;;
+			*)
+				printf "%s" "$PICKED" | tr -cd '\000-\177' | xargs swaymsg
+		esac
+	done
+}
+
+_rivermovetowssubmenu() {
+	for ws in $(seq "${SXMO_WORKSPACE_WRAPPING:-9}"); do
+		printf "%s Move to WS %s\n" "$ws" "$ws"
+	done
+}
+
+# A menu which allows to move windows or toggle floating.
+rivermovemenu() {
+	CHOICES="$(cat <<EOF
+$icon_cls Close Menu
+$icon_wn2 Toggle Floating
+$(_rivermovetowssubmenu)
+EOF
+	)"
+
+	MOVEINDEX=0
+	while : ; do
+		# Remove current workspace from the list
+		CHOICES="$(
+			printf "%s" "$CHOICES" |
+			grep -v "$(
+				river-bedload -print focused |
+				jq -r ' .[] | .focused_id')"
+		)"
+
+		PICKED="$(printf "%s" "$CHOICES" | dmenu -I "$MOVEINDEX" -p "Move menu")"
+		MOVEINDEX="$(($(printf "%s" "$CHOICES" | grep -nm1 "^$PICKED$" | cut -d: -f1) -1))"
+		case "$PICKED" in
+			""|"$icon_cls Close Menu")
+				return
+				;;
+			?" Move to WS "?)
+				sxmo_wm.sh moveworkspace "${PICKED%" Move to WS "?}"
+				return
+				;;
+			"$icon_wn2 Toggle Floating")
+				riverctl toggle-float
+				;;
+		esac
+	done
+}
+
+riverwindowswitcher() {
+	SWITCHINDEX=0
+
+	while : ; do
+		# There is currently no easy in river to get the tag of a given window,
+		# skip the window part of this menu for now.
+
+		# Get the container ID from the node tree
+		CHOICES="$(
+			cat <<EOF
+$icon_cls Close Menu
+$icon_arl Previous Workspace
+$icon_arr Next Workspace
+$(_rivermovetowssubmenu | grep -v "$(
+	river-bedload -print focused |
+	jq -r ' .[] | .focused_id')")
+EOF
+		)"
+
+		PICKED="$(printf "%s" "$CHOICES" | dmenu -p "Switch menu" -I "$SWITCHINDEX")"
+		SWITCHINDEX="$(($(printf "%s" "$CHOICES" | grep -nm1 "^$PICKED$" | cut -d: -f1) -1))"
+
+		case "$PICKED" in
+			""|"$icon_cls Close Menu")
+				return
+				;;
+			"$icon_arr Next Workspace")
+				sxmo_wm.sh nextworkspace
+				;;
+			"$icon_arl Previous Workspace")
+				sxmo_wm.sh previousworkspace
+				;;
+			?" Move to WS "?)
+				sxmo_wm.sh workspace "${PICKED%" Move to WS "?}"
+				return
+				;;
+## When we'll have proper window switching:
+#			*)
+#				# Requires the actual `id` to be at the end and between parentheses
+#				CON_ID=${PICKED##*(}
+#				CON_ID=${CON_ID%)}
+#				swaymsg "[con_id=$CON_ID]" focus
+#				;;
+		esac
+	done
+}
+
+
 dwmwmmenu() {
 	WMINDEX=0
 
@@ -275,4 +405,5 @@ fi
 case "$SXMO_WM" in
 	dwm|i3) dwmwmmenu ;;
 	sway) swaywmmenu ;;
+	river) riverwmmenu ;;
 esac
