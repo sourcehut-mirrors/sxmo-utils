@@ -23,22 +23,5 @@ with_dbus() {
 	exec sway -c "$XDG_CONFIG_HOME/sxmo/sway"
 }
 
-cleanup() {
-	sxmo_jobs.sh stop all
-	case "$SXMO_MENU" in
-		bemenu)
-			pkill bemenu
-			;;
-		wofi)
-			pkill wofi
-			;;
-		dmenu)
-			pkill dmenu
-			;;
-	esac
-	pkill wvkbd
-	pkill superd
-}
-
 # shellcheck source=scripts/core/sxmo_init.sh
 . sxmo_init.sh

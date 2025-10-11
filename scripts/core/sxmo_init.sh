@@ -19,8 +19,15 @@ start() {
 	wait
 }
 
+cleanup() {
+	sxmo_dmenu.sh close
+	sxmo_keyboard.sh close
+	sxmo_jobs.sh stop all
+}
+
 finish() {
 	cleanup
+	sleep 5
 	sxmo_hook_stop.sh
 	exit
 }

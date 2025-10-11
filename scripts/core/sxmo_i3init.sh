@@ -52,19 +52,5 @@ with_dbus() {
 	exec i3 -c "$XDG_CONFIG_HOME"/sxmo/i3
 }
 
-cleanup() {
-	sxmo_jobs.sh stop all
-	pkill svkbd
-	case "$SXMO_MENU" in
-		dmenu)
-			pkill dmenu
-			;;
-		bemenu)
-			pkill bemenu
-			;;
-	esac
-	pkill superd
-}
-
 # shellcheck source=scripts/core/sxmo_init.sh
 . sxmo_init.sh

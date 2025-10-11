@@ -22,11 +22,5 @@ with_dbus() {
 	exec river -c "$XDG_CONFIG_HOME/sxmo/river"
 }
 
-cleanup() {
-	sxmo_jobs.sh stop all
-	sxmo_dmenu.sh close
-	sxmo_keyboard.sh close
-}
-
 # shellcheck source=scripts/core/sxmo_init.sh
 . sxmo_init.sh

@@ -45,19 +45,5 @@ with_dbus() {
 	exec dwm
 }
 
-cleanup() {
-	sxmo_jobs.sh stop all
-	pkill svkbd
-	case "$SXMO_MENU" in
-		dmenu)
-			pkill dmenu
-			;;
-		bemenu)
-			pkill bemenu
-			;;
-	esac
-	pkill superd
-}
-
 # shellcheck source=scripts/core/sxmo_init.sh
 . sxmo_init.sh
