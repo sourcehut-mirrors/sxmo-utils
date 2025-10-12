@@ -315,7 +315,7 @@ sway() {
 }
 
 river() {
-	defaultconfig "$(xdg_data_path sxmo/appcfg/river)" "$XDG_CONFIG_HOME/sxmo/river" 655
+	defaultconfig "$(xdg_data_path sxmo/appcfg/river)" "$XDG_CONFIG_HOME/sxmo/river" 755
 }
 
 wayland() {
