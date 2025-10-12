@@ -125,7 +125,7 @@ riverctl map normal Super F11 enter-mode passthrough
 # Super+F11 to return to normal mode
 riverctl map passthrough Super F11 enter-mode normal
 
-# bonsaictl should be working, but for an obscure reason it doesn't.
+# Drop this when bonsai is available on 32 bits systems
 multikey_retrocompat() {
 	sxmo_multikey.sh clear
 	for mode in normal locked
@@ -150,7 +150,27 @@ multikey_retrocompat() {
 	done
 }
 
-multikey_retrocompat
+if ! command -v bonsaictl > /dev/null; then
+	multikey_retrocompat
+else
+	for mode in normal locked
+	do
+		riverctl map $mode None XF86PowerOff spawn \
+			"bonsaictl -e power_pressed"
+		riverctl map -release $mode None XF86PowerOff spawn \
+			"bonsaictl -e power_released"
+
+		riverctl map $mode None XF86AudioRaiseVolume spawn \
+			"bonsaictl -e volup_pressed"
+		riverctl map -release $mode None XF86AudioRaiseVolume spawn \
+			"bonsaictl -e volup_released"
+
+		riverctl map $mode None XF86AudioLowerVolume spawn \
+			"bonsaictl -e voldown_pressed"
+		riverctl map -release $mode None XF86AudioLowerVolume spawn \
+			"bonsaictl -e voldown_released"
+	done
+fi
 
 # Various media key mapping examples for both normal and locked mode which do
 # not have a modifier
