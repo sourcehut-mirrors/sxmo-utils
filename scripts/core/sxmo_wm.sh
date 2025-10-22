@@ -109,7 +109,7 @@ swayinputevent() {
 	fi
 }
 
-xorgfocusedwindow() {
+_xorgfocusedwindow() {
 	xprop -id "$(xdotool getactivewindow 2>/dev/null)" 2>/dev/null | awk '
 		/^WM_CLASS/ {
 			sub(/^WM_CLASS[^=]*= ?"[^"]*", "/, "")
@@ -125,7 +125,7 @@ xorgfocusedwindow() {
 	'
 }
 
-ipc_focusedwindow() {
+_ipc_focusedwindow() {
 	jq -r '
 		recurse(.nodes[]) |
 		select(.focused == true) |
@@ -142,11 +142,11 @@ ipc_focusedwindow() {
 	'
 }
 
-raw_focusedwindow() {
+_raw_focusedwindow() {
 	case "$SXMO_WM" in
-		dwm) xorgfocusedwindow ;;
-		i3) i3-msg -t get_tree | ipc_focusedwindow ;;
-		sway) swaymsg -t get_tree | ipc_focusedwindow ;;
+		dwm) _xorgfocusedwindow ;;
+		i3) i3-msg -t get_tree | _ipc_focusedwindow ;;
+		sway) swaymsg -t get_tree | _ipc_focusedwindow ;;
 		river) lswt -j | jq -r '
 			.toplevels |
 				map(select(.activated))[0] |
@@ -155,14 +155,14 @@ raw_focusedwindow() {
 	esac
 }
 
-focusedwindow() {
+wm_generic_focusedwindow() {
 	if [ "$1" = "-r" ]; then
-		raw_focusedwindow
+		_raw_focusedwindow
 	else
 		# This script originally output this format, which is a bit
 		# harder to parse. Keep it for backwards compatibility in case
 		# anyone was using it.
-		raw_focusedwindow | {
+		_raw_focusedwindow | {
 			read -r app
 			read -r title
 			printf "app: %s\ntitle: %s\n" "$app" "$title"
@@ -455,7 +455,7 @@ rivertogglebar() {
 	fi
 }
 
-configmenuentry() {
+wm_generic_configmenuentry() {
 	case "$SXMO_WM" in
 		sway)
 			echo "$icon_cfg Edit configuration ^ 0 ^ sxmo_terminal.sh $EDITOR $XDG_CONFIG_HOME/sxmo/sway"
@@ -470,41 +470,41 @@ configmenuentry() {
 }
 
 
-action="$1"
-shift
+dispatch() {
+	action="$1"
+	shift
 
-# invoke action covering all wms
-# but skip command paste as it doesn't trigger properly
-if [ "$action" != "paste" ]; then
-	if type "$action" > /dev/null; then
-		"$action" "$@"
-		exit
+	# invoke action covering single wm
+	if type "$SXMO_WM$action" >/dev/null 2>&1; then
+		"$SXMO_WM$action" "$@"
+		return
 	fi
-fi
 
-#  invoke action covering single wm
-if type "$SXMO_WM$action" > /dev/null; then
-	"$SXMO_WM$action" "$@"
-	exit
-fi
+	# invoke action covering multiple wms
+	case "$SXMO_WM" in
+		dwm|i3)
+			if type "xorg$action" >/dev/null 2>&1; then
+				"xorg$action" "$@"
+				return
+			fi
+			;;
+		sway|river)
+			# We don't yet support everything
+			if type "wl$action" >/dev/null 2>&1; then
+				"wl$action" "$@"
+				return
+			fi
+			;;
+	esac
 
-# invoke action covering multiple wms
-case "$SXMO_WM" in
-	dwm|i3)
-		if type "xorg$action" > /dev/null; then
-			"xorg$action" "$@"
-			exit
-		fi
-		;;
-	sway|river)
-		# We don't yet support everything
-		if type "wl$action" > /dev/null; then
-			"wl$action" "$@"
-			exit
-		fi
-		;;
-esac
+	# invoke action covering all wms
+	if type "wm_generic_$action" >/dev/null 2>&1; then
+		"wm_generic_$action" "$@"
+		return
+	else
+		printf "%s not implemented for %s\n" "$action" "$SXMO_WM" >&2
+		return 1
+	fi
+}
 
-# Error if no match was found
-printf "%s not implemented for %s\n" "$action" "$SXMO_WM" >&2
-exit 1
+dispatch "$@"
