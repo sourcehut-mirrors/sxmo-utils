@@ -176,34 +176,23 @@ xorgpaste() {
 	xclip -o
 }
 
-i3exec() {
-	i3-msg exec -- "$@"
+wm_generic__swi3exec_inner() {
+	cmd="$(cat "$1")"
+	rm "$1"
+	eval "$cmd"
 }
 
-i3execwait() {
-	PIDFILE="$(mktemp)"
-	printf '"%s" & printf %%s "$!" > "%s"' "$*" "$PIDFILE" \
-		| xargs -I{} i3-msg exec -- '{}'
-	while : ; do
-		sleep 0.5
-		kill -0 "$(cat "$PIDFILE")" 2> /dev/null || break
-	done
-	rm "$PIDFILE"
+swi3exec() {
+	set -e
+
+	cmdfile="$(mktemp)"
+	jq -r --null-input '$ARGS.positional | @sh' --args -- "$@" > "$cmdfile"
+
+	swi3msg exec "sxmo_wm.sh _swi3exec_inner '$cmdfile'" > /dev/null
 }
 
-swayexec() {
-	swaymsg exec -- "$@"
-}
-
-swayexecwait() {
-	PIDFILE="$(mktemp)"
-	printf '"%s" & printf %%s "$!" > "%s"' "$*" "$PIDFILE" \
-		| xargs -I{} swaymsg exec -- '{}'
-	while : ; do
-		sleep 0.5
-		kill -0 "$(cat "$PIDFILE")" 2> /dev/null || break
-	done
-	rm "$PIDFILE"
+riverexec() {
+	riverctl spawn "$@"
 }
 
 xorgexec() {
@@ -213,26 +202,50 @@ xorgexec() {
 	"$@" &
 }
 
+wm_generic__execwait_inner() {
+	notify_file="$1/done"
+	shift
+
+	# This opens the pipe for writing, when this process exits it will be
+	# closed, which will send eof to the monitoring process.
+	exec 3>"$notify_file"
+
+	"$@"
+}
+
+_execwait() {
+	set -e
+	runner="$1"
+	shift
+
+	notify_dir="$(mktemp -d)"
+	mkfifo "$notify_dir/done"
+
+	"$runner" sxmo_wm.sh _execwait_inner "$notify_dir" "$@"
+
+	exec 3<"$notify_dir/done"
+
+	# The exec line won't finish until the inner file has been opened for
+	# writing, so it's safe to remove the temp dir here.
+	rm -r "$notify_dir"
+
+	# Wait for the notification file to be closed
+	read -r _ <&3 || true
+}
+
+swi3execwait() {
+	_execwait swi3exec "$@"
+}
+
+riverexecwait() {
+	_execwait riverexec "$@"
+}
+
 xorgexecwait() {
 	if [ -z "$DISPLAY" ]; then
 		export DISPLAY=:0
 	fi
 	exec "$@"
-}
-
-riverexec() {
-	riverctl spawn "$@"
-}
-
-riverexecwait() {
-	PIDFILE="$(mktemp)"
-	printf '"%s" & printf %%s "$!" > "%s"' "$*" "$PIDFILE" \
-		| xargs -I{} riverctl spawn '{}'
-	while : ; do
-		sleep 0.5
-		kill -0 "$(cat "$PIDFILE")" 2> /dev/null || break
-	done
-	rm "$PIDFILE"
 }
 
 swi3togglelayout() {
