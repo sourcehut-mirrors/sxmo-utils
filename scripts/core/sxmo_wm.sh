@@ -88,6 +88,11 @@ xorginputevent() {
 		TOUCH_POINTER_ID="$SXMO_STYLUS_ID"
 	fi
 
+	if [ -z "$TOUCH_POINTER_ID" ]; then
+		echo "not found"
+		return 0
+	fi
+
 	STATE=off
 	if xinput list-props "$TOUCH_POINTER_ID" | \
 		grep "Device Enabled" | \
@@ -476,6 +481,11 @@ wm_generic_configmenuentry() {
 # }}}
 
 dispatch() {
+	if [ "$#" -lt 1 ]; then
+		echo "Usage: sxmo_wm.sh <command>" >&2
+		return 1
+	fi
+
 	action="$1"
 	shift
 
