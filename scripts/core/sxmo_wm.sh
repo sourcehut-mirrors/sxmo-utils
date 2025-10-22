@@ -134,9 +134,9 @@ swayinputevent() {
 	if [ -z "$2" ]; then
 		printf %s "$STATE"
 	elif [ "$2" = on ] && [ "$STATE" != on ]; then
-		swaymsg -- input type:"$TOUCH_POINTER_ID" events enabled
+		swaymsg "input type:$TOUCH_POINTER_ID events enabled" > /dev/null
 	elif [ "$2" = off ] && [ "$STATE" != off ] ; then
-		swaymsg -- input type:"$TOUCH_POINTER_ID" events disabled
+		swaymsg "input type:$TOUCH_POINTER_ID events disabled" > /dev/null
 	fi
 }
 # }}}
@@ -291,7 +291,7 @@ xorgexecwait() {
 
 # toggle layout {{{
 swi3togglelayout() {
-	swi3msg layout toggle splith splitv tabbed
+	swi3msg "layout toggle splith splitv tabbed" > /dev/null
 }
 
 dwmtogglelayout() {
@@ -351,7 +351,7 @@ _swi3getpreviousworkspace() {
 }
 
 swi3nextworkspace() {
-	swi3msg "workspace $(_swi3getnextworkspace)"
+	swi3msg "workspace $(_swi3getnextworkspace)" > /dev/null
 }
 
 rivernextworkspace() {
@@ -366,7 +366,7 @@ dwmnextworkspace() {
 }
 
 swi3previousworkspace() {
-	swi3msg -- workspace "$(_swi3getpreviousworkspace )"
+	swi3msg "workspace $(_swi3getpreviousworkspace )" > /dev/null
 }
 
 dwmpreviousworkspace() {
@@ -381,7 +381,7 @@ riverpreviousworkspace() {
 }
 
 swi3movenextworkspace() {
-	swi3msg "move container to workspace $(_swi3getnextworkspace)"
+	swi3msg "move container to workspace $(_swi3getnextworkspace)" > /dev/null
 }
 
 dwmmovenextworkspace() {
@@ -392,7 +392,7 @@ dwmmovenextworkspace() {
 }
 
 swi3movepreviousworkspace() {
-	swi3msg -- move container to workspace "$(_swi3getpreviousworkspace )"
+	swi3msg "move container to workspace $(_swi3getpreviousworkspace )" > /dev/null
 }
 
 dwmmovepreviousworkspace() {
@@ -403,7 +403,7 @@ dwmmovepreviousworkspace() {
 }
 
 swi3workspace() {
-	swi3msg "workspace $1"
+	swi3msg "workspace $1" > /dev/null
 }
 
 riverworkspace() {
@@ -419,7 +419,7 @@ dwmworkspace() {
 }
 
 swi3moveworkspace() {
-	swi3msg "move container to workspace $1"
+	swi3msg "move container to workspace $1" > /dev/null
 }
 
 rivermoveworkspace() {
@@ -437,7 +437,7 @@ dwmmoveworkspace() {
 
 # toggle bar {{{
 swi3togglebar() {
-	swi3msg bar mode toggle
+	swi3msg "bar mode toggle" > /dev/null
 }
 
 dwmtogglebar() {
