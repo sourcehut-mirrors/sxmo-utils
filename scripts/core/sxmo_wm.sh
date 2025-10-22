@@ -16,6 +16,7 @@ swi3msg() {
 	esac
 }
 
+# Output Power Management {{{
 xorgdpms() {
 	STATE=on
 	if xset q | grep -q "Off: 3"; then
@@ -46,9 +47,10 @@ wldpms() {
 	elif [ "$1" = off ] && [ "$STATE" != off ] ; then
 		wlopm --off "*"
 	fi
-
 }
+# }}}
 
+# inputevent {{{
 xorginputevent() {
 	if [ "$1" = "touchscreen" ]; then
 		TOUCH_POINTER_ID="$SXMO_TOUCHSCREEN_ID"
@@ -107,7 +109,9 @@ swayinputevent() {
 		swaymsg -- input type:"$TOUCH_POINTER_ID" events disabled
 	fi
 }
+# }}}
 
+# focusedwindow {{{
 _xorgfocusedwindow() {
 	xprop -id "$(xdotool getactivewindow 2>/dev/null)" 2>/dev/null | awk '
 		/^WM_CLASS/ {
@@ -167,7 +171,9 @@ wm_generic_focusedwindow() {
 		}
 	fi
 }
+# }}}
 
+# paste {{{
 wlpaste() {
 	wl-paste
 }
@@ -175,7 +181,9 @@ wlpaste() {
 xorgpaste() {
 	xclip -o
 }
+# }}}
 
+# exec {{{
 wm_generic__swi3exec_inner() {
 	cmd="$(cat "$1")"
 	rm "$1"
@@ -201,7 +209,9 @@ xorgexec() {
 	fi
 	"$@" &
 }
+# }}}
 
+# execwait {{{
 wm_generic__execwait_inner() {
 	notify_file="$1/done"
 	shift
@@ -247,7 +257,9 @@ xorgexecwait() {
 	fi
 	exec "$@"
 }
+# }}}
 
+# toggle layout {{{
 swi3togglelayout() {
 	swi3msg layout toggle splith splitv tabbed
 }
@@ -262,7 +274,9 @@ xorgtogglelayout() {
 rivertogglelayout() {
 	riverctl toggle-fullscreen
 }
+# }}}
 
+# switch focus {{{
 i3switchfocus() {
 	sxmo_wmmenu.sh i3windowswitcher
 }
@@ -277,7 +291,9 @@ xorgswitchfocus() {
 	fi
 	xdotool key --clearmodifiers Super+x
 }
+# }}}
 
+# workspace switching {{{
 _swi3getcurrentworkspace() {
 	swi3msg -t get_workspaces | jq -r '.[] | select(.focused).name'
 }
@@ -387,7 +403,9 @@ xorgmoveworkspace() {
 	fi
 	xdotool key --clearmodifiers "Super+shift+$1"
 }
+# }}}
 
+# toggle bar {{{
 swi3togglebar() {
 	swi3msg bar mode toggle
 }
@@ -406,7 +424,9 @@ rivertogglebar() {
 		superctl start sxmo_riverbar
 	fi
 }
+# }}}
 
+# configmenuentry {{{
 wm_generic_configmenuentry() {
 	case "$SXMO_WM" in
 		dwm)
@@ -423,7 +443,7 @@ wm_generic_configmenuentry() {
 			;;
 	esac
 }
-
+# }}}
 
 dispatch() {
 	action="$1"
