@@ -9,8 +9,11 @@
 # shellcheck source=scripts/core/sxmo_common.sh
 . sxmo_common.sh
 
-i3dpms() {
-	xorgdpms "$@"
+swi3msg() {
+	case "$SXMO_WM" in
+		sway) swaymsg "$@" ;;
+		i3) i3-msg "$@" ;;
+	esac
 }
 
 xorgdpms() {
@@ -28,10 +31,6 @@ xorgdpms() {
 		xset dpms 0 0 0
 		xset dpms force on
 	fi
-}
-
-i3inputevent() {
-	xorginputevent "$@"
 }
 
 wldpms() {
@@ -125,8 +124,8 @@ _xorgfocusedwindow() {
 	'
 }
 
-_ipc_focusedwindow() {
-	jq -r '
+_swi3_focusedwindow() {
+	swi3msg -t get_tree | jq -r '
 		recurse(.nodes[]) |
 		select(.focused == true) |
 		{
@@ -145,8 +144,7 @@ _ipc_focusedwindow() {
 _raw_focusedwindow() {
 	case "$SXMO_WM" in
 		dwm) _xorgfocusedwindow ;;
-		i3) i3-msg -t get_tree | _ipc_focusedwindow ;;
-		sway) swaymsg -t get_tree | _ipc_focusedwindow ;;
+		sway|i3) _swi3_focusedwindow ;;
 		river) lswt -j | jq -r '
 			.toplevels |
 				map(select(.activated))[0] |
@@ -222,10 +220,6 @@ xorgexecwait() {
 	exec "$@"
 }
 
-i3togglelayout() {
-	i3-msg layout toggle splith splitv tabbed
-}
-
 riverexec() {
 	riverctl spawn "$@"
 }
@@ -241,8 +235,8 @@ riverexecwait() {
 	rm "$PIDFILE"
 }
 
-swaytogglelayout() {
-	swaymsg layout toggle splith splitv tabbed
+swi3togglelayout() {
+	swi3msg layout toggle splith splitv tabbed
 }
 
 xorgtogglelayout() {
@@ -252,12 +246,12 @@ xorgtogglelayout() {
 	xdotool key --clearmodifiers key Super+space
 }
 
-i3switchfocus() {
-	sxmo_wmmenu.sh i3windowswitcher
-}
-
 rivertogglelayout() {
 	riverctl toggle-fullscreen
+}
+
+i3switchfocus() {
+	sxmo_wmmenu.sh i3windowswitcher
 }
 
 swayswitchfocus() {
@@ -271,12 +265,12 @@ xorgswitchfocus() {
 	xdotool key --clearmodifiers Super+x
 }
 
-_i3getcurrentworkspace() {
-	i3-msg -t get_workspaces | jq -r '.[] | select(.focused==true).name'
+_swi3getcurrentworkspace() {
+	swi3msg -t get_workspaces | jq -r '.[] | select(.focused).name'
 }
 
-_i3getnextworkspace() {
-	value="$(($(_i3getcurrentworkspace)+1))"
+_swi3getnextworkspace() {
+	value="$(($(_swi3getcurrentworkspace)+1))"
 	if [ "$value" -eq "$((${SXMO_WORKSPACE_WRAPPING:-4}+1))" ]; then
 		printf 1
 	else
@@ -284,8 +278,8 @@ _i3getnextworkspace() {
 	fi
 }
 
-_i3getpreviousworkspace() {
-	value="$(($(_i3getcurrentworkspace)-1))"
+_swi3getpreviousworkspace() {
+	value="$(($(_swi3getcurrentworkspace)-1))"
 	if [ "$value" -lt 1 ]; then
 		if [ "${SXMO_WORKSPACE_WRAPPING:-4}" -ne 0 ]; then
 			printf %s "${SXMO_WORKSPACE_WRAPPING:-4}"
@@ -297,39 +291,12 @@ _i3getpreviousworkspace() {
 	fi
 }
 
-_swaygetcurrentworkspace() {
-	swaymsg -t get_outputs  | \
-		jq -r '.[] | select(.focused) | .current_workspace'
+swi3nextworkspace() {
+	swi3msg "workspace $(_swi3getnextworkspace)"
 }
 
-_swaygetnextworkspace() {
-	value="$(($(_swaygetcurrentworkspace)+1))"
-	if [ "$value" -eq "$((${SXMO_WORKSPACE_WRAPPING:-4}+1))" ]; then
-		printf 1
-	else
-		printf %s "$value"
-	fi
-}
-
-_swaygetpreviousworkspace() {
-	value="$(($(_swaygetcurrentworkspace)-1))"
-	if [ "$value" -lt 1 ]; then
-		if [ "${SXMO_WORKSPACE_WRAPPING:-4}" -ne 0 ]; then
-			printf %s "${SXMO_WORKSPACE_WRAPPING:-4}"
-		else
-			return 1 # cant have previous workspace
-		fi
-	else
-		printf %s "$value"
-	fi
-}
-
-i3nextworkspace() {
-	i3-msg "workspace $(_i3getnextworkspace)"
-}
-
-swaynextworkspace() {
-	swaymsg "workspace $(_swaygetnextworkspace)"
+rivernextworkspace() {
+	river-shifttags
 }
 
 xorgnextworkspace() {
@@ -339,16 +306,8 @@ xorgnextworkspace() {
 	xdotool key --clearmodifiers Super+Shift+r
 }
 
-i3previousworkspace() {
-	_i3getpreviousworkspace | xargs -r i3-msg -- workspace
-}
-
-rivernextworkspace() {
-	river-shifttags
-}
-
-swaypreviousworkspace() {
-	_swaygetpreviousworkspace | xargs -r swaymsg -- workspace
+swi3previousworkspace() {
+	swi3msg -- workspace "$(_swi3getpreviousworkspace )"
 }
 
 xorgpreviousworkspace() {
@@ -358,16 +317,12 @@ xorgpreviousworkspace() {
 	xdotool key --clearmodifiers Super+Shift+e
 }
 
-i3movenextworkspace() {
-	i3-msg "move container to workspace $(_i3getnextworkspace)"
-}
-
 riverpreviousworkspace() {
 	river-shifttags --shift -1
 }
 
-swaymovenextworkspace() {
-	swaymsg "move container to workspace $(_swaygetnextworkspace)"
+swi3movenextworkspace() {
+	swi3msg "move container to workspace $(_swi3getnextworkspace)"
 }
 
 xorgmovenextworkspace() {
@@ -377,12 +332,8 @@ xorgmovenextworkspace() {
 	xdotool key --clearmodifiers Super+r
 }
 
-i3movepreviousworkspace() {
-	_i3getpreviousworkspace | xargs -r i3-msg -- move container to workspace
-}
-
-swaymovepreviousworkspace() {
-	_swaygetpreviousworkspace | xargs -r swaymsg -- move container to workspace
+swi3movepreviousworkspace() {
+	swi3msg -- move container to workspace "$(_swi3getpreviousworkspace )"
 }
 
 xorgmovepreviousworkspace() {
@@ -392,12 +343,8 @@ xorgmovepreviousworkspace() {
 	xdotool key --clearmodifiers Super+e
 }
 
-i3workspace() {
-	i3-msg "workspace $1"
-}
-
-swayworkspace() {
-	swaymsg "workspace $1"
+swi3workspace() {
+	swi3msg "workspace $1"
 }
 
 riverworkspace() {
@@ -412,12 +359,8 @@ xorgworkspace() {
 	xdotool key --clearmodifiers "Super+$1"
 }
 
-i3moveworkspace() {
-	i3-msg "move container to workspace $1"
-}
-
-swaymoveworkspace() {
-	swaymsg "move container to workspace $1"
+swi3moveworkspace() {
+	swi3msg "move container to workspace $1"
 }
 
 rivermoveworkspace() {
@@ -432,12 +375,8 @@ xorgmoveworkspace() {
 	xdotool key --clearmodifiers "Super+shift+$1"
 }
 
-i3togglebar() {
-	i3-msg bar mode toggle
-}
-
-swaytogglebar() {
-	swaymsg bar mode toggle
+swi3togglebar() {
+	swi3msg bar mode toggle
 }
 
 xorgtogglebar() {
@@ -484,6 +423,14 @@ dispatch() {
 	fi
 
 	# invoke action covering multiple wms
+	if [ "$SXMO_WM" = "sway" ] || [ "$SXMO_WM" = "i3" ]; then
+		if type "swi3$action" >/dev/null 2>&1; then
+			"swi3$action" "$@"
+			return
+		fi
+	fi
+
+	# invoke action covering all of xorg/wayland
 	case "$SXMO_WM" in
 		dwm|i3)
 			if type "xorg$action" >/dev/null 2>&1; then
