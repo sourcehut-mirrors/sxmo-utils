@@ -294,7 +294,7 @@ swi3togglelayout() {
 	swi3msg layout toggle splith splitv tabbed
 }
 
-xorgtogglelayout() {
+dwmtogglelayout() {
 	if [ -z "$DISPLAY" ]; then
 		export DISPLAY=:0
 	fi
@@ -315,7 +315,7 @@ swayswitchfocus() {
 	sxmo_wmmenu.sh swaywindowswitcher
 }
 
-xorgswitchfocus() {
+dwmswitchfocus() {
 	if [ -z "$DISPLAY" ]; then
 		export DISPLAY=:0
 	fi
@@ -358,7 +358,7 @@ rivernextworkspace() {
 	river-shifttags
 }
 
-xorgnextworkspace() {
+dwmnextworkspace() {
 	if [ -z "$DISPLAY" ]; then
 		export DISPLAY=:0
 	fi
@@ -369,7 +369,7 @@ swi3previousworkspace() {
 	swi3msg -- workspace "$(_swi3getpreviousworkspace )"
 }
 
-xorgpreviousworkspace() {
+dwmpreviousworkspace() {
 	if [ -z "$DISPLAY" ]; then
 		export DISPLAY=:0
 	fi
@@ -384,7 +384,7 @@ swi3movenextworkspace() {
 	swi3msg "move container to workspace $(_swi3getnextworkspace)"
 }
 
-xorgmovenextworkspace() {
+dwmmovenextworkspace() {
 	if [ -z "$DISPLAY" ]; then
 		export DISPLAY=:0
 	fi
@@ -395,7 +395,7 @@ swi3movepreviousworkspace() {
 	swi3msg -- move container to workspace "$(_swi3getpreviousworkspace )"
 }
 
-xorgmovepreviousworkspace() {
+dwmmovepreviousworkspace() {
 	if [ -z "$DISPLAY" ]; then
 		export DISPLAY=:0
 	fi
@@ -411,7 +411,7 @@ riverworkspace() {
 	riverctl set-focused-tags "$tags"
 }
 
-xorgworkspace() {
+dwmworkspace() {
 	if [ -z "$DISPLAY" ]; then
 		export DISPLAY=:0
 	fi
@@ -427,7 +427,7 @@ rivermoveworkspace() {
 	riverctl set-view-tags "$tags"
 }
 
-xorgmoveworkspace() {
+dwmmoveworkspace() {
 	if [ -z "$DISPLAY" ]; then
 		export DISPLAY=:0
 	fi
@@ -440,7 +440,7 @@ swi3togglebar() {
 	swi3msg bar mode toggle
 }
 
-xorgtogglebar() {
+dwmtogglebar() {
 	if [ -z "$DISPLAY" ]; then
 		export DISPLAY=:0
 	fi
