@@ -10,7 +10,7 @@
 
 sxmo_led.sh blink red green &
 
-sxmo_wm.sh dpms on
+sxmo_wm.sh display on
 sxmo_wm.sh inputevent touchscreen on
 
 sxmo_jobs.sh stop periodic_blink

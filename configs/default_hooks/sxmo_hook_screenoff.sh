@@ -19,7 +19,7 @@
 sxmo_led.sh blink red blue &
 
 [ "$SXMO_WM" = "sway" ] && swaymsg mode default
-sxmo_wm.sh dpms off
+sxmo_wm.sh display off
 sxmo_wm.sh inputevent touchscreen off
 
 if [ ! -e "$XDG_CACHE_HOME"/sxmo/sxmo.nosuspend ]; then

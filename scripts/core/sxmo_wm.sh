@@ -17,36 +17,66 @@ swi3msg() {
 }
 
 # Output Power Management {{{
-xorgdpms() {
-	STATE=on
-	if xset q | grep -q "Off: 3"; then
-		STATE=off
-	fi
-
-	if [ -z "$1" ]; then
-		printf %s "$STATE"
-	elif [ "$1" = off ] && [ "$STATE" != off ]; then
-		xset dpms 0 0 3
-		xset dpms force off
-	elif [ "$1" = on ] && [ "$STATE" != on ]; then
-		xset dpms 0 0 0
-		xset dpms force on
-	fi
+xorgdisplay() {
+	case "$1" in
+		off)
+			xset dpms 0 0 3
+			xset dpms force off
+			;;
+		on)
+			xset dpms 0 0 0
+			xset dpms force on
+			;;
+		"")
+			if xset q | grep -q "Off: 3"; then
+				printf "off\n"
+			else
+				printf "on\n"
+			fi
+			;;
+		*)
+			printf 'sxmo_wm.sh display: unknown command "%s"\n' "$1" >&2
+			printf 'Usage: sxmo_wm.sh display [on|off]\n' >&2
+			;;
+	esac
 }
 
-wldpms() {
-	STATE=on
-	if ! wlopm | grep -q "on"; then
-		STATE=off
-	fi
+wldisplay() {
+	case "$1" in
+		on) wlopm --on "*" ;;
+		off) wlopm --off "*";;
+		"")
+			if wlopm | grep -q "on"; then
+				printf "on\n"
+			else
+				printf "off\n"
+			fi
+			;;
+		*)
+			printf 'sxmo_wm.sh display: unknown command "%s"\n' "$1" >&2
+			printf 'Usage: sxmo_wm.sh display [on|off]\n' >&2
+			;;
+	esac
+}
 
-	if [ -z "$1" ]; then
-		printf %s "$STATE"
-	elif [ "$1" = on ] && [ "$STATE" != on ]; then
-		wlopm --on "*"
-	elif [ "$1" = off ] && [ "$STATE" != off ] ; then
-		wlopm --off "*"
-	fi
+wm_generic_dpms() {
+	sxmo_log "WARNING: $0: the dpms subcommand is deprecated, use display instead"
+
+	# The dpms command was origionally implemented with on/off being the
+	# opposite of what they should have been. Swap them for backwards
+	# compatability.
+	case "$1" in
+		on)
+			shift
+			set -- "off" "$@"
+			;;
+		off)
+			shift
+			set -- "on" "$@"
+			;;
+	esac
+
+	dispatch display "$@"
 }
 # }}}
 
