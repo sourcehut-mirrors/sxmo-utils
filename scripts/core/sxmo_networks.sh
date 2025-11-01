@@ -71,10 +71,10 @@ toggleconnection() {
 
 togglegsm() {
 	if nmcli radio wwan | grep -q "enabled"; then
-			sxmo_notify_user.sh "Disabling GSM"
+			sxmo_notify_user.sh "Disabling Cellular Connection"
 			nmcli radio wwan off
 	else
-			sxmo_notify_user.sh "Enabling GSM"
+			sxmo_notify_user.sh "Enabling Cellular Connection"
 			nmcli radio wwan on
 	fi
 }
@@ -250,26 +250,26 @@ $(
 		connections
 	fi
 )
-$icon_mod Add a GSM Network
-$([ -z "$WIFI_ENABLED" ] || printf "%s Add a WPA Network\n" "$icon_wif")
-$([ -z "$WIFI_ENABLED" ] || printf "%s Add a Wifi Hotspot\n" "$icon_wif")
-$icon_usb Add a USB Hotspot
+$icon_modem_signal_3 Add APN
+$([ -z "$WIFI_ENABLED" ] || printf "%s Add Wifi Network\n" "$icon_wif")
+$([ -z "$WIFI_ENABLED" ] || printf "%s Create Wifi Hotspot\n" "$icon_wfh")
+$icon_usb Create USB Hotspot
 $icon_cls Delete a Network
 $(
 	if [ -z "$WIFI_ENABLED" ]; then
-		printf "%s Enable Wifi\n" "$icon_wif"
+		printf "%s Wifi %s\n" "$icon_wif" "$icon_tof"
 	else
-		printf "%s Disable Wifi\n" "$icon_wif"
+		printf "%s Wifi %s\n" "$icon_wif" "$icon_ton"
+	fi
+)
+$(
+	if nmcli radio wwan | grep -q "enabled"; then
+		printf "%s Cellular Connection %s\n" "$icon_modem_signal_3" "$icon_ton"
+	else
+		printf "%s Cellular Connection %s\n" "$icon_modem_signal_3" "$icon_tof"
 	fi
 )
 $icon_cfg Nmtui
-$(
-	if nmcli radio wwan | grep -q "enabled"; then
-			printf "%s Disable GSM\n" $icon_modem_disabled
-	else
-			printf "%s Enable GSM\n" $icon_modem_registered
-	fi
-)
 $icon_cfg Ifconfig
 $([ -z "$WIFI_ENABLED" ] || printf "%s Scan Wifi Networks\n" "$icon_wif")
 EOF
@@ -279,16 +279,16 @@ EOF
 			""|*"Close Menu" )
 				exit
 				;;
-			*"Add a GSM Network" )
+			*"Add APN" )
 				addnetworkgsmmenu
 				;;
-			*"Add a WPA Network" )
+			*"Add Wifi Network" )
 				addnetworkwpamenu
 				;;
-			*"Add a Wifi Hotspot" )
+			*"Create Wifi Hotspot" )
 				addhotspotwifimenu
 				;;
-			*"Add a USB Hotspot")
+			*"Create USB Hotspot" )
 				addhotspotusbmenu
 				;;
 			*"Delete a Network" )
@@ -297,7 +297,7 @@ EOF
 			*"Nmtui" )
 				sxmo_terminal.sh nmtui || continue # Killeable
 				;;
-			*"Disable GSM"|*"Enable GSM" )
+			*"Cellular Connection"* )
 				togglegsm
 				;;
 			*"Ifconfig" )
@@ -306,7 +306,7 @@ EOF
 			*"Scan Wifi Networks" )
 				sxmo_terminal.sh watch -n 2 nmcli d wifi list || continue # Killeable
 				;;
-			*"Disable Wifi"|*"Enable Wifi" )
+			*"$icon_wif Wifi"* )
 				doas sxmo_wifitoggle.sh
 				;;
 			*)
