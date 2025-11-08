@@ -211,7 +211,7 @@ case "$WMCLASS" in
 		"
 		WINNAME=St
 		;;
-	*foot*|st|st-*|*terminal*|org.gnome.vte.app.gtk4|*alacritty*)
+	*foot*|st|st-*|*terminal*|org.gnome.vte.application|org.gnome.vte.app.gtk4|*alacritty*)
 
 		# These git commands only launch the editor.
 		case "$WMNAME" in
@@ -487,7 +487,7 @@ case "$WMCLASS" in
 					"
 					WINNAME=Foot
 					;;
-				*terminal*|org.gnome.vte.app.gtk4)
+				*terminal*|org.gnome.vte.application|org.gnome.vte.app.gtk4)
 					CHOICES="$icon_kbd Hotkeys ^ 0 ^ sxmo_appmenu.sh sthotkeys"
 					WINNAME=Terminal
 					;;
