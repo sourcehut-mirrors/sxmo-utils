@@ -168,7 +168,7 @@ case "$action" in
 		printf %s "$state"
 		;;
 	is_locked)
-		pidof peanutbutter swaylock waylock i3lock > /dev/null && exit 0
+		pidof peanutbutter swaylock waylock i3lock smlock > /dev/null && exit 0
 		if sxmo_state.sh get | grep -q unlock; then
 			exit 1
 		fi
