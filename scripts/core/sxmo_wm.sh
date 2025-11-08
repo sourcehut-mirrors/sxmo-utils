@@ -458,13 +458,13 @@ rivertogglebar() {
 configmenuentry() {
 	case "$SXMO_WM" in
 		sway)
-			echo "$icon_cfg Edit configuration ^ 0 ^ sxmo_terminal.sh $EDITOR $XDG_CONFIG_HOME/sxmo/xinit"
+			echo "$icon_cfg Edit configuration ^ 0 ^ sxmo_terminal.sh $EDITOR $XDG_CONFIG_HOME/sxmo/sway"
 			;;
 		river)
 			echo "$icon_cfg Edit configuration ^ 0 ^ sxmo_terminal.sh $EDITOR $XDG_CONFIG_HOME/sxmo/river"
 			;;
-		dwm)
-			echo "$icon_cfg Edit configuration ^ 0 ^ sxmo_terminal.sh $EDITOR $XDG_CONFIG_HOME/sxmo/dwm"
+		i3)
+			echo "$icon_cfg Edit configuration ^ 0 ^ sxmo_terminal.sh $EDITOR $XDG_CONFIG_HOME/sxmo/i3"
 			;;
 	esac
 }
