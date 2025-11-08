@@ -110,7 +110,7 @@ install-html-docs: $(HTMLDOCS)
 	cd docs && find . -type f -name '*.html' -exec install -D -m 0644 "{}" "$(DESTDIR)$(PREFIX)/share/doc/sxmo/html/{}" \; && cd ..
 
 install-river:
-	install -D -m 0644 -t $(DESTDIR)$(PREFIX)/share/wayland-sessions/ configs/applications/sxmo_river.desktop
+	install -D -m 0644 -t $(DESTDIR)$(PREFIX)/share/wayland-sessions/ configs/sessions/sxmo_river.desktop
 
 install-sway:
 	install -D -m 0644 -t $(DESTDIR)$(PREFIX)/share/wayland-sessions/ configs/sessions/swmo.desktop
