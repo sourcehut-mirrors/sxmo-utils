@@ -4,8 +4,9 @@
 
 # Shellspec formatting confuses shellcheck, so we have to disbale some checks
 # SC2317: Command appears to be unreachable
+# SC2329: Command not invoked
 # SC2034: variable appears unused
-# shellcheck disable=SC2317 disable=SC2034
+# shellcheck disable=SC2317 disable=SC2329 disable=SC2034
 
 PATH="$(pwd)/scripts/core:$PATH"
 
