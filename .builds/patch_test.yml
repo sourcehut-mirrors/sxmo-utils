@@ -1,0 +1,38 @@
+image: alpine/edge
+packages:
+  - editorconfig-checker
+  - icu-dev
+  - jq
+  - linux-headers
+  - pnc
+  - scd2html
+  - scdoc
+  - shellcheck
+  - shellspec
+sources:
+  - https://git.sr.ht/~mil/sxmo-utils
+tasks:
+  - environment: |
+      cd sxmo-utils
+      if [ "$BUILD_REASON" != "patchset" ]
+      then
+        complete-build
+      fi
+      if [ "$BUILD_SUBMITTER" = "git.sr.ht" ]
+      then
+        if [ "$GIT_REF" != "refs/heads/master" ]
+        then
+            complete-build
+        fi
+        if [ "$(git remote get-url origin)" != "https://git.sr.ht/~mil/sxmo-utils" ]
+        then
+          complete-build
+        fi
+      fi
+  - test: |
+      cd sxmo-utils
+      make test
+  - build-doc: |
+      cd sxmo-utils
+      make docs
+      make html-docs
