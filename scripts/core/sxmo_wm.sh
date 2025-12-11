@@ -360,7 +360,7 @@ swi3nextworkspace() {
 }
 
 rivernextworkspace() {
-	river-shifttags
+	river-shifttags --num-tags "${SXMO_WORKSPACE_WRAPPING:-4}"
 }
 
 dwmnextworkspace() {
@@ -382,7 +382,7 @@ dwmpreviousworkspace() {
 }
 
 riverpreviousworkspace() {
-	river-shifttags --shift -1
+	river-shifttags --num-tags "${SXMO_WORKSPACE_WRAPPING:-4}" --shift -1
 }
 
 swi3movenextworkspace() {
