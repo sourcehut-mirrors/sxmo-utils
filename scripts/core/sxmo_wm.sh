@@ -184,7 +184,7 @@ _raw_focusedwindow() {
 	case "$SXMO_WM" in
 		dwm) _xorgfocusedwindow ;;
 		sway|i3) _swi3_focusedwindow ;;
-		river) lswt -j | jq -r '
+		river) lswt --force-protocol zwlr-foreign-toplevel-management-unstable-v1 -j | jq -r '
 			.toplevels |
 				map(select(.activated))[0] |
 				(."app-id" | ascii_downcase), (.title | ascii_downcase)
