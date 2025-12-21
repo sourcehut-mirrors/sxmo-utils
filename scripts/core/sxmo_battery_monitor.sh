@@ -5,28 +5,23 @@
 # shellcheck source=scripts/core/sxmo_common.sh
 . sxmo_common.sh
 
-upower -m | while read -r line; do
-	# swallow first line
-	if [ -z "$last_line" ]; then
-		last_line=1
-		continue
-	fi
-	if [ "$last_line" = "$line" ]; then
-		continue
-	fi
-	last_line="$line"
+finalize() {
+	pkill -P $$
+}
 
-	#time="$(printf %s "$line" | cut -d"	" -f1)"
-	line="$(printf %s "$line" | cut -d"	" -f2)"
-	event="$(printf %s "$line" | cut -d":" -f1)"
-	object="$(printf %s "$line" | cut -d":" -f2 | sed 's|^\( *\)||')"
+trap 'finalize' TERM INT
 
-	if [ -z "$object" ]; then
-		continue
-	fi
+gdbus monitor --system --dest org.freedesktop.UPower | while read -r line; do
+	case "$line" in
+		*"org.freedesktop.DBus.Properties.PropertiesChanged"*)
+			object="$(cut -d ':' -f 1 <<-EOF
+				$line
+			EOF
+			)"
+			set -- sxmo_hook_battery.sh "$object"
 
-	set -- sxmo_hook_battery.sh "$object" "$event"
-
-	sxmo_debug "$*"
-	"$@"
+			sxmo_debug "$*"
+			"$@"
+			;;
+	esac
 done

@@ -1,51 +1,66 @@
 #!/bin/sh
 
 load_data() {
-	data="$(upower -i "$1" | grep . | sed -e 's|^ \+||' -e 's|: \+|:|')"
-	type="$(printf "%b" "$data" | grep -m1 -v : | sed -e 's|^ \+||')"
-}
+	dbus_data="$(dbus-send --print-reply --system --dest=org.freedesktop.UPower "$object" org.freedesktop.DBus.Properties.GetAll string:org.freedesktop.UPower.Device)"
 
-data_get() {
-	printf "%b" "$data" | grep "^$1:" | cut -d: -f2
+	dbus_data_properties="$(awk 'c&&c--;/Percentage/||/State/||/Type/||/NativePath/{c=1}' <<-EOF
+		$dbus_data
+	EOF
+	)"
+
+# see upower dbus interface for uinit32 meanings
+# below awk will print out as follows:
+#string "NativePath"
+#string "Type" (2 is battery)
+#string "Percentage"
+#string "State"
+property_data="$(awk '{gsub(/"/, ""); print $3}' <<-EOF
+	$dbus_data_properties
+EOF
+)"
+
+for varname in native_path device_type percentage number_state; do
+	read -r "${varname?}"
+done <<-EOF
+	$property_data
+EOF
+
+while read -r number state; do
+	if [ "$number" -eq "${number_state:?}" ]; then
+		break
+	fi
+done <<-EOF
+	0 unknown
+	1 charging
+	2 discharging
+	3 empty
+	4 fully-charged
+	5 pending-charge
+	6 pending-discharge
+EOF
 }
 
 SET_LED_PATH="$XDG_RUNTIME_DIR/sxmo_hook_battery_set_led"
 
-device_changed() {
-	name="$(data_get "native-path")"
-	state="$(data_get "state")"
-	percentage="$(data_get "percentage" | cut -d% -f1)"
-
-	if [ -z "$name" ] || [ -z "$state" ]; then
-		return
-	fi
-
-	if [ "$state" = unknown ]; then
-		return
-	fi
-
-	if [ "$percentage" -lt 25 ] && [ ! -f "$SET_LED_PATH" ]; then
-		touch "$SET_LED_PATH"
-		sxmo_led.sh set red 100
-	elif [ -f "$SET_LED_PATH" ]; then
-		rm "$SET_LED_PATH"
-		sxmo_led.sh set red 0
-	fi
-
-	sxmo_hook_statusbar.sh battery "$name" "$state" "$percentage"
-}
-
 object="$1"
-event="$2"
 
 load_data "$object"
 
-if [ "$type" != "battery" ]; then
+# Test for battery
+if [ "${device_type:?}" != "2" ]; then
 	exit
 fi
 
-case "$event" in
-	"device changed")
-		device_changed "$object"
-		;;
-esac
+if [ "${state:?}" = "unknown" ]; then
+	exit
+fi
+
+if [ "${percentage:?}" -lt 25 ] && [ ! -f "$SET_LED_PATH" ]; then
+	touch "$SET_LED_PATH"
+	sxmo_led.sh set red 100
+elif [ -f "$SET_LED_PATH" ]; then
+	rm "$SET_LED_PATH"
+	sxmo_led.sh set red 0
+fi
+
+sxmo_hook_statusbar.sh battery "${native_path:?}" "$state" "$percentage"
