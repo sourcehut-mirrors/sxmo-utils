@@ -43,6 +43,7 @@ DOCS = \
 	docs/sxmo_files.sh.1 \
 	docs/sxmo_contacts.sh.1 \
 	docs/sxmo_brightness.sh.1 \
+	docs/sxmo_idle.sh.1 \
 
 HTMLDOCS := $(DOCS:%=%.html)
 

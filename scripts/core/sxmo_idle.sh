@@ -3,18 +3,20 @@
 # Copyright 2022 Sxmo Contributors
 
 _swayidletoidles() {
-	while [ $# -gt 0 ]; do
-		case "$1" in
-			timeout)
-				printf "%s|%s" "$2" "$3"
-				shift 3
-				case "$1" in
-					resume)
-						printf "|%s" "$2"
-						shift 2
+	# Loop over args and convert to variables
+	for arg in "$@"; do
+		case "$arg" in
+			-w)
+				shift
 				;;
-				esac
-				printf "\n"
+			timeout)
+				timeoutarg="$2"
+				program="$3"
+				shift 2
+				;;
+			resume)
+				resumeprogram="$1"
+				shift 1
 				;;
 			*)
 				shift
@@ -23,20 +25,47 @@ _swayidletoidles() {
 	done
 }
 
-xorgidle() {
-	idles="$(_swayidletoidles "$@")"
-	resumes=""
+usage() {
+	#editorconfig-checker-disable
+	cat <<- EOF
+		sxmo_idle.sh is a wrapper for swayidle and also to convert swayidle commands
+		into other idle tools compatible commands.
 
+		Usage: sxmo_idle.sh [options] [value]
+
+		Options:
+		  -h/--help
+		        Show this message.
+		  timeout [VALUE in seconds] 'sh -c "COMMAND"'
+		        Set the timeout and execute COMMAND once timeout expires.
+
+		Optional Options:
+		  resume 'sh -c "COMMAND"'
+		        When resuming from elapsed timeout execute COMMAND.
+
+		All other args are either passed to swayidle or removed.
+
+		This script supports the following:
+		  wayland - swayidle
+		  xorg	  - Using internal timer function.
+	EOF
+	#editorconfig-checker-enable
+	exit
+}
+
+xorgidlefinish() {
+	sh -c "$resumeprogram"
+	trap - EXIT
+	exit
+}
+
+xorgidle() {
 	tick=0
+	resumes=""
 	new_idle="$(xprintidle)"
 	last_idle="$new_idle"
 
-	finish() {
-		sh -c "$resumes"
-		resumes=""
-		exit
-	}
-	trap 'finish' TERM INT EXIT
+	trap 'xorgidlefinish' TERM HUP INT EXIT
 
 	while : ; do
 		last_idle="$new_idle"
@@ -47,22 +76,26 @@ xorgidle() {
 			resumes=""
 		fi
 
-		if printf "%b\n" "$idles" | grep -q "^$tick|"; then
-			printf "%b\n" "$idles" | \
-				grep "^$tick|" | \
-				cut -d'|' -f2 | \
-				xargs -I{} -0 sh -c "{}"
-			resumes="$(printf "%b\n" "$idles" | grep "^$tick|" | cut -d'|' -f3);$resumes"
+		if [ "$tick" -eq "$timeoutarg" ]; then
+			sh -c "$program"
+			resumes="$resumeprogram"
 		fi
 
 		sleep 1
-		tick=$((tick + 1))
+		tick=$(( tick + 1 ))
 	done
 }
 
+case "$1" in
+	-h|--help)
+		usage
+		;;
+esac
+
 case "$SXMO_WM" in
 	dwm|i3)
-		xorgidle "$@"
+		_swayidletoidles "$@"
+		xorgidle
 		;;
 	sway|river)
 		exec swayidle "$@"
