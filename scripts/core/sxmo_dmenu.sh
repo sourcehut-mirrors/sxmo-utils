@@ -52,28 +52,41 @@ case "$1" in
 		;;
 esac
 
-if [ -n "$WAYLAND_DISPLAY" ]; then
+# Return from menu mode on select wms
+cleanmode() {
 	case "$SXMO_WM" in
 		sway)
-			if sxmo_state.sh get | grep -q unlock; then
-				swaymsg mode menu -q # disable default button inputs
-				cleanmode() {
-					swaymsg mode default -q
-				}
-				trap 'cleanmode' TERM INT
-			fi
+			swaymsg mode default -q
 			;;
 		river)
-			if sxmo_state.sh get | grep -q unlock; then
-				riverctl enter-mode menu # disable default button inputs
-				cleanmode() {
-					riverctl enter-mode normal
-				}
-				trap 'cleanmode' TERM INT
-			fi
+			riverctl enter-mode normal
+			;;
+		i3)
+			i3-msg mode default -q
 			;;
 	esac
-fi
+}
+
+# Trap exit here so cleanmode will be run on exit
+trap 'cleanmode' TERM INT EXIT
+
+case "$SXMO_WM" in
+	sway)
+		if sxmo_state.sh get | grep -q unlock; then
+			swaymsg mode menu -q # disable default button inputs
+		fi
+		;;
+	river)
+		if sxmo_state.sh get | grep -q unlock; then
+			riverctl enter-mode menu # disable default button inputs
+		fi
+		;;
+	i3)
+		if sxmo_state.sh get | grep -q unlock; then
+			i3-msg mode menu -q # disable default button inputs
+		fi
+		;;
+esac
 
 wofi_wrapper() {
 	#let wofi handle the number of lines dynamically
@@ -95,14 +108,11 @@ if [ -n "$WAYLAND_DISPLAY" ] || [ -n "$DISPLAY" ]; then
 				printf %s "${SXMO_BEMENU_PORTRAIT_LINES:-16}")" "$@"
 			returned=$?
 
-			[ -n "$WAYLAND_DISPLAY" ] && cleanmode
 			exit "$returned"
 			;;
 		wofi)
 			picked="$(wofi_wrapper "$@")"
 			returned=$?
-
-			cleanmode
 
 			if [ -z "$picked" ]; then
 				exit 1
