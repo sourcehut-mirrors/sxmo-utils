@@ -12,7 +12,7 @@ sxmo_brightness.sh - Sets screen brightness via brightnessctl.
 
 This script manipulates the brightness of your screen.
 
-# SUBCOMMNANDS
+# SUBCOMMANDS
 
 *silent*
 	Prevents notification with (w/x)ob. Use this as first arg to below options.
