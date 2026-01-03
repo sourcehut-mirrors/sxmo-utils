@@ -18,7 +18,18 @@
 
 sxmo_led.sh blink red blue &
 
-[ "$SXMO_WM" = "sway" ] && swaymsg mode default
+case "$SXMO_WM" in
+	sway)
+		swaymsg mode default -q
+		;;
+	river)
+		riverctl enter-mode normal
+		;;
+	i3)
+		i3-msg mode default -q
+		;;
+esac
+
 sxmo_wm.sh display off
 sxmo_wm.sh inputevent touchscreen off
 
@@ -28,7 +39,7 @@ if [ ! -e "$XDG_CACHE_HOME"/sxmo/sxmo.nosuspend ]; then
 fi
 
 case "$SXMO_WM" in
-	dwm)
+	dwm|i3)
 		# dmenu will grab input focus (i.e. power button) so kill it before going to
 		# screenoff unless proximity lock is running (i.e. there's a phone call).
 		if ! sxmo_jobs.sh running proximity_lock -q; then
