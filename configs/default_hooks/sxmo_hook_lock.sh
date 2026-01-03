@@ -18,7 +18,18 @@
 
 sxmo_led.sh blink blue &
 
-[ "$SXMO_WM" = "sway" ] && swaymsg mode default
+case "$SXMO_WM" in
+	sway)
+		swaymsg mode default -q
+		;;
+	river)
+		riverctl enter-mode normal
+		;;
+	i3)
+		i3-msg mode default -q
+		;;
+esac
+
 sxmo_wm.sh display on
 sxmo_wm.sh inputevent touchscreen off
 
