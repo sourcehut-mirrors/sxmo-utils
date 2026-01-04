@@ -419,8 +419,7 @@ case "$WMCLASS" in
 			# cmus
 			# requires `:set set_term_title=false` in cmus to match the application
 			CHOICES="
-				$icon_itm Play            ^ 0 ^ cmus-remote -p
-				$icon_pau Pause           ^ 0 ^ cmus-remote -u
+				$icon_itm Play/Pause      ^ 0 ^ cmus-remote -u
 				$icon_stp Stop            ^ 0 ^ cmus-remote -s
 				$icon_nxt Next track      ^ 0 ^ cmus-remote -n
 				$icon_prv Previous track  ^ 0 ^ cmus-remote -r
@@ -604,7 +603,7 @@ case "$WMCLASS" in
 		"
 		WINNAME=Falkon
 		;;
-	*firefox*|*navigator*)
+	*firefox*|*navigator*|*librewolf*)
 		# Firefox
 		CHOICES="
 			$icon_flt Pipe URL          ^ 0 ^ sxmo_urlhandler.sh
