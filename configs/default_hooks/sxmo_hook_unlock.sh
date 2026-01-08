@@ -47,7 +47,4 @@ else
 	esac
 fi
 
-# Start conky again if turned off in screenoff
-superctl start sxmo_conky &
-
 wait

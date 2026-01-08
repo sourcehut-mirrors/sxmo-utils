@@ -48,6 +48,3 @@ case "$SXMO_WM" in
 		fi
 		;;
 esac
-
-# Stop conky to reduce power draw during screenoff state
-superctl stop sxmo_conky &
