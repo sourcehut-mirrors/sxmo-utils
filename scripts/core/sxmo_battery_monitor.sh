@@ -13,6 +13,9 @@ trap 'finalize' TERM INT
 
 gdbus monitor --system --dest org.freedesktop.UPower | while read -r line; do
 	case "$line" in
+		"/org/freedesktop/UPower/devices/DisplayDevice"*)
+			continue
+			;;
 		*"org.freedesktop.DBus.Properties.PropertiesChanged"*)
 			object="$(cut -d ':' -f 1 <<-EOF
 				$line
