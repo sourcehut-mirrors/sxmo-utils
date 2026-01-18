@@ -8,36 +8,36 @@ load_data() {
 	EOF
 	)"
 
-# see upower dbus interface for uinit32 meanings
-# below awk will print out as follows:
-#string "NativePath"
-#string "Type" (2 is battery)
-#string "Percentage"
-#string "State"
-property_data="$(awk '{gsub(/"/, ""); print $3}' <<-EOF
-	$dbus_data_properties
-EOF
-)"
+	# see upower dbus interface for uinit32 meanings
+	# below awk will print out as follows:
+	#string "NativePath"
+	#string "Type" (2 is battery)
+	#string "Percentage"
+	#string "State"
+	property_data="$(awk '{gsub(/"/, ""); print $3}' <<-EOF
+		$dbus_data_properties
+	EOF
+	)"
 
-for varname in native_path device_type percentage number_state; do
-	read -r "${varname?}"
-done <<-EOF
-	$property_data
-EOF
+	for varname in native_path device_type percentage number_state; do
+		read -r "${varname?}"
+	done <<-EOF
+		$property_data
+	EOF
 
-while read -r number state; do
-	if [ "$number" -eq "${number_state:?}" ]; then
-		break
-	fi
-done <<-EOF
-	0 unknown
-	1 charging
-	2 discharging
-	3 empty
-	4 fully-charged
-	5 pending-charge
-	6 pending-discharge
-EOF
+	while read -r number state; do
+		if [ "$number" -eq "${number_state:?}" ]; then
+			break
+		fi
+	done <<-EOF
+		0 unknown
+		1 charging
+		2 discharging
+		3 empty
+		4 fully-charged
+		5 pending-charge
+		6 pending-discharge
+	EOF
 }
 
 SET_LED_PATH="$XDG_RUNTIME_DIR/sxmo_hook_battery_set_led"
