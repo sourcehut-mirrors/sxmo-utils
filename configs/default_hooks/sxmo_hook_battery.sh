@@ -42,25 +42,34 @@ load_data() {
 
 SET_LED_PATH="$XDG_RUNTIME_DIR/sxmo_hook_battery_set_led"
 
-object="$1"
+update_battery_icon() {
+	# Test for battery
+	if [ "${device_type:?}" != "2" ]; then
+		exit
+	fi
+
+	if [ "${state:?}" = "unknown" ]; then
+		exit
+	fi
+
+	if [ "${percentage:?}" -lt 25 ] && [ ! -f "$SET_LED_PATH" ]; then
+		touch "$SET_LED_PATH"
+		sxmo_led.sh set red 100
+	elif [ -f "$SET_LED_PATH" ]; then
+		rm "$SET_LED_PATH"
+		sxmo_led.sh set red 0
+	fi
+
+	sxmo_hook_statusbar.sh battery "${native_path:?}" "$state" "$percentage"
+}
+
+event="$1"
+object="$2"
 
 load_data "$object"
 
-# Test for battery
-if [ "${device_type:?}" != "2" ]; then
-	exit
-fi
-
-if [ "${state:?}" = "unknown" ]; then
-	exit
-fi
-
-if [ "${percentage:?}" -lt 25 ] && [ ! -f "$SET_LED_PATH" ]; then
-	touch "$SET_LED_PATH"
-	sxmo_led.sh set red 100
-elif [ -f "$SET_LED_PATH" ]; then
-	rm "$SET_LED_PATH"
-	sxmo_led.sh set red 0
-fi
-
-sxmo_hook_statusbar.sh battery "${native_path:?}" "$state" "$percentage"
+case "$event" in
+	PropertiesChanged)
+		update_battery_icon "$object"
+		;;
+esac

@@ -21,7 +21,7 @@ gdbus monitor --system --dest org.freedesktop.UPower | while read -r line; do
 				$line
 			EOF
 			)"
-			set -- sxmo_hook_battery.sh "$object"
+			set -- sxmo_hook_battery.sh PropertiesChanged "$object"
 
 			sxmo_debug "$*"
 			"$@"
