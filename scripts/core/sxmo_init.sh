@@ -22,12 +22,15 @@ start() {
 cleanup() {
 	sxmo_dmenu.sh close
 	sxmo_keyboard.sh close
+	sxmo_jobs.sh stop daemon_manager
+	while [ -r "$XDG_RUNTIME_DIR/superd.sock" ]; do
+		sleep 0.5
+	done
 	sxmo_jobs.sh stop all
 }
 
 finish() {
 	cleanup
-	sleep 5
 	sxmo_hook_stop.sh
 	exit
 }
