@@ -38,7 +38,7 @@ case "$1" in
 		off
 		;;
 	*) #toggle
-		if rfkill list bluetooth -no ID,SOFT,HARD | grep -vq " blocked"; then
+		if rfkill list bluetooth | grep -q "Soft blocked: no"; then
 			off
 		else
 			on

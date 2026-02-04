@@ -71,7 +71,7 @@ case "$WMCLASS" in
 			) ^ 1 ^ supertoggle_daemon 'sxmo_hook_lisgd' && (rm $XDG_CACHE_HOME/sxmo/sxmo.nogesture 2>/dev/null || touch $XDG_CACHE_HOME/sxmo/sxmo.nogesture)
 			$icon_cfg Toggle Bar ^ 0 ^ sxmo_wm.sh togglebar
 			$icon_bth Bluetooth $(
-				rfkill list bluetooth -no ID,SOFT,HARD | grep -vq " blocked" &&
+				rfkill list bluetooth | grep -q "Soft blocked: no" &&
 				printf %b "$icon_ton" ||  printf %b "$icon_tof";
 				printf %b "^ 1 ^ doas sxmo_bluetoothtoggle.sh && sxmo_hook_statusbar.sh bluetooth"
 			)
@@ -807,7 +807,7 @@ case "$WMCLASS" in
 			$icon_msg Texts                                              ^ 0 ^ sxmo_modemtext.sh
 			$icon_usr Contacts                                           ^ 0 ^ sxmo_contactmenu.sh
 			$(
-				rfkill list bluetooth -no ID,SOFT,HARD | grep -vq " blocked" &&
+				rfkill list bluetooth | grep -q "Soft blocked: no" &&
 				printf %b "$icon_bth Bluetooth ^ 1 ^ sxmo_bluetoothmenu.sh"
 			)
 			$(command -v megapixels >/dev/null && echo "$icon_cam Camera ^ 0 ^ GDK_SCALE=2 megapixels")
