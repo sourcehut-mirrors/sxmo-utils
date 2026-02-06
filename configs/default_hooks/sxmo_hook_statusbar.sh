@@ -465,7 +465,6 @@ case "$1" in
 		fi
 		set_notch
 		set_state
-		set_network wifi wlan0
 		;;
 	all)
 		sxmobar -r
@@ -479,7 +478,6 @@ case "$1" in
 		set_state
 		set_notifications
 		set_notch
-		set_network wifi wlan0
 		;;
 	*)
 		exit # swallow it !
