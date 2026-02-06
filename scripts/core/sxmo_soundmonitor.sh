@@ -36,5 +36,13 @@ pactl subscribe | while read -r line; do
 		"Event 'change' on source "*)
 			notify_mic_volume_change
 			;;
+		"Event 'new' on card "*)
+			notify_volume_change
+			notify_mic_volume_change
+			;;
+		"Event 'remove' on card "*)
+			notify_volume_change
+			notify_mic_volume_change
+			;;
 	esac
 done
