@@ -216,6 +216,8 @@ icon_wifi_key_signal_4="󰤪"
 icon_wifi_signal_4="󰤨"
 icon_wifi_disconnected="󰤮"
 
+icon_modem_eth="" # ethernet
+
 # battery indicators
 icon_bat_c_0="󰢟"
 icon_bat_c_1="󱊤"

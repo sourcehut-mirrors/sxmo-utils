@@ -209,7 +209,6 @@ set_modem() {
 # $1 = type (wifi, tun)
 # $2 = interface name (wlan0, tun0)
 set_wifi() {
-
 	if rfkill list wifi | grep -q "yes"; then
 		sxmobar -d wifi-status
 		return
@@ -287,8 +286,13 @@ set_ethernet() {
 
 	if nmcli -t connection show "$conname" | grep ^ipv4.method | grep -q :shared; then
 		sxmobar -a ethernet-status-"$2" 30 "$icon_lnk"
+		return
+	fi
+
+	if nmcli -g GENERAL.STATE device show "$2" | grep -q connected; then
+		sxmobar -a ethernet-status-"$2" 30 "$icon_modem_eth"
 	else
-		sxmobar -d ethernet-status-"$2" 30
+		sxmobar -a -f red ethernet-status-"$2" 30 "$icon_modem_eth"
 	fi
 }
 
