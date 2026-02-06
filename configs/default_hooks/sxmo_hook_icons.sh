@@ -133,6 +133,7 @@ icon_shr="󰁄" #shrink
 icon_sim="󰒧" # sim card
 icon_snd="" #send
 icon_spd="󰓅" # speedometer
+icon_spkbt="󰦢" #bluetooth speaker
 icon_spk="" #speaker
 icon_spl=""
 icon_spm=""

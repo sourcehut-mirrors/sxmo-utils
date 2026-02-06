@@ -401,7 +401,9 @@ set_volume() {
 	if sxmo_audio.sh mic ismuted; then
 		VOLCMP="$icon_mmc"
 	else
-		case "$(sxmo_audio.sh device getinput 2>/dev/null)" in
+		device="$(sxmo_audio.sh device getinput 2>/dev/null)"
+		port="$(printf "%b\n" "$device" | jq -r .active_port | sed 's/\[In] //')"
+		case "$port" in
 			*Headset*)
 				VOLCMP="$icon_hst"
 				;;
@@ -414,15 +416,25 @@ set_volume() {
 	if sxmo_audio.sh vol ismuted; then
 		VOLCMP="$VOLCMP $icon_mut"
 	else
-		case "$(sxmo_audio.sh device get 2>/dev/null)" in
-			*Speaker*|"")
-				# nothing for default or pulse devices
+		device="$(sxmo_audio.sh device get 2>/dev/null)"
+		port="$(printf "%b\n" "$device" | jq -r .active_port | sed 's/\[Out] //')"
+		icon="$(printf "%b\n" "$device" | jq -r '.properties["device.icon_name"]')"
+		case "$icon" in
+			audio-speakers-bluetooth)
+				VOLCMP="$VOLCMP $icon_spkbt"
 				;;
-			*Headphone*)
-				VOLCMP="$VOLCMP $icon_hdp"
-				;;
-			*Earpiece*)
-				VOLCMP="$VOLCMP $icon_ear"
+			*)
+				case "$port" in
+					*Speaker*|"")
+						# nothing for default or pulse devices
+						;;
+					*Headphone*)
+						VOLCMP="$VOLCMP $icon_hdp"
+						;;
+					*Earpiece*)
+						VOLCMP="$VOLCMP $icon_ear"
+						;;
+				esac
 				;;
 		esac
 		VOL="$(sxmo_audio.sh vol get)"

@@ -91,16 +91,16 @@ devicesetinput() {
 	pactl set-source-port @DEFAULT_SOURCE@ "[In] $1"
 }
 
-# get the *active port* for input
+# get the current source pactl data
 devicegetinput() {
 	[ -z "$1" ] && default_source="$(pactl get-default-source)" || default_source="$1"
-	pactl --format=json list sources | jq -r ".[] | select(.name == \"$default_source\") | .active_port" | sed 's/\[In] //'
+	pactl --format=json list sources | jq -r ".[] | select(.name == \"$default_source\")"
 }
 
-# get the *active port* for output
+# get the current sink pactl data
 deviceget() {
 	[ -z "$1" ] && default_sink="$(pactl get-default-sink)" || default_sink="$1"
-	pactl --format=json list sinks | jq -r ".[] | select(.name == \"$default_sink\") | .active_port" | sed 's/\[Out] //'
+	pactl --format=json list sinks | jq -r ".[] | select(.name == \"$default_sink\")"
 }
 
 # get the default sink
