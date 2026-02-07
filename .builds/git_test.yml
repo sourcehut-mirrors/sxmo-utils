@@ -11,6 +11,14 @@ packages:
   - shellspec
 sources:
   - https://git.sr.ht/~mil/sxmo-utils
+submitter:
+  hub.sr.ht:
+    enabled: false
+  git.sr.ht:
+    enabled: true
+    allow-refs:
+      - refs/heads/master
+      - "refs/tags/*"
 triggers:
   - action: email
     condition: failure
@@ -18,20 +26,9 @@ triggers:
 tasks:
   - environment: |
       cd sxmo-utils
-      if [ "$BUILD_REASON" = "patchset" ]
+      if [ "$(git remote get-url origin)" != "https://git.sr.ht/~mil/sxmo-utils" ]
       then
         complete-build
-      fi
-      if [ "$BUILD_SUBMITTER" = "git.sr.ht" ]
-      then
-        if [ "$GIT_REF" != "refs/heads/master" ]
-        then
-            complete-build
-        fi
-        if [ "$(git remote get-url origin)" != "https://git.sr.ht/~mil/sxmo-utils" ]
-        then
-          complete-build
-        fi
       fi
   - test: |
       cd sxmo-utils
