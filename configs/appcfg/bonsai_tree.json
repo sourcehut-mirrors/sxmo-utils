@@ -5,7 +5,8 @@
     "transitions": [
       {
         "type": "delay",
-        "delay_duration": 400000000,
+        "delay_duration": 400,
+        "delay_unit": "millisecond",
         "transitions": [
           {
             "type": "exec",
@@ -24,7 +25,8 @@
         "transitions": [
           {
             "type": "delay",
-            "delay_duration": 400000000,
+            "delay_duration": 400,
+            "delay_unit": "millisecond",
             "transitions": [
               {
                 "type": "exec",
@@ -43,7 +45,8 @@
             "transitions": [
               {
                 "type": "delay",
-                "delay_duration": 400000000,
+                "delay_duration": 400,
+                "delay_unit": "millisecond",
                 "transitions": [
                   {
                     "type": "exec",
@@ -83,7 +86,8 @@
     "transitions": [
       {
         "type": "delay",
-        "delay_duration": 400000000,
+        "delay_duration": 400,
+        "delay_unit": "millisecond",
         "transitions": [
           {
             "type": "exec",
@@ -102,7 +106,8 @@
         "transitions": [
           {
             "type": "delay",
-            "delay_duration": 400000000,
+            "delay_duration": 400,
+            "delay_unit": "millisecond",
             "transitions": [
               {
                 "type": "exec",
@@ -121,7 +126,8 @@
             "transitions": [
               {
                 "type": "delay",
-                "delay_duration": 400000000,
+                "delay_duration": 400,
+                "delay_unit": "millisecond",
                 "transitions": [
                   {
                     "type": "exec",
@@ -161,7 +167,8 @@
     "transitions": [
       {
         "type": "delay",
-        "delay_duration": 400000000,
+        "delay_duration": 400,
+        "delay_unit": "millisecond",
         "transitions": [
           {
             "type": "exec",
@@ -180,7 +187,8 @@
         "transitions": [
           {
             "type": "delay",
-            "delay_duration": 400000000,
+            "delay_duration": 400,
+            "delay_unit": "millisecond",
             "transitions": [
               {
                 "type": "exec",
@@ -199,7 +207,8 @@
             "transitions": [
               {
                 "type": "delay",
-                "delay_duration": 400000000,
+                "delay_duration": 400,
+                "delay_unit": "millisecond",
                 "transitions": [
                   {
                     "type": "exec",
