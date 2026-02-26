@@ -41,7 +41,7 @@
           },
           {
             "type": "event",
-            "event_name": "power_released",
+            "event_name": "power_pressed",
             "transitions": [
               {
                 "type": "delay",
@@ -61,7 +61,7 @@
               },
               {
                 "type": "event",
-                "event_name": "power_released",
+                "event_name": "power_pressed",
                 "transitions": [
                   {
                     "type": "exec",
@@ -122,7 +122,7 @@
           },
           {
             "type": "event",
-            "event_name": "voldown_released",
+            "event_name": "voldown_pressed",
             "transitions": [
               {
                 "type": "delay",
@@ -142,7 +142,7 @@
               },
               {
                 "type": "event",
-                "event_name": "voldown_released",
+                "event_name": "voldown_pressed",
                 "transitions": [
                   {
                     "type": "exec",
@@ -203,7 +203,7 @@
           },
           {
             "type": "event",
-            "event_name": "volup_released",
+            "event_name": "volup_pressed",
             "transitions": [
               {
                 "type": "delay",
@@ -223,7 +223,7 @@
               },
               {
                 "type": "event",
-                "event_name": "volup_released",
+                "event_name": "volup_pressed",
                 "transitions": [
                   {
                     "type": "exec",
