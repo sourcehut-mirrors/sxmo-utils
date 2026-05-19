@@ -28,7 +28,7 @@ notify_success() {
 	MSG="$1"
 	shift
 	if "$@"; then
-		sxmo_notify_user.sh "$MSG succeed"
+		sxmo_debug "$MSG succeed"
 	else
 		sxmo_notify_user.sh "$MSG failure"
 		stderr "$*"
@@ -61,7 +61,6 @@ toggleconnection() {
 		CONNNAME="$(echo "$CONNLINE" | cut -d' ' -f3-)"
 		rfkill list wifi | grep -q "yes" || WIFI_ENABLED=1
 		if [ "$(echo "$CONNLINE" | cut -d' ' -f2)" = "$icon_wif" ] && [ -z "$WIFI_ENABLED" ]; then
-			sxmo_notify_user.sh "Enabling wifi first."
 			doas sxmo_wifitoggle.sh
 		fi
 		notify_success "Enabling connection" \
@@ -71,10 +70,8 @@ toggleconnection() {
 
 togglegsm() {
 	if nmcli radio wwan | grep -q "enabled"; then
-			sxmo_notify_user.sh "Disabling Cellular Connection"
 			nmcli radio wwan off
 	else
-			sxmo_notify_user.sh "Enabling Cellular Connection"
 			nmcli radio wwan on
 	fi
 }
