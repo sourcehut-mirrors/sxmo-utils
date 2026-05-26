@@ -51,7 +51,8 @@ _notifications_hook() {
 monitor() {
 	mkdir -p "$SXMO_NOTIFDIR"
 
-	find "$SXMO_NOTIFDIR" -type f | while read -r file; do
+	# Recall oldest notifications first (lowest timestamps first)
+	find "$SXMO_NOTIFDIR" -type f | sort -g | while read -r file; do
 		_handle_new_notif_file "$file"
 	done
 
@@ -80,7 +81,8 @@ monitor() {
 }
 
 _menu_lines() {
-	find "$SXMO_NOTIFDIR" -type f | while read -r file; do
+	# Show newest notifications first (highest timestamps first)
+	find "$SXMO_NOTIFDIR" -type f | sort -rg | while read -r file; do
 		msg="$(tail -n+3 "$file" | tr "\n^" " ")"
 		hrandmin="$(stat --printf %y "$file" | grep -oE '[0-9]{2}:[0-9]{2}')"
 		cat <<EOF
@@ -150,6 +152,8 @@ new() {
 		exit 1
 	fi
 
+	# Timestamp is used for recency sorting
+	timestamp="$(date '+%s')"
 	if [ -z "$id" ]; then
 		id="$(tr -dc 'a-zA-Z0-9' < /dev/urandom 2>/dev/null | head -c 10)"
 	fi
@@ -161,7 +165,7 @@ new() {
 	msg="$2"
 
 	touch "$SXMO_NOTIFDIR/$id"
-	printf "%s\n%s\n%b\n" "$group" "$action" "$msg" > "$SXMO_NOTIFDIR/$id"
+	printf "%s\n%s\n%b\n" "$group" "$action" "$msg" > "$SXMO_NOTIFDIR/$timestamp-$id"
 
 	sxmo_hook_statusbar.sh notifications
 }
