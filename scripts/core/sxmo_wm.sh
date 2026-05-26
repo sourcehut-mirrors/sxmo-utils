@@ -43,7 +43,7 @@ xorgdisplay() {
 
 wldisplay() {
 	case "$1" in
-		on) wlopm --on "*" ;;
+		on) wlopm --on "*" && wlopm --on "*";;
 		off) wlopm --off "*";;
 		"")
 			if wlopm | grep -q "on"; then
