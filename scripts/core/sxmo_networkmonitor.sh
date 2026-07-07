@@ -15,7 +15,9 @@ gracefulexit() {
 trap "gracefulexit" INT TERM EXIT
 
 getdevtype() {
-	nmcli -g GENERAL.TYPE device show "$1" 2>/dev/null
+	if ! nmcli -g GENERAL.TYPE device show "$1" 2>/dev/null; then
+		printf unknown
+	fi
 }
 
 # Send the initial states to the statusbar

@@ -285,19 +285,19 @@ set_ethernet() {
 	conname="$(nmcli -t device show "$2" | grep ^GENERAL.CONNECTION | cut -d: -f2-)"
 	if [ "$conname" = "--" ]; then
 		# not used device
-		sxmobar -d ethernet-status-"$2" 30
+		sxmobar -d network-status-"$2" 30
 		return
 	fi
 
 	if nmcli -t connection show "$conname" | grep ^ipv4.method | grep -q :shared; then
-		sxmobar -a ethernet-status-"$2" 30 "$icon_lnk"
+		sxmobar -a network-status-"$2" 30 "$icon_lnk"
 		return
 	fi
 
 	if nmcli -g GENERAL.STATE device show "$2" | grep -q connected; then
-		sxmobar -a ethernet-status-"$2" 30 "$icon_modem_eth"
+		sxmobar -a network-status-"$2" 30 "$icon_modem_eth"
 	else
-		sxmobar -a -f red ethernet-status-"$2" 30 "$icon_modem_eth"
+		sxmobar -a -f red network-status-"$2" 30 "$icon_modem_eth"
 	fi
 }
 
@@ -307,6 +307,10 @@ set_network() {
 	case "$1" in
 		wifi|tun) set_wifi "$@" ;;
 		ethernet) set_ethernet "$@" ;;
+		unknown)
+			# probably a removed device
+			sxmobar -d network-status-"$2" 30
+			;;
 	esac
 }
 
