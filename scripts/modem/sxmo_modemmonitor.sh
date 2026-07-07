@@ -47,6 +47,8 @@ mainloop() {
 			sleep 5
 		done
 
+		touch "$XDG_RUNTIME_DIR"/sxmo.seen_modem
+
 		# fake oldstate (boot) and reason (0)
 		sxmo_hook_modem.sh "boot" "$newstate" "0"
 		sxmo_hook_statusbar.sh modem

@@ -6,7 +6,8 @@
 # shellcheck source=scripts/core/sxmo_common.sh
 . sxmo_common.sh
 
-if [ -z "$SXMO_NO_MODEM" ]; then
+# Skip this if we never detected any modem
+if [ -r "$XDG_RUNTIME_DIR"/sxmo.seen_modem ]; then
 	MMCLI="$(mmcli -m any -J 2>/dev/null)"
 	if [ -z "$MMCLI" ]; then
 		sxmo_notify_user.sh "Modem crashed! 30s recovery."

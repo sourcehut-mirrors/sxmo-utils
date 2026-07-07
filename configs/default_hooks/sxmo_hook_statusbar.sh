@@ -58,6 +58,11 @@ set_state() {
 
 # from right to left: indicate signal, technologies, mm state
 set_modem() {
+	# Skip this if we never detected any modem
+	if [ ! -r "$XDG_RUNTIME_DIR"/sxmo.seen_modem ]; then
+		return
+	fi
+
 	MMCLI="$(mmcli -m any -J 2>/dev/null)"
 
 	bgcolor=default
@@ -476,18 +481,14 @@ case "$1" in
 		;;
 	periodics|state_change) # 55 s loop and screenlock triggers
 		set_time
-		if [ -z "$SXMO_NO_MODEM" ]; then
-			set_modem
-		fi
+		set_modem
 		set_notch
 		set_state
 		;;
 	all)
 		sxmobar -r
 		set_time
-		if [ -z "$SXMO_NO_MODEM" ]; then
-			set_modem
-		fi
+		set_modem
 		if [ -z "$SXMO_NO_AUDIO" ]; then
 			set_volume
 		fi

@@ -1099,9 +1099,6 @@ The following variables are used in device profiles, see DEVICES.
 *SXMO_NO_VIRTUAL_KEYBOARD* (input)
 	If defined, all virtual keyboard management is disabled, and some related
 	gesture behavior is changed.
-*SXMO_NO_MODEM* (modem)
-	Define this if your device has no modem, modem-related functionality will be
-	disabled.
 *SXMO_POWER_BUTTON* (input)
 	Power button "Identifier" from *swaymsg -t get_inputs* command.
 *SXMO_ROTATE_DIRECTION* (display)
