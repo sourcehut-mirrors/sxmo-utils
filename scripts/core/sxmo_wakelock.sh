@@ -94,29 +94,30 @@ case "$cmd" in
 	lock) lock "$@";;
 	unlock) unlock "$@";;
 	run)
-		# shellcheck disable=SC2317,SC2329
-		finish() {
-			if [ -n "$cmdpid" ]; then
-				kill "$cmdpid" 2> /dev/null
-			fi
-			unlock "sxmo_wakelock_$$"
-			exit
-		}
-
-		if isenabled; then
-			lock "sxmo_wakelock_$$" infinite
-			trap finish INT TERM EXIT
-		else
+		if ! isenabled; then
 			cat <<-EOF >&2
 				Warning: we can't wakelock, we can't make sure no suspension will occur...
 			EOF
+			# exec to simplify signal handling
+			exec "$@"
 		fi
 
-		"$@" &
-		cmdpid=$!
-		wait "$cmdpid"
+		ret=0
+		# shellcheck disable=SC2317,SC2329
+		finish() {
+			trap - INT TERM EXIT
+			jobs -p | xargs -r kill
+			wait
+			unlock "sxmo_wakelock_$$"
+			exit "$ret"
+		}
 
-		unset cmdpid
+		trap finish INT TERM EXIT
+		lock "sxmo_wakelock_$$" infinite
+
+		"$@" &
+		wait $!
+		ret=$?
 		;;
 	*)
 		sxmo_log "warning: sxmo_wakelock.sh $*"

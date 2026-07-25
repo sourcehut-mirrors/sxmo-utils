@@ -38,28 +38,35 @@ if [ -z "$timeout" ] || [ -z "$*" ]; then
 fi
 
 finish() {
-	[ -n "$CMDPID" ] && kill "$CMDPID"
-	[ -n "$SLEEPPID" ] && kill "$SLEEPPID"
-	exit 0
+	trap - INT TERM
+	jobs -p | xargs -r kill
+	wait
+	exit
 }
 
-trap 'finish' TERM INT
+trap 'finish' INT TERM
 
 if [ -n "$waitfirst" ]; then
 	sxmo_sleep ${clockname:+-c $clockname} "$timeout" &
-	SLEEPPID="$!"
-	wait "$SLEEPPID"
-	unset SLEEPPID
+	wait $!
+	ret=$?
+	if [ $ret -ne 0 ]; then
+		exit $ret
+	fi
 fi
 
 while : ; do
 	"$@" &
-	CMDPID="$!"
-	wait "$CMDPID"
-	unset CMDPID
+	wait $!
+	ret=$?
+	if [ $ret -ne 0 ]; then
+		exit $ret
+	fi
 
 	sxmo_sleep ${clockname:+-c $clockname} "$timeout" &
-	SLEEPPID="$!"
-	wait "$SLEEPPID"
-	unset SLEEPPID
+	wait $!
+	ret=$?
+	if [ $ret -ne 0 ]; then
+		exit $ret
+	fi
 done
