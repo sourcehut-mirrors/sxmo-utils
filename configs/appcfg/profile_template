@@ -13,7 +13,7 @@
 
 # You will sometime get SMS or calls from not
 #  country code prefixed phone numbers. To make
-#  it easy to fixup configure the default countryu.
+#  it easy to fixup configure the default country.
 #export DEFAULT_COUNTRY=FR
 
 ### Configuration Parameters ###

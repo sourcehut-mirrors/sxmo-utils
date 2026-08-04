@@ -57,7 +57,7 @@ multikey_retrocompat() {
 }
 
 if [ -n "$SXMO_MODEM_GPIO_KEY_RI" ]; then
-	# Disable the gpio-key-ri input devive
+	# Disable the gpio-key-ri input device
 	# It will trigger idle wakeup on modem notification which break sxmo
 	swaymsg -- input "$SXMO_MODEM_GPIO_KEY_RI" events disabled
 fi
