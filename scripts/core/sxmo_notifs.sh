@@ -60,7 +60,7 @@ monitor() {
 
 	fifo="$(mktemp -u)"
 	mkfifo "$fifo"
-	inotifywait -mq -e attrib,move,delete "$SXMO_NOTIFDIR"  >> "$fifo" &
+	inotifywait -mq -e attrib,move,delete,close_write "$SXMO_NOTIFDIR"  >> "$fifo" &
 	inotif_pid=$!
 
 	finish() {
@@ -71,7 +71,7 @@ monitor() {
 	trap 'finish' TERM INT EXIT
 
 	while read -r notif_folder notif_type notif_file; do
-		if echo "$notif_type" | grep -qE "CREATE|MOVED_TO|ATTRIB"; then
+		if echo "$notif_type" | grep -qE "CREATE|MOVED_TO|ATTRIB|CLOSE_WRITE"; then
 			_handle_new_notif_file "$notif_folder$notif_file"
 		fi
 		_notifications_hook
@@ -164,7 +164,6 @@ new() {
 	action="$1"
 	msg="$2"
 
-	touch "$SXMO_NOTIFDIR/$id"
 	printf "%s\n%s\n%b\n" "$group" "$action" "$msg" > "$SXMO_NOTIFDIR/$timestamp-$id"
 
 	sxmo_hook_statusbar.sh notifications
