@@ -6,7 +6,7 @@ envvars() {
 	export SXMO_WM=sway
 	export MOZ_ENABLE_WAYLAND=1
 	export SDL_VIDEODRIVER=wayland
-	export XDG_CURRENT_DESKTOP=sway
+	export XDG_CURRENT_DESKTOP="SXMO:sway"
 	[ -z "$SXMO_MENU" ] && export SXMO_MENU=bemenu
 	# shellcheck disable=SC2086
 	command -v $SXMO_TERMINAL "" >/dev/null || export SXMO_TERMINAL="foot"

@@ -7,7 +7,7 @@
 
 envvars() {
 	export SXMO_WM=i3
-	export XDG_CURRENT_DESKTOP=i3
+	export XDG_CURRENT_DESKTOP="SXMO:i3"
 	[ -z "$SXMO_MENU" ] && export SXMO_MENU=dmenu
 	# shellcheck disable=SC2086
 	command -v $SXMO_TERMINAL "" >/dev/null || export SXMO_TERMINAL="st"
