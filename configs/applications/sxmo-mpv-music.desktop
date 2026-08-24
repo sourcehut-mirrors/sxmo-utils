@@ -1,6 +1,0 @@
-[Desktop Entry]
-Name=mpv Music Player
-Exec=mpv --vid=no -v
-Terminal=true
-Type=Application
-MimeType=audio/amr;audio/wav;audio/opus;audio/m4a;audio/flac;audio/mp3

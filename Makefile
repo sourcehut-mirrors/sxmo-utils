@@ -135,7 +135,7 @@ install-scripts: $(PROGRAMS)
 
 	install -D -m 0644 -t $(DESTDIR)$(PREFIX)/lib/udev/rules.d/ configs/udev/*.rules
 
-	install -D -m 0644 -t $(DESTDIR)$(PREFIX)/share/applications/ configs/xdg/sxmo-mimeapps.list
+	install -D -m 0644 -t $(DESTDIR)$(PREFIX)/share/applications/ configs/applications/*
 
 	install -D -m 0644 -t $(DESTDIR)$(SYSCONFDIR)/polkit-1/rules.d/ configs/polkit/01-sensor-claim.rules
 

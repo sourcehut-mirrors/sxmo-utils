@@ -1,6 +1,6 @@
 [Desktop Entry]
 Name=Sxmo Phone Menu
-Exec=sxmo_phonemenu.sh
+Exec=sxmo_phonemenu.sh %u
 Terminal=false
 Type=Application
 MimeType=x-scheme-handler/tel

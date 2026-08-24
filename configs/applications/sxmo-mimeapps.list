@@ -1,0 +1,9 @@
+[Default Applications]
+image/jpeg=nsxiv.desktop
+image/png=nsxiv.desktop
+image/gif=nsxiv.desktop
+audio/x-m4a=mpv.desktop
+audio/mpeg=mpv.desktop
+audio/amr=mpv.desktop
+application/pdf=sxmo-zathura.desktop
+x-scheme-handler/tel=sxmo-phone-menu.desktop
