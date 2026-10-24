@@ -9,3 +9,5 @@ export SXMO_VOLUME_BUTTON="1:1:gpio-keys 0:0:pmic_resin"
 export SXMO_SWAY_SCALE="3.0"
 export SXMO_MONITOR="DSI-1"
 export LISGD_EDGE_SIZE=2
+export SXMO_VIBRATE_DEV=/dev/input/by-path/platform-880000.i2c-event
+export SXMO_VIBRATE_STRENGTH=30000
